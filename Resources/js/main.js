@@ -135,11 +135,9 @@ function getRoundNumber(){
 }
 
 function princeNextStep(){
-    let answer;
-
     switch(Prince1.mindCurrent){
         case Mind.SUP_1:
-            showYesNoDialog("Do I...", "Rules the most sites?")
+            showYesNoDialog("Do I...", "Rules the most sites?", null)
             break;
     }
 }
@@ -166,7 +164,7 @@ function AddNewPrince(){
 
 function yesNoTest(){
     //const model = new Promise(showYesNoDialog("Do I.....?", "Rule the most sites?")); //.then(yes, no));
-    showYesNoDialog("Do I.....?", "Rule the most sites?");
+    showYesNoDialog("Do I.....?", "Rule the most sites?", null);
     //let c = confirm("D'oh!");
     alert("!");
 }
@@ -184,7 +182,7 @@ const messageBox = new bootstrap.Modal(
     document.getElementById("yesNo")
 );
 
-function showYesNoDialog(title, message){
+function showYesNoDialog(title, message, resolve){
     //const messageBox = new bootstrap.Modal(
     //    document.getElementById("yesNo")
     //);
@@ -194,7 +192,7 @@ function showYesNoDialog(title, message){
     document.getElementById("yesNoMessage").innerHTML =
         message;
     messageBox.show();
-
+    resolve(true);
     // if(YesNoAnswer == "Yes"){
     //    alert("Yes pressed!");
     // }
@@ -206,27 +204,37 @@ function yesNoClick(answer){
     switch(CurrentPrince.mindCurrent){
         case Mind.SUP_1:
             SUP_1(answer);
+            break;
+        case Mind.SUP_2:
+            SUP_2(answer);
+            break;
     }
 }
 
-function SUP_1(answer){
-    if (answer) {
+async function SUP_1(answer){
+    if (answer == 'Yes') {
         // Need a banner?
         return;
     }
-alert(answer);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     CurrentPrince.mindCurrent = Mind.SUP_2;
-    SUP_2();
+    // showYesNoDialog("Am I...", "Battle Ready?");
+    await new Promise((resolve) => showYesNoDialog("Am I...", "Battle Ready?", resolve));
+    alert("fin!");
+    //SUP_2();
     return;
 }
 
-function SUP_2(){
+function SUP_2(answer){
 
-    if (answer) {
-        // Need a banner?
+    if (answer == "Yes") {
+        alert("Fight!")
         return;
     }
 
-    // Call SUP2
+    CurrentPrince.mindCurrent = Mind.SUP_3;
+    alert("Muster?")
     return;
 }
