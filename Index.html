@@ -13,9 +13,12 @@
   </head>
   <body>
     <main>
-      <header class="fixed-top">
+      <header class="">
           <div class="d-flex justify-content-between mainheader">Header
             <div>
+              <button onclick="AddNewPrince()">Add Prince</button>
+              <button onclick="princeNextStep()">Next Step</button>
+              <button onclick="yesNoTest()">Click!</button>
               <button type="button" class="btn btn-primary" onclick="changeRound()">
                 <span class="icon-medium" id="roundnumber" data-bs-toggle="tooltip" title="Round" data-bs-placement="bottom"
                     data-bs-target="#roundtracker">
@@ -24,30 +27,85 @@
             </button>
             </div>
           </div>
-          
       </header>
+
+      <div class="container-fluid">Main sections
+        <div class="row">
+          <div class="col" id="PrinceColumn1">
+            <div class="row" id="Prince1">
+              <div class="col-md-auto">
+                <div>Prince Name: </div>
+              </div>
+              <div class="col-md-auto">
+                <div id="PrinceName">John</div>
+              </div>
+              <div class="row">
+                <div class="col-md-auto">
+                  <div>Favor: </div>
+                </div>
+                <div class="col-md-auto">
+                  <div id="PrinceFavor">9</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button>Next Step</button>
+            </div>
+          </div>
+          <div class="col" id="PrinceColumn2">
+      
+          </div>
+      
+        </div>
+      </div>
     </main>
+
+    
 
     <!-- Message Box -->
     <div class="modal fade" id="messageBox" tabindex="-1" aria-labelledby="MessageBox" aria-hidden="true">
       <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="messageBoxTitle"></h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body d-flex">
-                  <p id="messageBoxBody"></p>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                      Close
-                  </button>
-              </div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageBoxTitle"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
+          <div class="modal-body d-flex">
+            <p id="messageBoxBody"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
       </div>
-  </div>
-</div>
+    </div>
+
+    <!-- Yes/No Box -->
+    <div class="modal fade" id="yesNo" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="yesNoTitle"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex">
+            <p id="yesNoMessage"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="yesNoClick('Yes');" data-bs-dismiss="modal">
+              Yes
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="yesNoClick('No');" data-bs-dismiss="modal">
+              No
+            </button>
+            <input type="text" id="answer" value="">
+          </div>
+        </div>
+      </div>
+    </div>
+    
 
     <!-- Optional JavaScript; choose one of the two! -->
 
