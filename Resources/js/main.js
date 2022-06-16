@@ -80,7 +80,8 @@ class Prince {
     }
 }
 
-let Prince1
+let Prince1;
+let CurrentPrince;
 document.addEventListener("DOMContentLoaded", () => {
     Prince1 = new Prince("Sam",
     2,
@@ -94,6 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("PrinceName").innerHTML = Prince1.name;
     document.getElementById("PrinceFavor").innerHTML = Prince1.numFavor;
+
+    CurrentPrince = Prince1;
 });
 
 
@@ -136,27 +139,22 @@ function princeNextStep(){
 
     switch(Prince1.mindCurrent){
         case Mind.SUP_1:
-            SUP_1();
+            showYesNoDialog("Do I...", "Rules the most sites?")
+            break;
     }
 }
 
-function SUP_1(){
-    let answer;
-    answer = confirm("Do I rule the most sites?");
-    if (answer) {
-        // Need a banner?
-        return;
-    }
+// function cloneNodeAndChangeId(nodename, planetname, rowCount) {
+//     let clonenode = document.getElementById(nodename).cloneNode(true);
+//     clonenode.id = planetname;
 
-    answer = confirm("Am I Battle Ready?");
-    if (answer) {
-        // Call SUP_8
-        return;
-    }
+//     if (rowCount == 0) {
+//         // add border to the top
+//         clonenode.classList.add("builditemstart");
+//     }
 
-    // Call SUP2
-    return;
-}
+//     document.getElementById("buildqueue").appendChild(clonenode);
+// }
 
 function AddNewPrince(){
     let princeTemplate = document.getElementById("Prince1");
@@ -205,5 +203,30 @@ function showYesNoDialog(title, message){
 function yesNoClick(answer){
     //alert(answer);
     //document.getElementById("answer").value = answer;
-    YesNoAnswer = answer;
+    switch(CurrentPrince.mindCurrent){
+        case Mind.SUP_1:
+            SUP_1(answer);
+    }
+}
+
+function SUP_1(answer){
+    if (answer) {
+        // Need a banner?
+        return;
+    }
+alert(answer);
+    CurrentPrince.mindCurrent = Mind.SUP_2;
+    SUP_2();
+    return;
+}
+
+function SUP_2(){
+
+    if (answer) {
+        // Need a banner?
+        return;
+    }
+
+    // Call SUP2
+    return;
 }
