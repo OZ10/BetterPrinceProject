@@ -14,13 +14,17 @@ const Threat = {
 
 const Mind = {
     SUP_1 : "sup_1",
+    SUP_1_2 : "sup_1_2",
     SUP_2 : "sup_2",
+    SUP_2_2 : "sup_2_2",
     SUP_3 : "sup_3",
     SUP_4 : "sup_4",
     SUP_5 : "sup_5",
+    SUP_5_2 : "sup_5_2",
     SUP_6 : "sup_6",
     SUP_7 : "sup_7",
     SUP_8 : "sup_8",
+    SUP_8_2 : "sup_8_2",
     DS_1 : "ds_1",
     DS_2 : "ds_2",
     DS_3 : "ds_3",
@@ -139,11 +143,35 @@ function princeNextStep(){
         case Mind.SUP_1:
             showYesNoDialog("Do I...", "Rules the most sites?");
             break;
-        case Mind.SUP_2:
+        case Mind.SUP_1_2:
             showYesNoDialog("Am I...", "Battle Ready?");
             break;
-        case Mind.SUP_3:
+        case Mind.SUP_2:
             showYesNoDialog("Can I...", "Muster on at least one card at my site?");
+            break;
+        case Mind.SUP_2_2:
+            showYesNoDialog("Am I...", "Battle Ready?");
+        break;
+        case Mind.SUP_3:
+            showYesNoDialog("Can I...", "Move to a site to trade for the most favor");
+            break;
+        case Mind.SUP_4:
+            showYesNoDialog("Can I...", "Trade on at least one card at my site?");
+            break;
+        case Mind.SUP_5:
+            showYesNoDialog("Can I...", "Muster on at least one card at my site?");
+            break;
+        case Mind.SUP_5_2:
+            showYesNoDialog("Am I...", "Battle Ready?");
+            break;
+        case Mind.SUP_7:
+            showYesNoDialog("Do I...", "Rules the most sites?");
+            break;
+        case Mind.SUP_8:
+            showYesNoDialog("Do I...", "Rules the most sites?");
+            break;
+        case Mind.SUP_8_2:
+            showYesNoDialog("Am I...", "Battle Ready?");
             break;
     }
 }
@@ -187,40 +215,187 @@ function showYesNoDialog(title, message){
     messageBox.show();
 }
 
+function showMessageDialog(title, message){
+    const messageBox = new bootstrap.Modal(
+       document.getElementById("messageBox")
+    );
+
+    document.getElementById("messageBoxTitle").innerHTML =
+        title;
+    document.getElementById("messageBoxBody").innerHTML =
+        message;
+    messageBox.show();
+}
+
 function yesNoClick(answer){
     switch(CurrentPrince.mindCurrent){
         case Mind.SUP_1:
             SUP_1(answer);
             break;
+        case Mind.SUP_1_2:
+            SUP_1_2(answer);
+            break;
         case Mind.SUP_2:
             SUP_2(answer);
             break;
+        case Mind.SUP_2_2:
+            SUP_2_2(answer);
+            break;
+        case Mind.SUP_3:
+            SUP_3(answer);
+            break;
+        case Mind.SUP_4:
+            SUP_4(answer);
+            break;
+        case Mind.SUP_5:
+            SUP_5(answer);
+            break;
+        case Mind.SUP_5_2:
+            SUP_5_2(answer);
+            break;
+        case Mind.SUP_7:
+            SUP_7(answer);
+            break;
+        case Mind.SUP_8:
+            SUP_8(answer);
+            break;
+        case Mind.SUP_8_2:
+            SUP_8_2(answer);
+        break;
     }
 }
 
-async function SUP_1(answer){
+function delay() {
+    return new Promise(resolve => setTimeout(resolve, 500));
+} 
+
+function SUP_1(answer){
     if (answer == 'Yes') {
         // Need a banner?
+        princeNextStep();
         return;
     }
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // await delay();
+    // showYesNoDialog("Am I...", "Battle Ready?", resolve)
     
-    CurrentPrince.mindCurrent = Mind.SUP_2;
-    showYesNoDialog("Am I...", "Battle Ready?");
+    CurrentPrince.mindCurrent = Mind.SUP_1_2;
+    princeNextStep();
     // await new Promise((resolve) => showYesNoDialog("Am I...", "Battle Ready?", resolve));
     // alert("fin!");
     //SUP_2();
-    return;
+    // return;
+}
+
+function SUP_1_2(answer){
+    if (answer == 'Yes') {
+        showMessageDialog("Fight", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_8;
+        // princeNextStep();
+        return;
+    }
+    
+    CurrentPrince.mindCurrent = Mind.SUP_2;
+    princeNextStep();
 }
 
 function SUP_2(answer){
     if (answer == "Yes") {
-        alert("Fight!")
+        showMessageDialog("Muster", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_2_2;
         return;
     }
 
     CurrentPrince.mindCurrent = Mind.SUP_3;
-    alert("Muster?")
-    return;
+    princeNextStep();
+}
+
+function SUP_2_2(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Fight", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_8;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.SUP_3;
+    princeNextStep();
+}
+
+function SUP_3(answer){
+    if (answer == 'Yes') {
+        showMessageDialog("Move", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_4;
+        return;
+    }
+    
+    // Couldn't move - Skip action
+    CurrentPrince.mindCurrent = Mind.SUP_4;
+    princeNextStep();
+}
+
+function SUP_4(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Trade", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_5;
+        return;
+    }
+
+    // Skip
+    CurrentPrince.mindCurrent = Mind.SUP_5;
+    princeNextStep();
+}
+
+function SUP_5(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Muster", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_5_2;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.SUP_3;
+    princeNextStep();
+}
+
+function SUP_5_2(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Fight", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_7;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.SUP_3;
+    princeNextStep();
+}
+
+function SUP_7(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Banners", "Yo")
+        // CurrentPrince.mindCurrent = Mind.SUP_2_2;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.SUP_5;
+    princeNextStep();
+}
+
+function SUP_8(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Banners", "Yo")
+        // CurrentPrince.mindCurrent = Mind.SUP_8;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.SUP_8_2;
+    princeNextStep();
+}
+
+function SUP_8_2(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Fight", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_7;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.SUP_3;
+    princeNextStep();
 }
