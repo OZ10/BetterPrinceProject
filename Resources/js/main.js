@@ -137,7 +137,13 @@ function getRoundNumber(){
 function princeNextStep(){
     switch(Prince1.mindCurrent){
         case Mind.SUP_1:
-            showYesNoDialog("Do I...", "Rules the most sites?", null)
+            showYesNoDialog("Do I...", "Rules the most sites?");
+            break;
+        case Mind.SUP_2:
+            showYesNoDialog("Am I...", "Battle Ready?");
+            break;
+        case Mind.SUP_3:
+            showYesNoDialog("Can I...", "Muster on at least one card at my site?");
             break;
     }
 }
@@ -164,43 +170,24 @@ function AddNewPrince(){
 
 function yesNoTest(){
     //const model = new Promise(showYesNoDialog("Do I.....?", "Rule the most sites?")); //.then(yes, no));
-    showYesNoDialog("Do I.....?", "Rule the most sites?", null);
+    showYesNoDialog("Do I.....?", "Rule the most sites?");
     //let c = confirm("D'oh!");
     alert("!");
 }
 
-function yes(){
-    alert("Yes!");
-}
-
-function no(){
-    alert("No");
-}
-
-let YesNoAnswer;
-const messageBox = new bootstrap.Modal(
-    document.getElementById("yesNo")
-);
-
-function showYesNoDialog(title, message, resolve){
-    //const messageBox = new bootstrap.Modal(
-    //    document.getElementById("yesNo")
-    //);
+function showYesNoDialog(title, message){
+    const messageBox = new bootstrap.Modal(
+       document.getElementById("yesNo")
+    );
 
     document.getElementById("yesNoTitle").innerHTML =
         title;
     document.getElementById("yesNoMessage").innerHTML =
         message;
     messageBox.show();
-    resolve(true);
-    // if(YesNoAnswer == "Yes"){
-    //    alert("Yes pressed!");
-    // }
 }
 
 function yesNoClick(answer){
-    //alert(answer);
-    //document.getElementById("answer").value = answer;
     switch(CurrentPrince.mindCurrent){
         case Mind.SUP_1:
             SUP_1(answer);
@@ -217,18 +204,17 @@ async function SUP_1(answer){
         return;
     }
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     CurrentPrince.mindCurrent = Mind.SUP_2;
-    // showYesNoDialog("Am I...", "Battle Ready?");
-    await new Promise((resolve) => showYesNoDialog("Am I...", "Battle Ready?", resolve));
-    alert("fin!");
+    showYesNoDialog("Am I...", "Battle Ready?");
+    // await new Promise((resolve) => showYesNoDialog("Am I...", "Battle Ready?", resolve));
+    // alert("fin!");
     //SUP_2();
     return;
 }
 
 function SUP_2(answer){
-
     if (answer == "Yes") {
         alert("Fight!")
         return;
