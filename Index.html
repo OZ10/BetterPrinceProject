@@ -105,6 +105,33 @@
         </div>
       </div>
     </div>
+
+    <!-- Banners Box -->
+    <div class="modal fade" id="bannersDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Need a Banner?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex">
+            <p id="bannersDialogMessage"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="bannersDialogClick('DS');" data-bs-dismiss="modal">
+              Darkest Secret?
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('PF');" data-bs-dismiss="modal">
+              Peoples Favorite?
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('Both');" data-bs-dismiss="modal">
+              Both or Neither?
+            </button>
+            <!-- <input type="text" id="answer" value=""> -->
+          </div>
+        </div>
+      </div>
+    </div>
     
 
     <!-- Optional JavaScript; choose one of the two! -->
