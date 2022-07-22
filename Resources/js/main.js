@@ -5,7 +5,8 @@ const BannerNames = {
 
 const Currency = {
     FAVOR : "FAVOR",
-    SECRETS : "SECRETS"
+    SECRETS : "SECRETS",
+    BOTH : "FAVOR and SECRETS"
 }
 
 const Status = {
@@ -63,13 +64,21 @@ const Mind = {
     PF_7 : "pf_7",
     PF_8 : "pf_8",
     RB_1 : "rb_1",
+    RB_1_BR : "rb_1_br",
     RB_2 : "rb_2",
+    RB_2_PAY : "rb_2_pay",
     RB_3 : "rb_3",
+    RB_3_PAY : "rb_3_pay",
     RB_4 : "rb_4",
     RB_5 : "rb_5",
     RB_6 : "rb_6",
+    RB_6_MOST : "rb_6_most",
+    RB_6_PAY : "rb_6_pay",
     RB_7 : "rb_7",
+    RB_7_BR : "rb_7_br",
     RB_8 : "rb_8",
+    RB_8_MOST : "rb_8_most",
+    RB_8_BR : "rb_8_br",
     RB_9 : "rb_9"
 }
 
@@ -236,6 +245,7 @@ function delay() {
     return new Promise(resolve => setTimeout(resolve, 500));
 } 
 
+// Below are the questions that the user is asked to help resolve the bot's turn
 function princeNextStep(){
     switch(Prince1.mindCurrent){
         case Mind.SUP_1:
@@ -292,7 +302,7 @@ function princeNextStep(){
             questionMoveToSiteWithMost(Currency.SECRETS);
             break;
         case Mind.DS_4:
-            questionTradeWithSite(Currency.FAVOR + "AND" + Currency.SECRETS);
+            questionTradeWithSite(Currency.BOTH) //Currency.FAVOR + "AND" + Currency.SECRETS);
             break;
         case Mind.DS_4_PAY:
             questionPayForBanner(BannerNames.DARKESTSECRET);
@@ -333,7 +343,7 @@ function princeNextStep(){
             questionMoveToSiteWithMost(Currency.FAVOR);
         break;
         case Mind.PF_4:
-            questionTradeWithSite(Currency.FAVOR + " and " + Currency.SECRETS);
+            questionTradeWithSite(Currency.BOTH) //Currency.FAVOR + " and " + Currency.SECRETS);
         break;
         case Mind.PF_4_PAY:
             questionPayForBanner(BannerNames.PEOPLESFAVOR);
@@ -352,6 +362,56 @@ function princeNextStep(){
         break;
         case Mind.PF_8:
             questionHoldTheBanner(BannerNames.PEOPLESFAVOR);
+        break;
+
+        case Mind.RB_1:
+            questionHoldTheBanner("most RELICS and BANNERS");
+        break;
+        case Mind.RB_1_BR:
+            questionBattleReady();
+        break;
+        case Mind.RB_2:
+            questionMoveToSiteWithMost("RELICS");
+        break;
+        case Mind.RB_2_PAY:
+            questionPayForBanner("RELIC");
+        break;
+        case Mind.RB_3:
+            questionTradeWithSite(Currency.BOTH);
+        break;
+        case Mind.RB_3_PAY:
+            questionPayForBanner("RELIC");
+        break;
+        case Mind.RB_4:
+            questionTradeWithSite(Currency.BOTH);
+        break;
+        case Mind.RB_5:
+            questionMoveToSiteWithMost("RELICS");
+        break;
+        case Mind.RB_6:
+            questionHoldTheBanner("most RELICS and BANNERS");
+        break;
+        //todo HERE Got lost with the logic here. Think the space your on should be asking the question about the next space along!
+        case Mind.RB_6_MOST:
+            questionCanMuster();
+        break;
+        case Mind.RB_6_PAY:
+            questionPayForBanner("RELIC");
+        break;
+        case Mind.RB_7:
+            questionCanMuster();
+        break;
+        case Mind.RB_7_BR:
+            questionBattleReady();
+        break;
+        case Mind.RB_8:
+            questionHoldTheBanner("most RELICS and BANNERS");
+        break;
+        case Mind.RB_8_BR:
+            questionBattleReady();
+        break;
+        case Mind.RB_9:
+            questionHoldTheBanner("most RELICS and BANNERS");
         break;
     }
 }
@@ -388,6 +448,7 @@ function questionSearch(){
     showYesNoDialog("Can I...", "Search the Main Deck?");
 }
 
+// Below are the responses to the questions
 function sup_1(answer){
     if (answer == 'Yes') {
         // Need a banner?
@@ -408,6 +469,9 @@ function sup_1(answer){
 
 //todo rename this?
 function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, noMind){
+    // 'yesSkipNext' is used when a question is asked that requires another question to be asked afterwards
+    // For example: Normally a question would be 'Can I move?'; if the answer is yes then the bot will move as one action.
+    // If the answer to the question 'Do I rule the most sites?' is yes then another question is required that can be actioned
     if (answer == 'Yes') {
         CurrentPrince.mindCurrent = yesMind;
         if (yesSkipToNext){
@@ -551,7 +615,7 @@ function ds_8(answer){
 }
 
 function pf_1(answer){
-    Outcome(answer, "", "", Mind.PF_7, true, Mind.PF_1_BR);
+    Outcome(answer, "Search", "Yo", Mind.PF_7, false, Mind.PF_1_BR);
     // if (answer == "Yes") {
     //     CurrentPrince.mindCurrent = Mind.PF_7;
     //     princeNextStep();
@@ -583,7 +647,7 @@ function pf_3(answer){
 }
 
 function pf_4(answer){
-    Outcome(answer, "Trade", "With " + Currency.FAVOR + " And " + Currency.SECRETS, Mind.PF_4_PAY, false, Mind.PF_5);
+    Outcome(answer, "Trade", "With " + Currency.FAVOR + " and " + Currency.SECRETS, Mind.PF_4_PAY, false, Mind.PF_5);
 }
 
 function pf_4_pay(answer){
@@ -602,6 +666,10 @@ function pf_6(answer){
     Outcome(answer, "Search", "Yo", Mind.PF_7, false, Mind.RB_4);
 }
 
+function pf_7(answer){
+    Outcome(answer, "Move", "Yo", Mind.RB_4, false, Mind.RB_4);
+}
+
 function pf_8(answer){
     Outcome(answer, "", "", Mind.DS_8, true, Mind.PF_3);
     // if (answer == "Yes") {
@@ -614,11 +682,81 @@ function pf_8(answer){
     // princeNextStep();
 }
 
+function rb_1(answer){
+    Outcome(answer, "", "", Mind.SUP_5, true, Mind.RB_1_BR);
+}
+
+function rb_1_br(answer){
+    Outcome(answer, "Fight", "Yo", Mind.RB_9, false, Mind.RB_2);
+}
+
+function rb_2(answer){
+    Outcome(answer, "Move", "Yo", Mind.RB_2_PAY, false, Mind.RB_3);
+}
+
+function rb_2_pay(answer){
+    Outcome(answer, "Pay", payMessage("RELIC"), Mind.RB_8, false, Mind.RB_3);
+}
+
+function rb_3(answer){
+    Outcome(answer, "Trade", "Yo", Mind.RB_3_PAY, false, Mind.RB_4);
+}
+
+function rb_3_pay(answer){
+    Outcome(answer, "Pay", payMessage("RELIC"), Mind.RB_8, false, Mind.RB_4);
+}
+
+function rb_4(answer){
+    Outcome(answer, "Move", "Yo", Mind.RB_5, false, Mind.RB_5);
+}
+
+function rb_5(answer){
+    Outcome(answer, "Trade", "Yo", Mind.RB_6, false, Mind.RB_6);
+}
+
+function rb_6(answer){
+    Outcome(answer, "Move", "Yo", Mind.RB_6_MOST, false, Mind.RB_7);
+}
+
+function rb_6_most(answer){
+    Outcome(answer, "", "", Mind.SUP_5, true, Mind.RB_6_PAY);
+}
+
+function rb_6_pay(answer){
+    Outcome(answer, "Pay", payMessage("RELIC"), Mind.RB_8, true, Mind.RB_7);
+}
+
+function rb_7(answer){
+    Outcome(answer, "Muster", "Yo", Mind.RB_7_BR, false, Mind.RB_4);
+}
+
+function rb_7_br(answer){
+    Outcome(answer, "Fight", "Yo", Mind.RB_9, false, Mind.RB_4);
+}
+
+function rb_8(answer){
+    Outcome(answer, "Trade", "Yo", Mind.RB_8_MOST, false, Mind.RB_8_BR);
+}
+
+function rb_8_most(answer){
+    Outcome(answer, "", "", Mind.SUP_5, true, Mind.RB_8_BR);
+}
+
+function rb_8_br(answer){
+    Outcome(answer, "Fight", "Yo", Mind.RB_9, false, Mind.RB_5);
+}
+
+function rb_9(answer){
+    Outcome(answer, "", "", Mind.SUP_5, true, Mind.RB_6);
+}
+
 function payMessage(paymentType){
     if (paymentType == Currency.FAVOR){
-        return "All FAVOR for the PEOPLES FAVOR";
+        return "All " + Currency.FAVOR + " for the " + BannerNames.PEOPLESFAVOR;
+    }else if (paymentType == Currency.SECRETS){
+        return "All " + Currency.SECRETS + " for the " + BannerNames.DARKESTSECRET;
     }else{
-        return "All SECRETS for the DARKEST SECRET"
+        return Currency.FAVOR + " and " + Currency.SECRETS + " for Relic (Exile may use " + Currency.SECRETS + " as " + Currency.FAVOR + ")";
     }
 }
 
