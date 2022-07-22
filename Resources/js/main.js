@@ -26,13 +26,18 @@ const Mind = {
     SUP_8 : "sup_8",
     SUP_8_BR : "sup_8_br",
     DS_1 : "ds_1",
+    DS_1_BR : "ds_1_br",
+    DS_1_PAY : "ds_1_pay",
     DS_2 : "ds_2",
     DS_2_PAY : "ds_2_pay",
     DS_3 : "ds_3",
     DS_4 : "ds_4",
+    DS_4_PAY : "ds_4_pay",
     DS_5 : "ds_5",
+    DS_5_BR : "ds_5_br",
     DS_6 : "ds_6",
     DS_7 : "ds_7",
+    DS_7_DS : "ds_7_ds",
     DS_8 : "ds_8",
     PF_1 : "pf_1",
     PF_2 : "pf_2",
@@ -199,49 +204,6 @@ function showBannersDialog(){
 
 function yesNoClick(answer){
     eval(CurrentPrince.mindCurrent)(answer);
-
-    // switch(CurrentPrince.mindCurrent){
-    //     case Mind.SUP_1:
-    //         SUP_1(answer);
-    //         break;
-    //     case Mind.SUP_1_BR:
-    //         SUP_1_BR(answer);
-    //         break;
-    //     case Mind.SUP_2:
-    //         SUP_2(answer);
-    //         break;
-    //     case Mind.SUP_2_BR:
-    //         SUP_2_BR(answer);
-    //         break;
-    //     case Mind.SUP_3:
-    //         SUP_3(answer);
-    //         break;
-    //     case Mind.SUP_4:
-    //         SUP_4(answer);
-    //         break;
-    //     case Mind.SUP_5:
-    //         SUP_5(answer);
-    //         break;
-    //     case Mind.SUP_5_BR:
-    //         SUP_5_BR(answer);
-    //         break;
-    //     case Mind.SUP_7:
-    //         SUP_7(answer);
-    //         break;
-    //     case Mind.SUP_8:
-    //         SUP_8(answer);
-    //         break;
-    //     case Mind.SUP_8_BR:
-    //         SUP_8_BR(answer);
-    //     break;
-
-    //     case Mind.DS_2:
-    //         DS_2(answer);
-    //     break;
-    //     case Mind.DS_2_PAY:
-    //         DS_2_PAY(answer);
-    //     break;
-    // }
 }
 
 function bannersDialogClick(answer){
@@ -262,46 +224,106 @@ function delay() {
 function princeNextStep(){
     switch(Prince1.mindCurrent){
         case Mind.SUP_1:
-            showYesNoDialog("Do I...", "Rules the most sites?");
+            RulesMostSiteDialog();
             break;
         case Mind.SUP_1_BR:
-            showYesNoDialog("Am I...", "Battle Ready?");
+            //BattleReadyDialog();
+            BattleReadyDialog();
             break;
         case Mind.SUP_2:
-            showYesNoDialog("Can I...", "Muster on at least one card at my site?");
+            CanMusterDialog();
             break;
         case Mind.SUP_2_BR:
-            showYesNoDialog("Am I...", "Battle Ready?");
+            BattleReadyDialog();
         break;
         case Mind.SUP_3:
-            showYesNoDialog("Can I...", "Move to a site to trade for the most FAVOR");
+            MoveToSiteWithMost("FAVOR");
             break;
         case Mind.SUP_4:
-            showYesNoDialog("Can I...", "Trade for FAVOR on at least one card at my site?");
+            TradeWithSite("FAVOR");
             break;
         case Mind.SUP_5:
-            showYesNoDialog("Can I...", "Muster on at least one card at my site?");
+            CanMusterDialog();
             break;
         case Mind.SUP_5_BR:
-            showYesNoDialog("Am I...", "Battle Ready?");
+            BattleReadyDialog();
             break;
         case Mind.SUP_7:
-            showYesNoDialog("Do I...", "Rules the most sites?");
+            RulesMostSiteDialog();
             break;
         case Mind.SUP_8:
-            showYesNoDialog("Do I...", "Rules the most sites?");
+            RulesMostSiteDialog();
             break;
         case Mind.SUP_8_BR:
-            showYesNoDialog("Am I...", "Battle Ready?");
+            BattleReadyDialog();
             break;
 
+        case Mind.DS_1:
+            HoldTheDS();
+            break;
+        case Mind.DS_1_BR:
+            BattleReadyDialog();
+            break;
+        case Mind.DS_1_PAY:
+            PayForDS();
+            break;
         case Mind.DS_2:
-            showYesNoDialog("Can I...", "Trade SECRETS on at least one card at my site?");
+            TradeWithSite("SECRETS");
             break;
         case Mind.DS_2_PAY:
-            showYesNoDialog("Can I...", "Move to a site to trade for the most SECRETS?");
+            PayForDS();
             break;
+        case Mind.DS_3:
+            MoveToSiteWithMost("SECRETS");
+            break;
+        case Mind.DS_4:
+            TradeWithSite("FAVOR & SECRETS");
+            break;
+        case Mind.DS_4_PAY:
+            PayForDS();
+            break;
+        case Mind.DS_5:
+            CanMusterDialog();
+            break;
+        case Mind.DS_5_BR:
+            BattleReadyDialog();
+        break;
+        case Mind.DS_7:
+            HoldTheDS();
+        break;
+        case Mind.DS_8:
+            // Skip to SUP_2 (Muster)
+            CanMusterDialog();
+        break;
     }
+}
+
+function BattleReadyDialog(){
+    showYesNoDialog("Am I...", "Battle ready?");
+}
+
+function RulesMostSiteDialog(){
+    showYesNoDialog("Do I...", "Rules the most sites?");
+}
+
+function CanMusterDialog(){
+    showYesNoDialog("Can I...", "Muster on at least one card at my site?");
+}
+
+function MoveToSiteWithMost(currency){
+    showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?");
+}
+
+function TradeWithSite(currency){
+    showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?");
+}
+
+function PayForDS(){
+    showYesNoDialog("Can I...", "Pay for the Darkest Secret?");
+}
+
+function HoldTheDS(){
+    showYesNoDialog("Do I...", "Hold the Darkest Secret?");
 }
 
 function sup_1(answer){
@@ -435,6 +457,39 @@ function sup_8_br(answer){
     princeNextStep();
 }
 
+function ds_1(answer){
+    if (answer == "Yes") {
+        CurrentPrince.mindCurrent = Mind.DS_8;
+        princeNextStep();
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_1_BR;
+    princeNextStep();
+}
+
+function ds_1_br(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Fight", "Move to site of the holder of Darkest Secret and Battle!")
+        CurrentPrince.mindCurrent = Mind.DS_7;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_1_PAY;
+    princeNextStep();
+}
+
+function ds_1_pay(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Pay", "All SECRETS for the Darkest Secret")
+        CurrentPrince.mindCurrent = Mind.DS_6;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_2;
+    princeNextStep();
+}
+
 function ds_2(answer){
     if (answer == "Yes") {
         showMessageDialog("Trade", "Yo")
@@ -448,11 +503,89 @@ function ds_2(answer){
 
 function ds_2_pay(answer){
     if (answer == "Yes") {
-        showMessageDialog("Move", "Yo")
-        CurrentPrince.mindCurrent = Mind.DS_2_PAY;
+        showMessageDialog("Pay", "All SECRETS for the Darkest Secret")
+        CurrentPrince.mindCurrent = Mind.DS_6;
         return;
     }
 
+    CurrentPrince.mindCurrent = Mind.DS_3;
+    princeNextStep();
+}
+
+function ds_3(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Move", "Yo")
+        CurrentPrince.mindCurrent = Mind.DS_4;
+        return;
+    }
+
+    // Couldn't move - Skip action
     CurrentPrince.mindCurrent = Mind.DS_4;
+    princeNextStep();
+}
+
+function ds_4(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Trade", "Yo")
+        CurrentPrince.mindCurrent = Mind.DS_4_PAY;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_5;
+    princeNextStep();
+}
+
+function ds_4_pay(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Pay", "All SECRETS for the Darkest Secret")
+        CurrentPrince.mindCurrent = Mind.DS_6;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_5;
+    princeNextStep();
+}
+
+function ds_5(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Muster", "Yo")
+        CurrentPrince.mindCurrent = Mind.DS_5_BR;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_3;
+    princeNextStep();
+}
+
+function ds_5_br(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Fight", "Move to site of the holder of Darkest Secret and Battle!")
+        CurrentPrince.mindCurrent = Mind.DS_7;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_3;
+    princeNextStep();
+}
+
+function ds_7(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Search", "Yo")
+        CurrentPrince.mindCurrent = Mind.DS_8;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.DS_3;
+    princeNextStep();
+}
+
+function ds_8(answer){
+    if (answer == "Yes") {
+        showMessageDialog("Muster", "Yo")
+        CurrentPrince.mindCurrent = Mind.SUP_2_BR;
+        return;
+    }
+
+    CurrentPrince.mindCurrent = Mind.SUP_3;
     princeNextStep();
 }
