@@ -383,17 +383,16 @@ function princeNextStep(){
             questionPayForBanner("RELIC");
         break;
         case Mind.RB_4:
-            questionTradeWithSite(Currency.BOTH);
+            questionMoveToSiteWithMost(Currency.FAVOR);
         break;
         case Mind.RB_5:
-            questionMoveToSiteWithMost("RELICS");
+            questionTradeWithSite(Currency.BOTH);
         break;
         case Mind.RB_6:
-            questionHoldTheBanner("most RELICS and BANNERS");
+            questionMoveToSiteWithMost("RELICS");
         break;
-        //todo HERE Got lost with the logic here. Think the space your on should be asking the question about the next space along!
         case Mind.RB_6_MOST:
-            questionCanMuster();
+            questionHoldTheBanner("most RELICS and BANNERS");
         break;
         case Mind.RB_6_PAY:
             questionPayForBanner("RELIC");
@@ -667,7 +666,7 @@ function pf_6(answer){
 }
 
 function pf_7(answer){
-    Outcome(answer, "Move", "Yo", Mind.RB_4, false, Mind.RB_4);
+    Outcome(answer, "Move", "Yo", Mind.RB_5, false, Mind.RB_5);
 }
 
 function pf_8(answer){
