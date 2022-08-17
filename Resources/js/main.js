@@ -1,6 +1,6 @@
 const BannerNames = {
     PEOPLESFAVOR : "PEOPLES FAVOR",
-    DARKESTSECRET : "DARKEST SERCRET"
+    DARKESTSECRET : "DARKEST SECRET"
 }
 
 const Currency = {
@@ -21,6 +21,16 @@ const Threat = {
     OathKeeper : "oathkeeper",
     RivalCompletedVision : "rivalcompletedVision",
     PursueVision : "pursuevision"
+}
+
+const Factions = {
+    Discord : "discord",
+    Arcane : "arcane",
+    Order : "order",
+    Hearth : "hearth",
+    Beast : "beast",
+    Nomad : "nomad",
+    None : "none"
 }
 
 const Mind = {
@@ -96,7 +106,9 @@ class Prince {
                 factionLvl_Order,
                 factionLvl_Hearth,
                 factionLvl_Beast,
-                factionLvl_Nomad) {
+                factionLvl_Nomad,
+                numActions,
+                currentActionNum) {
         this.name = name;
         this.numFavor = numFavor;
         this.numSecrets = numSecrets;
@@ -110,7 +122,9 @@ class Prince {
         this.factionLvl_Order = factionLvl_Order,
         this.factionLvl_Hearth = factionLvl_Hearth,
         this.factionLvl_Beast = factionLvl_Beast,
-        this.factionLvl_Nomad = factionLvl_Nomad
+        this.factionLvl_Nomad = factionLvl_Nomad,
+        this.numActions = numActions,
+        this.currentActionNum = currentActionNum
     }
 }
 
@@ -125,15 +139,14 @@ document.addEventListener("DOMContentLoaded", () => {
     Status.Chancellor,
     2,
     Threat.None,
-    0,0,0,0,0,0);
+    1,1,1,1,1,1,
+    0,0);
 
     document.getElementById("PrinceName").innerHTML = Prince1.name;
     document.getElementById("PrinceFavor").innerHTML = Prince1.numFavor;
 
     CurrentPrince = Prince1;
 });
-
-
 
 // function newGame(){
 //     Prince1 = new Prince("John",
@@ -195,6 +208,97 @@ function yesNoTest(){
     alert("!");
 }
 
+function princeStartTurn(){
+    assessThreat();
+}
+
+function assessThreat(){
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("assessThreatDialog")
+     );
+     messageBox.show();
+}
+
+function assessthreatYesNoClick(answer){
+    if(answer == 'Yes'){
+        const messageBox = new bootstrap.Modal(
+            document.getElementById("threatDialog")
+         );
+         messageBox.show();
+    }else{
+        searchAndPlay();
+    }
+}
+
+function threatClick(answer){
+    CurrentPrince.mindStart = answer;
+    CurrentPrince.mindCurrent = answer;
+
+    switch(answer){
+        case Mind.SUP_1:
+            CurrentPrince.currentThreat = Threat.None
+            break;
+    }
+
+    searchAndPlay();
+}
+
+function searchAndPlay(){
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("searchAndPlayDialog")
+     );
+     messageBox.show();
+}
+
+function cleanUp(){
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("messageBox")
+    );
+
+    document.getElementById("messageBoxTitle").innerHTML =
+        "Cleanup";
+    document.getElementById("messageBoxBody").innerHTML =
+        "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
+    messageBox.show();
+}
+
+function searchAndPlayClick(answer){
+    CurrentPrince.currentActionNum = 0;
+    document.getElementById("PrinceTurnNumber").innerHTML = 0;
+    switch(answer){
+        case Factions.Discord:
+            CurrentPrince.factionLvl_Discord += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Discord
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Discord;
+            break;
+        case Factions.Arcane:
+            CurrentPrince.factionLvl_Arcane += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Arcane
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Arcane;
+            break;
+        case Factions.Order:
+            CurrentPrince.factionLvl_Order += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Order
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Order;
+            break;
+        case Factions.Hearth:
+            CurrentPrince.factionLvl_Hearth += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Hearth
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Hearth;
+            break;
+        case Factions.Beast:
+            CurrentPrince.factionLvl_Beast += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Beast
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Beast;
+            break;
+        case Factions.Nomad:
+            CurrentPrince.factionLvl_Nomad += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Nomad
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Nomad;
+            break;
+    }
+}
+
 function showYesNoDialog(title, message){
     const messageBox = new bootstrap.Modal(
        document.getElementById("yesNo")
@@ -247,172 +351,179 @@ function delay() {
 
 // Below are the questions that the user is asked to help resolve the bot's turn
 function princeNextStep(){
-    switch(Prince1.mindCurrent){
-        case Mind.SUP_1:
-            questionRulesMostSite();
+    if(CurrentPrince.currentActionNum < CurrentPrince.numActions)
+    {
+        switch(Prince1.mindCurrent){
+            case Mind.SUP_1:
+                questionRulesMostSite();
+                break;
+            case Mind.SUP_1_BR:
+                //questionBattleReady();
+                questionBattleReady();
+                break;
+            case Mind.SUP_2:
+                questionCanMuster();
+                break;
+            case Mind.SUP_2_BR:
+                questionBattleReady();
             break;
-        case Mind.SUP_1_BR:
-            //questionBattleReady();
-            questionBattleReady();
+            case Mind.SUP_3:
+                questionMoveToSiteWithMost(Currency.FAVOR);
+                break;
+            case Mind.SUP_4:
+                questionTradeWithSite(Currency.FAVOR);
+                break;
+            case Mind.SUP_5:
+                questionCanMuster();
+                break;
+            case Mind.SUP_5_BR:
+                questionBattleReady();
+                break;
+            case Mind.SUP_7:
+                questionRulesMostSite();
+                break;
+            case Mind.SUP_8:
+                questionRulesMostSite();
+                break;
+            case Mind.SUP_8_BR:
+                questionBattleReady();
+                break;
+
+            case Mind.DS_1:
+                questionHoldTheBanner(BannerNames.DARKESTSECRET);
+                break;
+            case Mind.DS_1_BR:
+                questionBattleReady();
+                break;
+            case Mind.DS_1_PAY:
+                questionPayForBanner(BannerNames.DARKESTSECRET);
+                break;
+            case Mind.DS_2:
+                questionTradeWithSite(Currency.SECRETS);
+                break;
+            case Mind.DS_2_PAY:
+                questionPayForBanner(BannerNames.DARKESTSECRET);
+                break;
+            case Mind.DS_3:
+                questionMoveToSiteWithMost(Currency.SECRETS);
+                break;
+            case Mind.DS_4:
+                questionTradeWithSite(Currency.BOTH) //Currency.FAVOR + "AND" + Currency.SECRETS);
+                break;
+            case Mind.DS_4_PAY:
+                questionPayForBanner(BannerNames.DARKESTSECRET);
+                break;
+            case Mind.DS_5:
+                questionCanMuster();
+                break;
+            case Mind.DS_5_BR:
+                questionBattleReady();
             break;
-        case Mind.SUP_2:
-            questionCanMuster();
+            case Mind.DS_6:
+                questionSearch();
             break;
-        case Mind.SUP_2_BR:
-            questionBattleReady();
-        break;
-        case Mind.SUP_3:
-            questionMoveToSiteWithMost(Currency.FAVOR);
+            case Mind.DS_7:
+                questionHoldTheBanner(BannerNames.DARKESTSECRET);
             break;
-        case Mind.SUP_4:
-            questionTradeWithSite(Currency.FAVOR);
-            break;
-        case Mind.SUP_5:
-            questionCanMuster();
-            break;
-        case Mind.SUP_5_BR:
-            questionBattleReady();
-            break;
-        case Mind.SUP_7:
-            questionRulesMostSite();
-            break;
-        case Mind.SUP_8:
-            questionRulesMostSite();
-            break;
-        case Mind.SUP_8_BR:
-            questionBattleReady();
+            case Mind.DS_8:
+                // Skip to SUP_2 (Muster)
+                questionCanMuster();
             break;
 
-        case Mind.DS_1:
-            questionHoldTheBanner(BannerNames.DARKESTSECRET);
+            case Mind.PF_1:
+                questionHoldTheBanner(BannerNames.PEOPLESFAVOR);
             break;
-        case Mind.DS_1_BR:
-            questionBattleReady();
+            case Mind.PF_1_BR:
+                questionBattleReady();
             break;
-        case Mind.DS_1_PAY:
-            questionPayForBanner(BannerNames.DARKESTSECRET);
+            case Mind.PF_1_PAY:
+                questionPayForBanner(BannerNames.PEOPLESFAVOR);
             break;
-        case Mind.DS_2:
-            questionTradeWithSite(Currency.SECRETS);
+            case Mind.PF_2:
+                questionTradeWithSite(Currency.FAVOR);
             break;
-        case Mind.DS_2_PAY:
-            questionPayForBanner(BannerNames.DARKESTSECRET);
+            case Mind.PF_2_PAY:
+                questionPayForBanner(BannerNames.PEOPLESFAVOR)
             break;
-        case Mind.DS_3:
-            questionMoveToSiteWithMost(Currency.SECRETS);
+            case Mind.PF_3:
+                questionMoveToSiteWithMost(Currency.FAVOR);
             break;
-        case Mind.DS_4:
-            questionTradeWithSite(Currency.BOTH) //Currency.FAVOR + "AND" + Currency.SECRETS);
+            case Mind.PF_4:
+                questionTradeWithSite(Currency.BOTH) //Currency.FAVOR + " and " + Currency.SECRETS);
             break;
-        case Mind.DS_4_PAY:
-            questionPayForBanner(BannerNames.DARKESTSECRET);
+            case Mind.PF_4_PAY:
+                questionPayForBanner(BannerNames.PEOPLESFAVOR);
             break;
-        case Mind.DS_5:
-            questionCanMuster();
+            case Mind.PF_5:
+                questionCanMuster();
             break;
-        case Mind.DS_5_BR:
-            questionBattleReady();
-        break;
-        case Mind.DS_6:
-            questionSearch();
-        break;
-        case Mind.DS_7:
-            questionHoldTheBanner(BannerNames.DARKESTSECRET);
-        break;
-        case Mind.DS_8:
-            // Skip to SUP_2 (Muster)
-            questionCanMuster();
-        break;
+            case Mind.PF_5_BR:
+                questionBattleReady();
+            break;
+            case Mind.PF_6:
+                questionSearch();
+            break;
+            case Mind.PF_7:
+                questionMoveToSiteWithMost(Currency.FAVOR);
+            break;
+            case Mind.PF_8:
+                questionHoldTheBanner(BannerNames.PEOPLESFAVOR);
+            break;
 
-        case Mind.PF_1:
-            questionHoldTheBanner(BannerNames.PEOPLESFAVOR);
-        break;
-        case Mind.PF_1_BR:
-            questionBattleReady();
-        break;
-        case Mind.PF_1_PAY:
-            questionPayForBanner(BannerNames.PEOPLESFAVOR);
-        break;
-        case Mind.PF_2:
-            questionTradeWithSite(Currency.FAVOR);
-        break;
-        case Mind.PF_2_PAY:
-            questionPayForBanner(BannerNames.PEOPLESFAVOR)
-        break;
-        case Mind.PF_3:
-            questionMoveToSiteWithMost(Currency.FAVOR);
-        break;
-        case Mind.PF_4:
-            questionTradeWithSite(Currency.BOTH) //Currency.FAVOR + " and " + Currency.SECRETS);
-        break;
-        case Mind.PF_4_PAY:
-            questionPayForBanner(BannerNames.PEOPLESFAVOR);
-        break;
-        case Mind.PF_5:
-            questionCanMuster();
-        break;
-        case Mind.PF_5_BR:
-            questionBattleReady();
-        break;
-        case Mind.PF_6:
-            questionSearch();
-        break;
-        case Mind.PF_7:
-            questionMoveToSiteWithMost(Currency.FAVOR);
-        break;
-        case Mind.PF_8:
-            questionHoldTheBanner(BannerNames.PEOPLESFAVOR);
-        break;
-
-        case Mind.RB_1:
-            questionHoldTheBanner("most RELICS and BANNERS");
-        break;
-        case Mind.RB_1_BR:
-            questionBattleReady();
-        break;
-        case Mind.RB_2:
-            questionMoveToSiteWithMost("RELICS");
-        break;
-        case Mind.RB_2_PAY:
-            questionPayForBanner("RELIC");
-        break;
-        case Mind.RB_3:
-            questionTradeWithSite(Currency.BOTH);
-        break;
-        case Mind.RB_3_PAY:
-            questionPayForBanner("RELIC");
-        break;
-        case Mind.RB_4:
-            questionMoveToSiteWithMost(Currency.FAVOR);
-        break;
-        case Mind.RB_5:
-            questionTradeWithSite(Currency.BOTH);
-        break;
-        case Mind.RB_6:
-            questionMoveToSiteWithMost("RELICS");
-        break;
-        case Mind.RB_6_MOST:
-            questionHoldTheBanner("most RELICS and BANNERS");
-        break;
-        case Mind.RB_6_PAY:
-            questionPayForBanner("RELIC");
-        break;
-        case Mind.RB_7:
-            questionCanMuster();
-        break;
-        case Mind.RB_7_BR:
-            questionBattleReady();
-        break;
-        case Mind.RB_8:
-            questionHoldTheBanner("most RELICS and BANNERS");
-        break;
-        case Mind.RB_8_BR:
-            questionBattleReady();
-        break;
-        case Mind.RB_9:
-            questionHoldTheBanner("most RELICS and BANNERS");
-        break;
+            case Mind.RB_1:
+                questionHoldTheBanner("most RELICS and BANNERS");
+            break;
+            case Mind.RB_1_BR:
+                questionBattleReady();
+            break;
+            case Mind.RB_2:
+                questionMoveToSiteWithMost("RELICS");
+            break;
+            case Mind.RB_2_PAY:
+                questionPayForBanner("RELIC");
+            break;
+            case Mind.RB_3:
+                questionTradeWithSite(Currency.BOTH);
+            break;
+            case Mind.RB_3_PAY:
+                questionPayForBanner("RELIC");
+            break;
+            case Mind.RB_4:
+                questionMoveToSiteWithMost(Currency.FAVOR);
+            break;
+            case Mind.RB_5:
+                questionTradeWithSite(Currency.BOTH);
+            break;
+            case Mind.RB_6:
+                questionMoveToSiteWithMost("RELICS");
+            break;
+            case Mind.RB_6_MOST:
+                questionHoldTheBanner("most RELICS and BANNERS");
+            break;
+            case Mind.RB_6_PAY:
+                questionPayForBanner("RELIC");
+            break;
+            case Mind.RB_7:
+                questionCanMuster();
+            break;
+            case Mind.RB_7_BR:
+                questionBattleReady();
+            break;
+            case Mind.RB_8:
+                questionHoldTheBanner("most RELICS and BANNERS");
+            break;
+            case Mind.RB_8_BR:
+                questionBattleReady();
+            break;
+            case Mind.RB_9:
+                questionHoldTheBanner("most RELICS and BANNERS");
+            break;
+        }
+    }else{
+        cleanUp();
     }
+
+    //CurrentPrince.currentActionNum += 1;
 }
 
 function questionBattleReady(){
@@ -477,6 +588,10 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
             princeNextStep();
         }else{
             showMessageDialog(yesMessageTitle, yesMessage)
+
+            //todo factor this
+            CurrentPrince.currentActionNum += 1;
+            document.getElementById("PrinceTurnNumber").innerHTML = CurrentPrince.currentActionNum;
         }
         return;
     }else{
@@ -497,9 +612,9 @@ function OutcomeBanners(answer, noMind){
 }
 
 function sup_1_br(answer){
-    Outcome(answer, "Fight", "yo", Mind.SUP_8, false, Mind.SUP_2);
+    Outcome(answer, "Fight", fightText(), Mind.SUP_8, false, Mind.SUP_2);
     // if (answer == 'Yes') {
-    //     showMessageDialog("Fight", "Yo")
+    //     showMessageDialog("Fight", fightText())
     //     CurrentPrince.mindCurrent = Mind.SUP_8;
     //     // princeNextStep();
     //     return;
@@ -509,28 +624,48 @@ function sup_1_br(answer){
     // princeNextStep();
 }
 
+function fightText(){
+    return "Travel and fight";
+}
+
+function musterText(){
+    return "Place one favor on each empty card at your site, starting with the card closest to the site. Gain two warbands per favor placed. Do not place favor from your Ambition box.";
+}
+
+function moveText(){
+    return "Travel to the site that best meets the condition listed on your action space.";
+}
+
+function tradeText(){
+    return "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";
+}
+
+function searchText(){
+    return "Resolve the Search and Play One Card phase again. (This does not increase the number of actions you can take this turn.)";
+}
+
 function sup_2(answer){
-    Outcome(answer, "Muster", "Yo", Mind.SUP_2_BR, false, Mind.SUP_3);
+    Outcome(answer, "Muster", musterText(), Mind.SUP_2_BR, false, Mind.SUP_3);
 }
 
 function sup_2_br(answer){
-    Outcome(answer, "Fight", "Yo", Mind.SUP_8, false, Mind.SUP_3);
+    Outcome(answer, "Fight", fightText(), Mind.SUP_8, false, Mind.SUP_3);
 }
 
 function sup_3(answer){
-    Outcome(answer, "Move", "Yo", Mind.SUP_4, false, Mind.SUP_4);
+    Outcome(answer, "Move", moveText(), Mind.SUP_4, false, Mind.SUP_4);
 }
 
 function sup_4(answer){
-    Outcome(answer, "Trade", "Yo", Mind.SUP_5, false, Mind.SUP_5);
+    Outcome(answer, "Trade", tradeText(), Mind.SUP_5, false, Mind.SUP_5);
 }
 
 function sup_5(answer){
-    Outcome(answer, "Muster", "Yo", Mind.SUP_5_BR, false, Mind.SUP_3);
+    Outcome(answer, "Muster", musterText(), Mind.SUP_5_BR, false, Mind.SUP_3);
 }
 
 function sup_5_br(answer){
-    Outcome(answer, "Fight", "Yo", Mind.SUP_7, false, Mind.SUP_3);
+    Outcome(answer, "Fight", fightText(), Mind.SUP_7, false, Mind.SUP_3);
 }
 
 function sup_7(answer){
@@ -550,7 +685,7 @@ function sup_8(answer){
 }
 
 function sup_8_br(answer){
-    Outcome(answer, "Fight", "Yo", Mind.SUP_7, false, Mind.SUP_3);
+    Outcome(answer, "Fight", fightText(), Mind.SUP_7, false, Mind.SUP_3);
 }
 
 function ds_1(answer){
@@ -574,7 +709,7 @@ function ds_1_pay(answer){
 }
 
 function ds_2(answer){
-    Outcome(answer, "Trade", "Yo", Mind.DS_2_PAY, false, Mind.DS_3);
+    Outcome(answer, "Trade", tradeText(), Mind.DS_2_PAY, false, Mind.DS_3);
 }
 
 function ds_2_pay(answer){
@@ -582,11 +717,11 @@ function ds_2_pay(answer){
 }
 
 function ds_3(answer){
-    Outcome(answer, "Move", "Yo", Mind.DS_4, false, Mind.DS_4);
+    Outcome(answer, "Move", moveText(), Mind.DS_4, false, Mind.DS_4);
 }
 
 function ds_4(answer){
-    Outcome(answer, "Trade", "Yo", Mind.DS_4_PAY, false, Mind.DS_5);
+    Outcome(answer, "Trade", tradeText(), Mind.DS_4_PAY, false, Mind.DS_5);
 }
 
 function ds_4_pay(answer){
@@ -594,7 +729,7 @@ function ds_4_pay(answer){
 }
 
 function ds_5(answer){
-    Outcome(answer, "Muster", "Yo", Mind.DS_5_BR, false, Mind.DS_3);
+    Outcome(answer, "Muster", musterText(), Mind.DS_5_BR, false, Mind.DS_3);
 }
 
 function ds_5_br(answer){
@@ -602,19 +737,19 @@ function ds_5_br(answer){
 }
 
 function ds_6(answer){
-    Outcome(answer, "Search", "Yo", Mind.PF_7, false, Mind.RB_4);
+    Outcome(answer, "Search", searchText(), Mind.PF_7, false, Mind.RB_4);
 }
 
 function ds_7(answer){
-    Outcome(answer, "Search", "Yo", Mind.DS_8, false, Mind.DS_3);
+    Outcome(answer, "Search", searchText(), Mind.DS_8, false, Mind.DS_3);
 }
 
 function ds_8(answer){
-    Outcome(answer, "Muster", "Yo", Mind.SUP_2_BR, false, Mind.SUP_3);
+    Outcome(answer, "Muster", musterText(), Mind.SUP_2_BR, false, Mind.SUP_3);
 }
 
 function pf_1(answer){
-    Outcome(answer, "Search", "Yo", Mind.PF_7, false, Mind.PF_1_BR);
+    Outcome(answer, "Search", searchText(), Mind.PF_7, false, Mind.PF_1_BR);
     // if (answer == "Yes") {
     //     CurrentPrince.mindCurrent = Mind.PF_7;
     //     princeNextStep();
@@ -634,7 +769,7 @@ function pf_1_pay(answer){
 }
 
 function pf_2(answer){
-    Outcome(answer, "Trade", "Yo", Mind.PF_2_PAY, false, Mind.PF_3);
+    Outcome(answer, "Trade", tradeText(), Mind.PF_2_PAY, false, Mind.PF_3);
 }
 
 function pf_2_pay(answer){
@@ -642,7 +777,7 @@ function pf_2_pay(answer){
 }
 
 function pf_3(answer){
-    Outcome(answer, "Move", "Yo", Mind.PF_4, false, Mind.PF_4);
+    Outcome(answer, "Move", moveText(), Mind.PF_4, false, Mind.PF_4);
 }
 
 function pf_4(answer){
@@ -654,7 +789,7 @@ function pf_4_pay(answer){
 }
 
 function pf_5(answer){
-    Outcome(answer, "Muster", "Yo", Mind.PF_5_BR, false, Mind.PF_3);
+    Outcome(answer, "Muster", musterText(), Mind.PF_5_BR, false, Mind.PF_3);
 }
 
 function pf_5_br(answer){
@@ -662,11 +797,11 @@ function pf_5_br(answer){
 }
 
 function pf_6(answer){
-    Outcome(answer, "Search", "Yo", Mind.PF_7, false, Mind.RB_4);
+    Outcome(answer, "Search", searchText(), Mind.PF_7, false, Mind.RB_4);
 }
 
 function pf_7(answer){
-    Outcome(answer, "Move", "Yo", Mind.RB_5, false, Mind.RB_5);
+    Outcome(answer, "Move", moveText(), Mind.RB_5, false, Mind.RB_5);
 }
 
 function pf_8(answer){
@@ -686,11 +821,11 @@ function rb_1(answer){
 }
 
 function rb_1_br(answer){
-    Outcome(answer, "Fight", "Yo", Mind.RB_9, false, Mind.RB_2);
+    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_2);
 }
 
 function rb_2(answer){
-    Outcome(answer, "Move", "Yo", Mind.RB_2_PAY, false, Mind.RB_3);
+    Outcome(answer, "Move", moveText(), Mind.RB_2_PAY, false, Mind.RB_3);
 }
 
 function rb_2_pay(answer){
@@ -698,7 +833,7 @@ function rb_2_pay(answer){
 }
 
 function rb_3(answer){
-    Outcome(answer, "Trade", "Yo", Mind.RB_3_PAY, false, Mind.RB_4);
+    Outcome(answer, "Trade", tradeText(), Mind.RB_3_PAY, false, Mind.RB_4);
 }
 
 function rb_3_pay(answer){
@@ -706,15 +841,15 @@ function rb_3_pay(answer){
 }
 
 function rb_4(answer){
-    Outcome(answer, "Move", "Yo", Mind.RB_5, false, Mind.RB_5);
+    Outcome(answer, "Move", moveText(), Mind.RB_5, false, Mind.RB_5);
 }
 
 function rb_5(answer){
-    Outcome(answer, "Trade", "Yo", Mind.RB_6, false, Mind.RB_6);
+    Outcome(answer, "Trade", tradeText(), Mind.RB_6, false, Mind.RB_6);
 }
 
 function rb_6(answer){
-    Outcome(answer, "Move", "Yo", Mind.RB_6_MOST, false, Mind.RB_7);
+    Outcome(answer, "Move", moveText(), Mind.RB_6_MOST, false, Mind.RB_7);
 }
 
 function rb_6_most(answer){
@@ -726,15 +861,15 @@ function rb_6_pay(answer){
 }
 
 function rb_7(answer){
-    Outcome(answer, "Muster", "Yo", Mind.RB_7_BR, false, Mind.RB_4);
+    Outcome(answer, "Muster", musterText(), Mind.RB_7_BR, false, Mind.RB_4);
 }
 
 function rb_7_br(answer){
-    Outcome(answer, "Fight", "Yo", Mind.RB_9, false, Mind.RB_4);
+    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_4);
 }
 
 function rb_8(answer){
-    Outcome(answer, "Trade", "Yo", Mind.RB_8_MOST, false, Mind.RB_8_BR);
+    Outcome(answer, "Trade", tradeText(), Mind.RB_8_MOST, false, Mind.RB_8_BR);
 }
 
 function rb_8_most(answer){
@@ -742,7 +877,7 @@ function rb_8_most(answer){
 }
 
 function rb_8_br(answer){
-    Outcome(answer, "Fight", "Yo", Mind.RB_9, false, Mind.RB_5);
+    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_5);
 }
 
 function rb_9(answer){

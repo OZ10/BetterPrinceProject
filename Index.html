@@ -47,20 +47,33 @@
                   <div id="PrinceFavor">9</div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-auto">
+                  <div>Current Turn Number: </div>
+                </div>
+                <div class="col-md-auto">
+                  <div id="PrinceTurnNumber">0</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-auto">
+                  <div>Total Number of Turns: </div>
+                </div>
+                <div class="col-md-auto">
+                  <div id="PrinceTotalTurns">0</div>
+                </div>
+              </div>
             </div>
             <div>
-              <button>Next Step</button>
+              <button onclick="princeStartTurn()">Start Turn</button>
+              <button onclick="princeNextStep()">Next Step</button>
             </div>
           </div>
           <div class="col" id="PrinceColumn2">
-      
           </div>
-      
         </div>
       </div>
     </main>
-
-    
 
     <!-- Message Box -->
     <div class="modal fade" id="messageBox" tabindex="-1" aria-labelledby="MessageBox" aria-hidden="true">
@@ -126,6 +139,100 @@
             </button>
             <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('Both');" data-bs-dismiss="modal">
               Both or Neither?
+            </button>
+            <!-- <input type="text" id="answer" value=""> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assess Threat Box -->
+    <div class="modal fade" id="assessThreatDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Does a threat exist?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex">
+            <p id="assessThreatDialogMessage">1. As Chancellor, does a Citizen meet the Successor goal?
+              2. As Exile, are you not the Usurper? As Chancellor, is an Exile
+              the Usurper, or is an Exile the Oathkeeper on round eight?
+              3. Has an Exile revealed and completed a Vision?
+              4. Is an Exile the Oathkeeper?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="assessthreatYesNoClick('Yes');" data-bs-dismiss="modal">
+              Yes
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="assessthreatYesNoClick('No');" data-bs-dismiss="modal">
+              No
+            </button>
+            <!-- <input type="text" id="answer" value=""> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Threat Box -->
+    <div class="modal fade" id="threatDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Which Threat Exist?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex">
+            <p id="threatDialogMessage"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="threatClick('sup_1');" data-bs-dismiss="modal">
+              Oath of Supremacy 
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="threatClick('ds_1');" data-bs-dismiss="modal">
+              Oath of The Darkest Secret
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="threatClick('pf_1');" data-bs-dismiss="modal">
+              Oath of The People's Favor
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="threatClick('rb_1');" data-bs-dismiss="modal">
+              Oath of Relics and Banners
+            </button>
+            <!-- <input type="text" id="answer" value=""> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search And Play Box -->
+    <div class="modal fade" id="searchAndPlayDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Search And Play</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex">
+            <p id="searchAndPlayDialogMessage">Which faction did you draw?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="searchAndPlayClick('discord');" data-bs-dismiss="modal">
+              Discord
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('arcane');" data-bs-dismiss="modal">
+              Arcane
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('order');" data-bs-dismiss="modal">
+              Order
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('hearth');" data-bs-dismiss="modal">
+              Hearth
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('beast');" data-bs-dismiss="modal">
+              Beast
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('nomad');" data-bs-dismiss="modal">
+              Nomad
             </button>
             <!-- <input type="text" id="answer" value=""> -->
           </div>
