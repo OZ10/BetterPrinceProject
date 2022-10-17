@@ -32,21 +32,29 @@
     </header>
 
     <div class="container-fluid">Main sections
-      <div class="row">
+      <div class="row" id="Princes">
         <div class="col" id="PrinceColumn1">
-          <div class="row" id="Prince1">
+          <div class="row" id="PrinceRow1">
             <div class="col-md-auto">
               <div>Prince Name: </div>
             </div>
             <div class="col-md-auto">
-              <div id="PrinceName">John</div>
+              <div id="PrinceName1">John</div>
+            </div>
+            <div class="row">
+              <div class="col-md-auto">
+                <div>Status: </div>
+              </div>
+              <div class="col-md-auto">
+                <div id="PrinceStatus1"></div>
+              </div>
             </div>
             <div class="row">
               <div class="col-md-auto">
                 <div>Favor: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceFavor">9</div>
+                <div id="PrinceFavor1">9</div>
               </div>
             </div>
             <div class="row">
@@ -54,7 +62,7 @@
                 <div>Secret: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceFavor">9</div>
+                <div id="PrinceSecret1">9</div>
               </div>
             </div>
             <div class="row">
@@ -62,7 +70,7 @@
                 <div>Current Turn Number: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceTurnNumber">0</div>
+                <div id="PrinceTurnNumber1">0</div>
               </div>
             </div>
             <div class="row">
@@ -70,7 +78,7 @@
                 <div>Total Number of Turns: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceTotalTurns">0</div>
+                <div id="PrinceTotalTurns1">0</div>
               </div>
             </div>
 
@@ -79,7 +87,7 @@
                 <div>Arcane Level: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceArcaneLevel">0</div>
+                <div id="PrinceArcaneLevel1">0</div>
               </div>
             </div>
             <div class="row">
@@ -87,7 +95,7 @@
                 <div>Beast Level: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceBeastLevel">0</div>
+                <div id="PrinceBeastLevel1">0</div>
               </div>
             </div>
             <div class="row">
@@ -95,7 +103,7 @@
                 <div>Discord Level: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceDiscordLevel">0</div>
+                <div id="PrinceDiscordLevel1">0</div>
               </div>
             </div>
             <div class="row">
@@ -103,7 +111,7 @@
                 <div>Hearth Level: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceHearthLevel">0</div>
+                <div id="PrinceHearthLevel1">0</div>
               </div>
             </div>
             <div class="row">
@@ -111,7 +119,7 @@
                 <div>Nomad Level: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceNomadLevel">0</div>
+                <div id="PrinceNomadLevel1">0</div>
               </div>
             </div>
             <div class="row">
@@ -119,13 +127,13 @@
                 <div>Order Level: </div>
               </div>
               <div class="col-md-auto">
-                <div id="PrinceOrderLevel">0</div>
+                <div id="PrinceOrderLevel1">0</div>
               </div>
             </div>
           </div>
           <div>
-            <button onclick="princeStartTurn()">Start Turn</button>
-            <button onclick="princeNextStep()">Next Step</button>
+            <button id="PrinceStartTurn1" onclick="princeStartTurn()">Start Turn</button>
+            <button id="PrinceNextStep1" onclick="princeNextStep()">Next Step</button>
           </div>
         </div>
         <div class="col" id="PrinceColumn2">

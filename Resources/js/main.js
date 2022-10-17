@@ -129,24 +129,31 @@ class Prince {
 }
 
 let Prince1;
+let Prince2;
 let CurrentPrince;
 document.addEventListener("DOMContentLoaded", () => {
-    Prince1 = new Prince("Sam",
+    Prince1 = createNewPrince("Sam", Status.Chancellor);
+
+    document.getElementById("PrinceName1").innerHTML = Prince1.name;
+    document.getElementById("PrinceFavor1").innerHTML = Prince1.numFavor;
+    document.getElementById("PrinceStatus1").innerHTML = Prince1.status;
+
+    CurrentPrince = Prince1;
+});
+
+function createNewPrince(name, status)
+{
+    return new Prince(name,
     2,
     1,
     Mind.SUP_1,
     Mind.SUP_1,
-    Status.Chancellor,
+    status,
     2,
     Threat.None,
     1,1,1,1,1,1,
     0,0);
-
-    document.getElementById("PrinceName").innerHTML = Prince1.name;
-    document.getElementById("PrinceFavor").innerHTML = Prince1.numFavor;
-
-    CurrentPrince = Prince1;
-});
+}
 
 // function newGame(){
 //     Prince1 = new Prince("John",
@@ -194,11 +201,27 @@ function getRoundNumber(){
 // }
 
 function AddNewPrince(){
-    let princeTemplate = document.getElementById("Prince1");
-    let princeColumn2 = document.getElementById("PrinceColumn2");
-    princeColumn2.innerHTML = princeTemplate.innerHTML;
+    //let princeTemplate = document.getElementById("Prince1");
+    //let princeColumn2 = document.getElementById("PrinceColumn2");
+    //princeColumn2.innerHTML = princeTemplate.innerHTML;
 
-    // alert(princeColumn2.getElementById("PrinceName").innerHTML);
+    let cloneNode = document.getElementById("PrinceColumn1").cloneNode(true);
+    cloneNode.Id = "PrinceColumn2";
+    let nameNode = getElementById(cloneNode, "PrinceName1");
+
+    Prince2 = createNewPrince("John", Status.Citizen);
+
+    nameNode.Id = "PrinceName2";
+    nameNode.innerHTML = Prince2.name;
+
+    //cloneNode.classlist.add("col");
+    document.getElementById("Princes").appendChild(cloneNode);
+
+    //alert(princeColumn2.getElementById("PrinceName").innerHTML);
+}
+
+function getElementById(node, id) {    
+    return node.querySelector("#" + id);
 }
 
 function messageTest(){
@@ -272,43 +295,43 @@ function cleanUp(){
 
 function searchAndPlayClick(selectedFaction){
     CurrentPrince.currentActionNum = 0;
-    document.getElementById("PrinceTurnNumber").innerHTML = 0;
+    document.getElementById("PrinceTurnNumber1").innerHTML = 0;
     switch(selectedFaction){
         case Factions.Arcane:
             CurrentPrince.factionLvl_Arcane += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Arcane
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Arcane;
-            document.getElementById("PrinceArcaneLevel").innerHTML = CurrentPrince.factionLvl_Arcane;
+            document.getElementById("PrinceTotalTurns1").innerHTML = CurrentPrince.factionLvl_Arcane;
+            document.getElementById("PrinceArcaneLevel1").innerHTML = CurrentPrince.factionLvl_Arcane;
             break;
         case Factions.Beast:
             CurrentPrince.factionLvl_Beast += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Beast
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Beast;
-            document.getElementById("PrinceBeastLevel").innerHTML = CurrentPrince.factionLvl_Beast;
+            document.getElementById("PrinceTotalTurns1").innerHTML = CurrentPrince.factionLvl_Beast;
+            document.getElementById("PrinceBeastLevel1").innerHTML = CurrentPrince.factionLvl_Beast;
             break;
         case Factions.Discord:
             CurrentPrince.factionLvl_Discord += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Discord
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Discord;
-            document.getElementById("PrinceDiscordLevel").innerHTML = CurrentPrince.factionLvl_Discord;
+            document.getElementById("PrinceTotalTurns1").innerHTML = CurrentPrince.factionLvl_Discord;
+            document.getElementById("PrinceDiscordLevel1").innerHTML = CurrentPrince.factionLvl_Discord;
             break;
         case Factions.Hearth:
             CurrentPrince.factionLvl_Hearth += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Hearth
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Hearth;
-            document.getElementById("PrinceHearthLevel").innerHTML = CurrentPrince.factionLvl_Hearth;
+            document.getElementById("PrinceTotalTurns1").innerHTML = CurrentPrince.factionLvl_Hearth;
+            document.getElementById("PrinceHearthLevel1").innerHTML = CurrentPrince.factionLvl_Hearth;
             break;
         case Factions.Nomad:
             CurrentPrince.factionLvl_Nomad += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Nomad
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Nomad;
-            document.getElementById("PrinceNomadLevel").innerHTML = CurrentPrince.factionLvl_Nomad;
+            document.getElementById("PrinceTotalTurns1").innerHTML = CurrentPrince.factionLvl_Nomad;
+            document.getElementById("PrinceNomadLevel1").innerHTML = CurrentPrince.factionLvl_Nomad;
             break;
         case Factions.Order:
             CurrentPrince.factionLvl_Order += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Order
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Order;
-            document.getElementById("PrinceOrderLevel").innerHTML = CurrentPrince.factionLvl_Order;
+            document.getElementById("PrinceTotalTurns1").innerHTML = CurrentPrince.factionLvl_Order;
+            document.getElementById("PrinceOrderLevel1").innerHTML = CurrentPrince.factionLvl_Order;
             break;
     }
 }
@@ -605,7 +628,7 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
 
             //todo factor this
             CurrentPrince.currentActionNum += 1;
-            document.getElementById("PrinceTurnNumber").innerHTML = CurrentPrince.currentActionNum;
+            document.getElementById("PrinceTurnNumber1").innerHTML = CurrentPrince.currentActionNum;
         }
         return;
     }else{
