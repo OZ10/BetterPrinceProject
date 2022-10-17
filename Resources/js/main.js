@@ -201,11 +201,19 @@ function AddNewPrince(){
     // alert(princeColumn2.getElementById("PrinceName").innerHTML);
 }
 
-function yesNoTest(){
+function messageTest(){
     //const model = new Promise(showYesNoDialog("Do I.....?", "Rule the most sites?")); //.then(yes, no));
-    showYesNoDialog("Do I.....?", "Rule the most sites?");
+    //showYesNoDialog("Do I.....?", "Rule the most sites?");
     //let c = confirm("D'oh!");
-    alert("!");
+    //alert("!");
+
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("numberInputBox")
+     );
+
+     const num = document.getElementById("currentNumber");
+     num.value = Prince1.numFavor;
+     messageBox.show();
 }
 
 function princeStartTurn(){
@@ -262,39 +270,45 @@ function cleanUp(){
     messageBox.show();
 }
 
-function searchAndPlayClick(answer){
+function searchAndPlayClick(selectedFaction){
     CurrentPrince.currentActionNum = 0;
     document.getElementById("PrinceTurnNumber").innerHTML = 0;
-    switch(answer){
-        case Factions.Discord:
-            CurrentPrince.factionLvl_Discord += 1
-            CurrentPrince.numActions = CurrentPrince.factionLvl_Discord
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Discord;
-            break;
+    switch(selectedFaction){
         case Factions.Arcane:
             CurrentPrince.factionLvl_Arcane += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Arcane
             document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Arcane;
-            break;
-        case Factions.Order:
-            CurrentPrince.factionLvl_Order += 1
-            CurrentPrince.numActions = CurrentPrince.factionLvl_Order
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Order;
-            break;
-        case Factions.Hearth:
-            CurrentPrince.factionLvl_Hearth += 1
-            CurrentPrince.numActions = CurrentPrince.factionLvl_Hearth
-            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Hearth;
+            document.getElementById("PrinceArcaneLevel").innerHTML = CurrentPrince.factionLvl_Arcane;
             break;
         case Factions.Beast:
             CurrentPrince.factionLvl_Beast += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Beast
             document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Beast;
+            document.getElementById("PrinceBeastLevel").innerHTML = CurrentPrince.factionLvl_Beast;
+            break;
+        case Factions.Discord:
+            CurrentPrince.factionLvl_Discord += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Discord
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Discord;
+            document.getElementById("PrinceDiscordLevel").innerHTML = CurrentPrince.factionLvl_Discord;
+            break;
+        case Factions.Hearth:
+            CurrentPrince.factionLvl_Hearth += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Hearth
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Hearth;
+            document.getElementById("PrinceHearthLevel").innerHTML = CurrentPrince.factionLvl_Hearth;
             break;
         case Factions.Nomad:
             CurrentPrince.factionLvl_Nomad += 1
             CurrentPrince.numActions = CurrentPrince.factionLvl_Nomad
             document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Nomad;
+            document.getElementById("PrinceNomadLevel").innerHTML = CurrentPrince.factionLvl_Nomad;
+            break;
+        case Factions.Order:
+            CurrentPrince.factionLvl_Order += 1
+            CurrentPrince.numActions = CurrentPrince.factionLvl_Order
+            document.getElementById("PrinceTotalTurns").innerHTML = CurrentPrince.factionLvl_Order;
+            document.getElementById("PrinceOrderLevel").innerHTML = CurrentPrince.factionLvl_Order;
             break;
     }
 }
