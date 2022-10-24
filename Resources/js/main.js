@@ -140,7 +140,7 @@ class Prince {
 let Prince1;
 let Prince2;
 let CurrentPrince;
-let Princes = new Array(4);
+let Princes = new Array(1);
 
 document.addEventListener("DOMContentLoaded", () => {
     Prince1 = createNewPrince(getNextPrinceName(1), Status.Chancellor, 1);
@@ -216,11 +216,19 @@ function addNewPrince() {
     changeNodeIdAndValue(cloneNode, "PrinceTurnNumber1", "PrinceTurnNumber" + nextPrinceNumber, newPrince.numActions);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns1", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
     changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel1", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.factionLvl_Arcane);
-    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel1", "PrinceBeast" + nextPrinceNumber, newPrince.factionLvl_Beast);
-    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel1", "PrinceDiscord" + nextPrinceNumber, newPrince.factionLvl_Discord);
-    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel1", "PrinceHearth" + nextPrinceNumber, newPrince.factionLvl_Hearth);
-    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel1", "PrinceNomad" + nextPrinceNumber, newPrince.factionLvl_Nomad);
-    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel1", "PrinceOrder" + nextPrinceNumber, newPrince.factionLvl_Order);
+    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel1", "PrinceBeastLevel" + nextPrinceNumber, newPrince.factionLvl_Beast);
+    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel1", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.factionLvl_Discord);
+    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel1", "PrinceHearthLevel" + nextPrinceNumber, newPrince.factionLvl_Hearth);
+    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel1", "PrinceNomadLevel" + nextPrinceNumber, newPrince.factionLvl_Nomad);
+    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel1", "PrinceOrderLevel" + nextPrinceNumber, newPrince.factionLvl_Order);
+
+    // buttons
+    changeNodeIdAndValue(cloneNode, "PrinceStartTurn1", "PrinceStartTurn" + nextPrinceNumber, "Start Turn");
+    changeNodeIdAndValue(cloneNode, "PrinceNextStep1", "PrinceNextStep" + nextPrinceNumber, "Next Step");
+    let button = getElementById(cloneNode, "PrinceStartTurn" + nextPrinceNumber)
+    button.disabled = true;
+    button = getElementById(cloneNode, "PrinceNextStep" + nextPrinceNumber)
+    button.disabled = true;
 
     document.getElementById("Princes").appendChild(cloneNode);
 
@@ -240,20 +248,17 @@ function getNextPrinceNumber() {
     return nextNumber += 1;
 }
 
-// function getNextAvailablePrince() {
-//     let princeNum = (CurrentPrince.princeNumber += 1 = Princes.length) ? 0 : CurrentPrince.princeNumber;
+function getNextAvailablePrince() {
 
-//     for (let count = princeNum = +1; count < Princes.length; count++) {
-//         const prince = Princes[count];
-//         if (prince = null) {
-//             // prince not set
-//             if (prince.princeNumber += 1 = Princes.length) { count = 0 }
-//         }
-//         else if (prince.princeNumber != princeNum) {
-//             return prince;
-//         }
-//     }
-// }
+    let startNum = (CurrentPrince.princeNumber == Princes.length) ? 0 : CurrentPrince.princeNumber;
+
+    for (let count = startNum; count < Princes.length; count++) {
+        const prince = Princes[count];
+        if (prince.princeNumber != startNum) {
+            return prince;
+        } else if (count == Princes.length - 1) { count = 0 }
+    }
+}
 
 function getElementById(node, id) {
     return node.querySelector("#" + id);
@@ -274,10 +279,14 @@ function princeStartTurn() {
 }
 
 function assessThreat() {
-    const messageBox = new bootstrap.Modal(
-        document.getElementById("assessThreatDialog")
-    );
-    messageBox.show();
+    if (CurrentPrince.status == Status.Chancellor) {
+        const messageBox = new bootstrap.Modal(
+            document.getElementById("assessThreatDialog")
+        );
+        messageBox.show();
+    } else {
+        searchAndPlay();
+    }
 }
 
 function assessthreatYesNoClick(answer) {
@@ -322,7 +331,17 @@ function cleanUp() {
         "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
     messageBox.show();
 
-    CurrentPrince = Princes[CurrentPrince.princeNumber += 1];
+    CurrentPrince = getNextAvailablePrince();
+    enableDisableTurnButtons();
+}
+
+function enableDisableTurnButtons() {
+    // Enabled or disable turns buttons based on the current prince
+    let buttons = document.querySelectorAll("[id^='PrinceStartTurn'], [id^='PrinceNextStep']");
+    buttons.forEach(
+        function (b) {
+            b.disabled = (b.id.slice(-1) != CurrentPrince.princeNumber) ? true : false;
+        })
 }
 
 function searchAndPlayClick(selectedFaction) {
@@ -659,7 +678,7 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
 
             //todo factor this
             CurrentPrince.currentActionNum += 1;
-            document.getElementById("PrinceTurnNumber1").innerHTML = CurrentPrince.currentActionNum;
+            document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.currentActionNum;
         }
         return;
     } else {
