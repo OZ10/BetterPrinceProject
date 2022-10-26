@@ -19,7 +19,7 @@
       <div class="d-flex justify-content-between mainheader">Better Prince Project
         <div>
           <button onclick="addNewPrince()">Add Prince</button>
-          <button onclick="messageTest()">Click!</button>
+          <button onclick="test()">Click!</button>
           <button type="button" class="btn btn-primary" onclick="changeRound()">
             <span class="icon-medium" id="roundnumber" data-bs-toggle="tooltip" title="Round" data-bs-placement="bottom"
               data-bs-target="#roundtracker">
@@ -155,10 +155,40 @@
             </div>
           </div>
 
+          <div class="accordion" id="steps_Prince1">
+
+          </div>
+
         </div>
       </div>
     </div>
   </main>
+
+  <div class="accordion-item d-none" id="step_YesNo">
+    <h2 class="accordion-header">
+      <button class="accordion-button" id="accord_btn_Prince1_step1" data-bs-toggle="collapse" data-bs-target="#accord_Prince1_step1">
+        Step 1
+      </button>
+    </h2>
+
+    <div class="accordion-collapse collapse" id="accord_Prince1_step1">
+      <div class="accordion-body">
+        <p id="accord_title_Prince1_step1">
+          Title
+        </p>
+        <p id="accord_body_Prince1_step1">
+          Body
+        </p>
+        <button class="btn btn-primary" onclick="yesNoClick('Yes');">
+          Yes
+        </button>
+        <button class="btn btn-secondary" onclick="yesNoClick('No');">
+          No
+        </button>
+
+      </div>
+    </div>
+  </div>
 
   <!-- Message Box -->
   <div class="modal fade" id="messageBox" tabindex="-1" aria-labelledby="MessageBox" aria-hidden="true">

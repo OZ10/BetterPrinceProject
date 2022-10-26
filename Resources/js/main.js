@@ -39,6 +39,19 @@ const Factions = {
     None: "none"
 }
 
+const ActionNames = {
+    Trade: "TRADE",
+    Muster: "MUSTER",
+    Move: "MOVE",
+    MoveFight: "MOVE & FIGHT",
+    BattleReady: "BATTLE READY",
+    Search: "SEARCH",
+    PayFor: "PAY FOR ",
+    Hold: "HOLD THE ",
+    Rule: "RULE",
+    PayForRelsBanners: "PAY FOR RELICS AND BANNERS"
+}
+
 class Faction {
     constructor(factionName,
         factionLevel,
@@ -153,6 +166,20 @@ class Prince {
             this.currentActionNum = currentActionNum,
             this.princeNumber = princeNumber,
             this.currentFaction = currentFaction;
+            this.factions = new Array(0);
+            this.factions.push(this.faction_Arcane, this.faction_Beast, this.faction_Discord, this.faction_Hearth, this.faction_Nomad, this.faction_Order);
+    }
+
+    factions;
+
+    getFactionAlignmentList(alignment){
+        let list = "";
+        this.factions.forEach(function(faction){
+            if(faction.alignment == alignment){
+                list += faction.name + "(" + faction.level + ") ";
+            }
+        })
+        return list.toUpperCase();
     }
 }
 
@@ -254,6 +281,9 @@ function addNewPrince() {
     button = getElementById(cloneNode, "PrinceNextStep" + nextPrinceNumber)
     button.disabled = true;
 
+    // steps
+    changeNodeIdAndValue(cloneNode, "steps_Prince1", "steps_Prince" + nextPrinceNumber, "");
+
     document.getElementById("Princes").appendChild(cloneNode);
 
     //alert(princeColumn2.getElementById("PrinceName").innerHTML);
@@ -295,8 +325,13 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
     newNode.innerHTML = newValue;
 }
 
-function messageTest() {
-    let prince = getNextAvailablePrince();
+function test() {
+    let cloneNode = document.getElementById("step_YesNo").cloneNode(true);
+    cloneNode.classList.remove("d-none");
+    getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = "Can I.....";
+    getElementById(cloneNode, "accord_body_Prince1_step1").textContent = "Muster?";
+    
+    document.getElementById("accord_Prince1").appendChild(cloneNode);
 }
 
 function princeStartTurn() {
@@ -428,7 +463,7 @@ function searchAndPlayClick(selectedFaction) {
 
 function alignFaction(faction){
     if(faction.alignment == Alignments.None){
-        if (CurrentPrince.mindCurrent.slice(2) == "SU" || CurrentPrince.mindCurrent.slice(2) == "PF"){
+        if (CurrentPrince.mindCurrent.slice(0,2) == "su" || CurrentPrince.mindCurrent.slice(0,2) == "pf"){
             faction.alignment = Alignments.Friend;
         }else{
             faction.alignment = Alignments.Conspirator;
@@ -436,16 +471,47 @@ function alignFaction(faction){
     }
 }
 
-function showYesNoDialog(title, message) {
-    const messageBox = new bootstrap.Modal(
-        document.getElementById("yesNo")
-    );
+function showYesNoDialog(title, message, actionName) {
+    // const messageBox = new bootstrap.Modal(
+    //     document.getElementById("yesNo")
+    // );
 
-    document.getElementById("yesNoTitle").innerHTML =
-        title;
-    document.getElementById("yesNoMessage").innerHTML =
-        message;
-    messageBox.show();
+    // document.getElementById("yesNoTitle").innerHTML =
+    //     title;
+    // document.getElementById("yesNoMessage").innerHTML =
+    //     message;
+    // messageBox.show();
+
+    let cloneNode = document.getElementById("step_YesNo").cloneNode(true);
+    cloneNode.classList.remove("d-none");
+
+    let nodeNameBtn = "accord_btn_Prince1_step1";
+    nodeNameBtn = nodeNameBtn.replace("1", CurrentPrince.princeNumber);
+
+    changeNodeIdAndValue(cloneNode, "accord_btn_Prince1_step1", nodeNameBtn, actionName);
+
+    // let nodeName = "accord_Prince1_step1";
+    // nodeName = nodeName.replace("1", CurrentPrince.princeNumber);
+
+    // changeNodeIdAndValue(cloneNode, "accord_Prince1_step1", nodeName, "1");
+    // getElementById(cloneNode, nodeName).classList.remove("collapse");
+
+    // getElementById(cloneNode, nodeNameBtn).dataset.target = "#" + nodeName;
+
+    nodeName = "accord_title_Prince1_step1";
+    nodeName = nodeName.replace("1", CurrentPrince.princeNumber);
+
+    changeNodeIdAndValue(cloneNode, "accord_title_Prince1_step1", nodeName, title);
+
+    nodeName = "accord_body_Prince1_step1";
+    nodeName = nodeName.replace("1", CurrentPrince.princeNumber);
+
+    changeNodeIdAndValue(cloneNode, "accord_body_Prince1_step1", nodeName, message);
+
+    //getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = title;
+    //getElementById(cloneNode, "accord_body_Prince1_step1").textContent = message;
+    
+    document.getElementById("steps_Prince" + CurrentPrince.princeNumber).appendChild(cloneNode);
 }
 
 function showMessageDialog(title, message) {
@@ -663,35 +729,35 @@ function princeNextStep() {
 }
 
 function questionBattleReady() {
-    showYesNoDialog("Am I...", "Battle ready?");
+    showYesNoDialog("Am I...", "Battle ready?", ActionNames.BattleReady);
 }
 
 function questionRulesMostSite() {
-    showYesNoDialog("Do I...", "Rules the most sites?");
+    showYesNoDialog("Do I...", "Rules the most sites?", ActionNames.Rule);
 }
 
 function questionCanMuster() {
-    showYesNoDialog("Can I...", "Muster on at least one card at my site?");
+    showYesNoDialog("Can I...", "Muster on at least one card at my site?", ActionNames.Muster);
 }
 
 function questionMoveToSiteWithMost(currency) {
-    showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?");
+    showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?", ActionNames.Move);
 }
 
 function questionTradeWithSite(currency) {
-    showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?");
+    showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?", ActionNames.Trade);
 }
 
 function questionPayForBanner(bannerName) {
-    showYesNoDialog("Can I...", "Pay for the " + bannerName + "?");
+    showYesNoDialog("Can I...", "Pay for the " + bannerName + "?", ActionNames.PayFor + bannerName);
 }
 
 function questionHoldTheBanner(bannerName) {
-    showYesNoDialog("Do I...", "Hold the " + bannerName + "?");
+    showYesNoDialog("Do I...", "Hold the " + bannerName + "?", ActionNames.Hold + bannerName);
 }
 
 function questionSearch() {
-    showYesNoDialog("Can I...", "Search the Main Deck?");
+    showYesNoDialog("Can I...", "Search the Main Deck?", ActionNames.Search);
 }
 
 // Below are the responses to the questions
@@ -760,6 +826,32 @@ function sup_1_br(answer) {
     // princeNextStep();
 }
 
+function tradeFor(){
+    let friends = new Array(0);
+    let conspirators = new Array(0);
+
+    
+
+    switch (CurrentPrince.mindCurrent){
+        case Mind.SUP_4:
+        case Mind.PF_2:
+            //Currency.FAVOR;
+            //return "Gain FAVOR from each empty card at your site whose suit matches any Friend, gaining the amount of FAVOR in the Relationships box for that card’s suit";
+            return "Gain FAVOR from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the backets ()";
+        case Mind.DS_2:
+            //Currency.SECRETS;
+            return "Gain SECRETS from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the backets ()";
+        case Mind.DS_4:
+        case Mind.PF_4:
+        case Mind.RB_3:
+        case Mind.RB_5:
+            //Currency.BOTH;
+            return "Gain FAVOR from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the backets ()" + 
+            "Gain SECRETS from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the backets ()";
+            //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
+    }
+}
+
 function fightText() {
     return "Travel and fight";
 }
@@ -776,7 +868,7 @@ function tradeText() {
     // if(CurrentPrince.currentFaction.alignment == Alignments.Friend){
     //     return "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";    
     // }
-    return "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";
+    return tradeFor() // "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";
 }
 
 function searchText() {
