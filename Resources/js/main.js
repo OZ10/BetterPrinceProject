@@ -55,12 +55,11 @@ const ActionNames = {
 class Faction {
     constructor(factionName,
         factionLevel,
-        factionAlignment)
-        {
-            this.name = factionName;
-            this.level = factionLevel;
-            this.alignment = factionAlignment;
-        }
+        factionAlignment) {
+        this.name = factionName;
+        this.level = factionLevel;
+        this.alignment = factionAlignment;
+    }
 }
 
 const PrinceNames = {
@@ -166,16 +165,18 @@ class Prince {
             this.currentActionNum = currentActionNum,
             this.princeNumber = princeNumber,
             this.currentFaction = currentFaction;
-            this.factions = new Array(0);
-            this.factions.push(this.faction_Arcane, this.faction_Beast, this.faction_Discord, this.faction_Hearth, this.faction_Nomad, this.faction_Order);
+        this.factions = new Array(0);
+        this.factions.push(this.faction_Arcane, this.faction_Beast, this.faction_Discord, this.faction_Hearth, this.faction_Nomad, this.faction_Order);
+        this.stepCount = 1;
     }
 
+    stepCount;
     factions;
 
-    getFactionAlignmentList(alignment){
+    getFactionAlignmentList(alignment) {
         let list = "";
-        this.factions.forEach(function(faction){
-            if(faction.alignment == alignment){
+        this.factions.forEach(function (faction) {
+            if (faction.alignment == alignment) {
                 list += faction.name + "(" + faction.level + ") ";
             }
         })
@@ -303,7 +304,7 @@ function getNextPrinceNumber() {
 }
 
 function getNextAvailablePrince() {
-    if (Princes.length == 2) { return CurrentPrince};
+    if (Princes.length == 2) { return CurrentPrince };
 
     let startNum = (CurrentPrince.princeNumber == Princes.length) ? 0 : CurrentPrince.princeNumber;
 
@@ -335,7 +336,7 @@ function test() {
     cloneNode.classList.remove("d-none");
     getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = "Can I.....";
     getElementById(cloneNode, "accord_body_Prince1_step1").textContent = "Muster?";
-    
+
     document.getElementById("accord_Prince1").appendChild(cloneNode);
 }
 
@@ -384,7 +385,7 @@ function searchAndPlay() {
     );
     messageBox.show();
 
-    stepNumber = CurrentPrince.currentActionNum;
+    //CurrentPrince.stepCount = CurrentPrince.currentActionNum;
 }
 
 function cleanUp() {
@@ -397,6 +398,37 @@ function cleanUp() {
     document.getElementById("messageBoxBody").innerHTML =
         "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
     messageBox.show();
+
+    // Whole Step node
+    // let newStepNode = document.getElementById("step_Ok").cloneNode(true);
+    // newStepNode.id = "step_Ok" + CurrentPrince.stepCount;
+    // // Unhide the step
+    // newStepNode.classList.remove("d-none");
+
+    // // Step button node
+    // let stepBtnName = getStepNodeId("step_Ok_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
+
+    // changeNodeIdAndValue(newStepNode, "step_Ok_accord_btn_Prince1_step1", stepBtnName, "CLEANUP");
+
+    // // Step Detail node
+    // let stepName = getStepNodeId("step_Ok_accord_Prince1_step1");
+    // changeNodeId(newStepNode, "step_Ok_accord_Prince1_step1", stepName);
+
+    // // Change button target
+    // getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
+
+    // // Title Step node
+    // // let stepTitleName = getStepNodeId("step_Ok_accord_title_Prince1_step1");
+    // // changeNodeIdAndValue(newStepNode, "step_Ok_accord_title_Prince1_step1", stepTitleName, title);
+
+    // // Body Step node
+    // let stepBodyName = "step_Ok_accord_body_Prince1_step1";
+    // changeNodeIdAndValue(newStepNode, "step_Ok_accord_body_Prince1_step1", stepBodyName, "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.");
+
+    // // Add new step
+    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
+    princeSteps.innerHTML = "";
+    // princeSteps.appendChild(newStepNode);
 
     CurrentPrince = getNextAvailablePrince();
     enableDisableTurnButtons();
@@ -414,8 +446,8 @@ function enableDisableTurnButtons() {
 
 function searchAndPlayClick(selectedFaction) {
     // todo refactor this
-    CurrentPrince.currentActionNum = 0;
-    document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = 0;
+    CurrentPrince.currentActionNum = 1;
+    document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = 1;
     switch (selectedFaction) {
         case Factions.Arcane:
             CurrentPrince.faction_Arcane.level += 1
@@ -466,19 +498,19 @@ function searchAndPlayClick(selectedFaction) {
             CurrentPrince.currentFaction = CurrentPrince.faction_Order;
             break;
     }
+
+    princeNextStep();
 }
 
-function alignFaction(faction){
-    if(faction.alignment == Alignments.None){
-        if (CurrentPrince.mindCurrent.slice(0,2) == "su" || CurrentPrince.mindCurrent.slice(0,2) == "pf"){
+function alignFaction(faction) {
+    if (faction.alignment == Alignments.None) {
+        if (CurrentPrince.mindCurrent.slice(0, 2) == "su" || CurrentPrince.mindCurrent.slice(0, 2) == "pf") {
             faction.alignment = Alignments.Friend;
-        }else{
+        } else {
             faction.alignment = Alignments.Conspirator;
         }
     }
 }
-
-let stepNumber;
 
 function showYesNoDialog(title, message, actionName) {
     // const messageBox = new bootstrap.Modal(
@@ -491,76 +523,125 @@ function showYesNoDialog(title, message, actionName) {
     //     message;
     // messageBox.show();
 
-    //let stepNumber = CurrentPrince.currentActionNum;
+    //let CurrentPrince.stepCount = CurrentPrince.currentActionNum;
 
     // Whole Step node
-    let cloneNode = document.getElementById("step_YesNo").cloneNode(true);
-    cloneNode.id = "step_YesNo" + stepNumber;
-    //changeNodeId(cloneNode, "step_YesNo", "step_YesNo" + stepNumber);
-    cloneNode.classList.remove("d-none");
+    let newStepNode = document.getElementById("step_YesNo").cloneNode(true);
+    newStepNode.id = "step_YesNo" + CurrentPrince.stepCount;
+    // Unhide the step
+    newStepNode.classList.remove("d-none");
 
     // Step button node
-    let nodeNameBtn = "accord_btn_Prince1_step1";
-    nodeNameBtn = nodeNameBtn.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    nodeNameBtn = nodeNameBtn.replace("step1", "step" + stepNumber);
+    let stepBtnName = getStepNodeId("step_YesNo_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
+    //nodeNameBtn = nodeNameBtn.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    //nodeNameBtn = nodeNameBtn.replace("step1", "step" + CurrentPrince.stepCount);
 
-    changeNodeIdAndValue(cloneNode, "accord_btn_Prince1_step1", nodeNameBtn, actionName);
+    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_btn_Prince1_step1", stepBtnName, actionName);
 
     // Step Detail node
-    let nodeName = "accord_Prince1_step1";
-    nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    nodeName = nodeName.replace("step1", "step" + stepNumber);
+    let stepName = getStepNodeId("step_YesNo_accord_Prince1_step1");
+    // nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    // nodeName = nodeName.replace("step1", "step" + CurrentPrince.stepCount);
 
-    let tempPrinceStepName = nodeName;
-
-    changeNodeId(cloneNode, "accord_Prince1_step1", nodeName);
+    changeNodeId(newStepNode, "step_YesNo_accord_Prince1_step1", stepName);
     //getElementById(cloneNode, nodeName).classList.remove("collapse");
 
     // Change button target
-    getElementById(cloneNode, nodeNameBtn).dataset.bsTarget = "#" + nodeName;
+    getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
 
     // Title Step node
-    nodeName = "accord_title_Prince1_step1";
-    nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    nodeName = nodeName.replace("step1", "step" + stepNumber);
+    let stepTitleName = getStepNodeId("step_YesNo_accord_title_Prince1_step1");
+    // nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    // nodeName = nodeName.replace("step1", "step" + CurrentPrince.stepCount);
 
-    changeNodeIdAndValue(cloneNode, "accord_title_Prince1_step1", nodeName, title);
+    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_title_Prince1_step1", stepTitleName, title);
 
     // Body Step node
-    nodeName = "accord_body_Prince1_step1";
-    nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    nodeName = nodeName.replace("step1", "step" + stepNumber);
+    let stepBodyName = "step_YesNo_accord_body_Prince1_step1";
+    // nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    // nodeName = nodeName.replace("step1", "step" + CurrentPrince.stepCount);
 
-    changeNodeIdAndValue(cloneNode, "accord_body_Prince1_step1", nodeName, message);
+    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_body_Prince1_step1", stepBodyName, message);
 
     //getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = title;
     //getElementById(cloneNode, "accord_body_Prince1_step1").textContent = message;
-    
-    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
-    princeSteps.appendChild(cloneNode);
 
-    let allSteps = princeSteps.querySelectorAll("[id^='accord_Prince1_step']");
-    allSteps.forEach(function (step){
-        if(tempPrinceStepName == step.id){
-            step.classList.remove("collapse");
-        }else{
-            step.classList.add("collapse");
+    // Add new step
+    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
+    princeSteps.appendChild(newStepNode);
+
+    ShowHideSteps(princeSteps, stepName)
+
+    CurrentPrince.stepCount += 1;
+}
+
+function ShowHideSteps(princeSteps, stepName) {
+    let allSteps = princeSteps.querySelectorAll("[id^='step_YesNo_accord_Prince" + CurrentPrince.princeNumber + "_step'], [id^='step_Ok_accord_Prince" + CurrentPrince.princeNumber + "_step']")
+    allSteps.forEach(function (step) {
+        if (stepName == step.id) {
+            step.classList.remove("collapse")
+        } else {
+            step.classList.add("collapse")
         }
     })
 
-    stepNumber += 1;
+    // todo find a decent method to disable accordions
+    // allSteps = princeSteps.querySelectorAll("[id^='step_YesNo_accord_btn_Prince" + CurrentPrince.princeNumber + "_step'], [id^='step_Ok_accord_btn_Prince" + CurrentPrince.princeNumber + "_step']")
+    // allSteps.forEach(function (step) {
+    //     if (stepName == step.id) {
+    //         step.disabled = false;
+    //     } else {
+    //         step.disabled = true;
+    //     }
+    // })
+}
+
+function getStepNodeId(oldId) {
+    return oldId.replace("Prince1", "Prince" + CurrentPrince.princeNumber).replace("step1", "step" + CurrentPrince.stepCount);
 }
 
 function showMessageDialog(title, message) {
-    const messageBox = new bootstrap.Modal(
-        document.getElementById("messageBox")
-    );
+    // const messageBox = new bootstrap.Modal(
+    //     document.getElementById("messageBox")
+    // );
 
-    document.getElementById("messageBoxTitle").innerHTML =
-        title;
-    document.getElementById("messageBoxBody").innerHTML =
-        message;
-    messageBox.show();
+    // document.getElementById("messageBoxTitle").innerHTML =
+    //     title;
+    // document.getElementById("messageBoxBody").innerHTML =
+    //     message;
+    // messageBox.show();
+
+    // Whole Step node
+    let newStepNode = document.getElementById("step_Ok").cloneNode(true);
+    newStepNode.id = "step_Ok" + CurrentPrince.stepCount;
+    // Unhide the step
+    newStepNode.classList.remove("d-none");
+
+    // Step button node
+    let stepBtnName = getStepNodeId("step_Ok_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
+
+    changeNodeIdAndValue(newStepNode, "step_Ok_accord_btn_Prince1_step1", stepBtnName, "OUTCOME");
+
+    // Step Detail node
+    let stepName = getStepNodeId("step_Ok_accord_Prince1_step1");
+    changeNodeId(newStepNode, "step_Ok_accord_Prince1_step1", stepName);
+
+    // Change button target
+    getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
+
+    // Title Step node
+    let stepTitleName = getStepNodeId("step_Ok_accord_title_Prince1_step1");
+    changeNodeIdAndValue(newStepNode, "step_Ok_accord_title_Prince1_step1", stepTitleName, title);
+
+    // Body Step node
+    let stepBodyName = "step_Ok_accord_body_Prince1_step1";
+    changeNodeIdAndValue(newStepNode, "step_Ok_accord_body_Prince1_step1", stepBodyName, message);
+
+    // Add new step
+    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
+    princeSteps.appendChild(newStepNode);
+
+    ShowHideSteps(princeSteps, stepName)
 }
 
 function showBannersDialog() {
@@ -568,6 +649,10 @@ function showBannersDialog() {
         document.getElementById("bannersDialog")
     );
     messageBox.show();
+}
+
+function okClick() {
+    princeNextStep();
 }
 
 function yesNoClick(answer) {
@@ -591,7 +676,7 @@ function delay() {
 
 // Below are the questions that the user is asked to help resolve the bot's turn
 function princeNextStep() {
-    if (CurrentPrince.currentActionNum < CurrentPrince.numActions) {
+    if (CurrentPrince.currentActionNum <= CurrentPrince.numActions) {
         switch (CurrentPrince.mindCurrent) {
             case Mind.SUP_1:
                 questionRulesMostSite();
@@ -830,11 +915,13 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
 
             //todo factor this
             CurrentPrince.currentActionNum += 1;
-            document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.currentActionNum;
-            
+            if (CurrentPrince.currentActionNum <= CurrentPrince.numActions) {
+                document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.currentActionNum;
+            }
+
             // Remove existing steps and move next
-            document.getElementById("steps_Prince" + CurrentPrince.princeNumber).innerHTML = "";
-            princeNextStep();
+            //document.getElementById("steps_Prince" + CurrentPrince.princeNumber).innerHTML = "";
+            //princeNextStep();
         }
         return;
     } else {
@@ -867,8 +954,8 @@ function sup_1_br(answer) {
     // princeNextStep();
 }
 
-function tradeFor(){
-    switch (CurrentPrince.mindCurrent){
+function tradeFor() {
+    switch (CurrentPrince.mindCurrent) {
         case Mind.SUP_4:
         case Mind.PF_2:
             //Currency.FAVOR;
@@ -882,9 +969,9 @@ function tradeFor(){
         case Mind.RB_3:
         case Mind.RB_5:
             //Currency.BOTH;
-            return "Gain FAVOR from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the backets ()" + 
-            "Gain SECRETS from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the backets ()";
-            //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
+            return "Gain FAVOR from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the backets ()" +
+                "Gain SECRETS from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the backets ()";
+        //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
     }
 }
 
