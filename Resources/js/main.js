@@ -319,6 +319,11 @@ function getElementById(node, id) {
     return node.querySelector("#" + id);
 }
 
+function changeNodeId(rootNode, rootNodeId, newNodeId) {
+    let newNode = getElementById(rootNode, rootNodeId);
+    newNode.id = newNodeId;
+}
+
 function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
     let newNode = getElementById(rootNode, rootNodeId);
     newNode.id = newNodeId;
@@ -378,6 +383,8 @@ function searchAndPlay() {
         document.getElementById("searchAndPlayDialog")
     );
     messageBox.show();
+
+    stepNumber = CurrentPrince.currentActionNum;
 }
 
 function cleanUp() {
@@ -471,6 +478,8 @@ function alignFaction(faction){
     }
 }
 
+let stepNumber;
+
 function showYesNoDialog(title, message, actionName) {
     // const messageBox = new bootstrap.Modal(
     //     document.getElementById("yesNo")
@@ -482,36 +491,64 @@ function showYesNoDialog(title, message, actionName) {
     //     message;
     // messageBox.show();
 
+    //let stepNumber = CurrentPrince.currentActionNum;
+
+    // Whole Step node
     let cloneNode = document.getElementById("step_YesNo").cloneNode(true);
+    cloneNode.id = "step_YesNo" + stepNumber;
+    //changeNodeId(cloneNode, "step_YesNo", "step_YesNo" + stepNumber);
     cloneNode.classList.remove("d-none");
 
+    // Step button node
     let nodeNameBtn = "accord_btn_Prince1_step1";
-    nodeNameBtn = nodeNameBtn.replace("1", CurrentPrince.princeNumber);
+    nodeNameBtn = nodeNameBtn.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    nodeNameBtn = nodeNameBtn.replace("step1", "step" + stepNumber);
 
     changeNodeIdAndValue(cloneNode, "accord_btn_Prince1_step1", nodeNameBtn, actionName);
 
-    // let nodeName = "accord_Prince1_step1";
-    // nodeName = nodeName.replace("1", CurrentPrince.princeNumber);
+    // Step Detail node
+    let nodeName = "accord_Prince1_step1";
+    nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    nodeName = nodeName.replace("step1", "step" + stepNumber);
 
-    // changeNodeIdAndValue(cloneNode, "accord_Prince1_step1", nodeName, "1");
-    // getElementById(cloneNode, nodeName).classList.remove("collapse");
+    let tempPrinceStepName = nodeName;
 
-    // getElementById(cloneNode, nodeNameBtn).dataset.target = "#" + nodeName;
+    changeNodeId(cloneNode, "accord_Prince1_step1", nodeName);
+    //getElementById(cloneNode, nodeName).classList.remove("collapse");
 
+    // Change button target
+    getElementById(cloneNode, nodeNameBtn).dataset.bsTarget = "#" + nodeName;
+
+    // Title Step node
     nodeName = "accord_title_Prince1_step1";
-    nodeName = nodeName.replace("1", CurrentPrince.princeNumber);
+    nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    nodeName = nodeName.replace("step1", "step" + stepNumber);
 
     changeNodeIdAndValue(cloneNode, "accord_title_Prince1_step1", nodeName, title);
 
+    // Body Step node
     nodeName = "accord_body_Prince1_step1";
-    nodeName = nodeName.replace("1", CurrentPrince.princeNumber);
+    nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
+    nodeName = nodeName.replace("step1", "step" + stepNumber);
 
     changeNodeIdAndValue(cloneNode, "accord_body_Prince1_step1", nodeName, message);
 
     //getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = title;
     //getElementById(cloneNode, "accord_body_Prince1_step1").textContent = message;
     
-    document.getElementById("steps_Prince" + CurrentPrince.princeNumber).appendChild(cloneNode);
+    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
+    princeSteps.appendChild(cloneNode);
+
+    let allSteps = princeSteps.querySelectorAll("[id^='accord_Prince1_step']");
+    allSteps.forEach(function (step){
+        if(tempPrinceStepName == step.id){
+            step.classList.remove("collapse");
+        }else{
+            step.classList.add("collapse");
+        }
+    })
+
+    stepNumber += 1;
 }
 
 function showMessageDialog(title, message) {
@@ -794,6 +831,10 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
             //todo factor this
             CurrentPrince.currentActionNum += 1;
             document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.currentActionNum;
+            
+            // Remove existing steps and move next
+            document.getElementById("steps_Prince" + CurrentPrince.princeNumber).innerHTML = "";
+            princeNextStep();
         }
         return;
     } else {
@@ -827,11 +868,6 @@ function sup_1_br(answer) {
 }
 
 function tradeFor(){
-    let friends = new Array(0);
-    let conspirators = new Array(0);
-
-    
-
     switch (CurrentPrince.mindCurrent){
         case Mind.SUP_4:
         case Mind.PF_2:
