@@ -18,7 +18,7 @@
     <header class="">
       <div class="d-flex justify-content-between mainheader">Better Prince Project
         <div>
-          <button class="btn btn-primary" onclick="addNewPrince()">Add Prince</button>
+          <button class="btn btn-primary" id="addPrinceButton" onclick="addNewPrince()">Add Prince</button>
           <button class="btn btn-secondary" onclick="test()">Click!</button>
           <button type="button" class="btn btn-primary" onclick="changeRound()">
             <span class="icon-medium" id="roundnumber" data-bs-toggle="tooltip" title="Round" data-bs-placement="bottom"
@@ -33,14 +33,15 @@
     <div class="container-fluid">
       <div class="row" id="Princes">
         <div class="col p-3 m-1" id="PrinceColumn1">
-          <div class="row" id="PrinceRow1">
-            <h5 class="col-md-auto">
-              <div>Prince</div>
-            </h5>
+          <div class="d-flex justify-content-between row" id="PrinceRow1">
 
             <h5 class="col-md-auto">
               <div id="PrinceName1">John</div>
             </h5>
+
+            <div class="col-md-auto">
+              <div class="turnCounter" id="PrinceTotalTurns1">#0</div>
+            </div>
 
             <h6 class="row">
               <div class="col-md-auto">
@@ -69,7 +70,7 @@
               </div>
             </div>
 
-            <h4 class="row">
+            <!-- <h4 class="row">
               <div class="col-md-auto">
                 <div>Turn Number</div>
               </div>
@@ -82,7 +83,7 @@
               <div class="col-md-auto">
                 <div id="PrinceTotalTurns1">0</div>
               </div>
-            </h4>
+            </h4> -->
 
 
 
@@ -163,7 +164,7 @@
     </div>
   </main>
 
-  <div class="accordion d-none" id="step_YesNo">
+  <div class="accordion d-none m-1" id="step_YesNo">
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button" id="step_YesNo_accord_btn_Prince1_step1" data-bs-toggle="collapse"
@@ -191,7 +192,7 @@
     </div>
   </div>
 
-  <div class="accordion d-none mb-2" id="step_Ok">
+  <div class="accordion d-none mb-4" id="step_Ok">
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button" id="step_Ok_accord_btn_Prince1_step1" data-bs-toggle="collapse"
@@ -215,6 +216,8 @@
       </div>
     </div>
   </div>
+
+  <div class="d-none" id="prince1_turnNumber1">Turn #1</div>
 
   <!-- Message Box -->
   <div class="modal fade" id="messageBox" tabindex="-1" aria-labelledby="MessageBox" aria-hidden="true">
@@ -273,7 +276,7 @@
           <p id="bannersDialogMessage"></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="bannersDialogClick('DS');" data-bs-dismiss="modal">
+          <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('DS');" data-bs-dismiss="modal">
             Darkest Secret?
           </button>
           <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('PF');" data-bs-dismiss="modal">
@@ -305,7 +308,7 @@
             4. Is an Exile the Oathkeeper?</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="assessthreatYesNoClick('Yes');"
+          <button type="button" class="btn btn-secondary" onclick="assessthreatYesNoClick('Yes');"
             data-bs-dismiss="modal">
             Yes
           </button>
@@ -332,7 +335,7 @@
           <p id="threatDialogMessage"></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="threatClick('sup_1');" data-bs-dismiss="modal">
+          <button type="button" class="btn btn-secondary" onclick="threatClick('sup_1');" data-bs-dismiss="modal">
             Oath of Supremacy
           </button>
           <button type="button" class="btn btn-secondary" onclick="threatClick('ds_1');" data-bs-dismiss="modal">
@@ -363,7 +366,7 @@
           <p id="searchAndPlayDialogMessage">Which faction did you draw?</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="searchAndPlayClick('discord');"
+          <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('discord');"
             data-bs-dismiss="modal">
             Discord
           </button>

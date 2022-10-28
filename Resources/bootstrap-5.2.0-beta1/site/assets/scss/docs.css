@@ -850,8 +850,8 @@
 .icon-link {
   display: flex;
   align-items: center;
-  -webkit-text-decoration-color: rgba(13, 110, 253, 0.5);
-          text-decoration-color: rgba(13, 110, 253, 0.5);
+  -webkit-text-decoration-color: rgba(28, 32, 37, 0.5);
+          text-decoration-color: rgba(28, 32, 37, 0.5);
   text-underline-offset: 0.5rem;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
@@ -1063,7 +1063,7 @@
   text-decoration: none;
 }
 .bd-footer a:hover, .bd-footer a:focus {
-  color: #0d6efd;
+  color: #1c2025;
   text-decoration: underline;
 }
 
@@ -1527,7 +1527,7 @@
 
 .swatch-blue {
   color: #fff;
-  background-color: #0d6efd;
+  background-color: #1c2025;
 }
 .swatch-blue::after {
   position: absolute;
@@ -1537,8 +1537,8 @@
   font-size: 0.75rem;
   line-height: 1.35;
   white-space: pre;
-  content: "4.50" "\a" "4.50" "\a" "4.66";
-  background-color: #0d6efd;
+  content: "16.3" "\a" "16.3" "\a" "1.28";
+  background-color: #1c2025;
   background-image: linear-gradient(to bottom, transparent 0.25rem, #fff 0.25rem 0.75rem, transparent 0.75rem 1.25rem, #fff 1.25rem 1.75rem, transparent 1.75rem 2.25rem, #000 2.25rem 2.75rem, transparent 2.75rem);
   background-repeat: no-repeat;
   background-size: 0.5rem 100%;
@@ -1812,47 +1812,47 @@
 
 .bd-blue-100 {
   color: #000;
-  background-color: #cfe2ff;
+  background-color: #d2d2d3;
 }
 
 .bd-blue-200 {
   color: #000;
-  background-color: #9ec5fe;
+  background-color: #a4a6a8;
 }
 
 .bd-blue-300 {
   color: #000;
-  background-color: #6ea8fe;
+  background-color: #77797c;
 }
 
 .bd-blue-400 {
-  color: #000;
-  background-color: #3d8bfd;
+  color: #fff;
+  background-color: #494d51;
 }
 
 .bd-blue-500 {
   color: #fff;
-  background-color: #0d6efd;
+  background-color: #1c2025;
 }
 
 .bd-blue-600 {
   color: #fff;
-  background-color: #0a58ca;
+  background-color: #161a1e;
 }
 
 .bd-blue-700 {
   color: #fff;
-  background-color: #084298;
+  background-color: #111316;
 }
 
 .bd-blue-800 {
   color: #fff;
-  background-color: #052c65;
+  background-color: #0b0d0f;
 }
 
 .bd-blue-900 {
   color: #fff;
-  background-color: #031633;
+  background-color: #060607;
 }
 
 .bd-indigo-100 {
@@ -2344,7 +2344,7 @@
 }
 .btn-clipboard:hover,
 .btn-edit:hover {
-  color: #0d6efd;
+  color: #1c2025;
 }
 .btn-clipboard:focus,
 .btn-edit:focus {
@@ -2688,7 +2688,7 @@
 .anchor-link {
   padding: 0 0.175rem;
   font-weight: 400;
-  color: rgba(13, 110, 253, 0.5);
+  color: rgba(28, 32, 37, 0.5);
   text-decoration: none;
   opacity: 0;
   transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
@@ -2702,7 +2702,7 @@
   content: "#";
 }
 .anchor-link:focus, .anchor-link:hover, :hover > .anchor-link, :target > .anchor-link {
-  color: #0d6efd;
+  color: #1c2025;
   text-decoration: none;
   opacity: 1;
 }

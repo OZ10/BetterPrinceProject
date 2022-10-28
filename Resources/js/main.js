@@ -44,7 +44,7 @@ const ActionNames = {
     Muster: "MUSTER",
     Move: "MOVE",
     MoveFight: "MOVE & FIGHT",
-    BattleReady: "BATTLE READY",
+    BattleReady: "BATTLE READY?",
     Search: "SEARCH",
     PayFor: "PAY FOR ",
     Hold: "HOLD THE ",
@@ -64,8 +64,8 @@ class Faction {
 
 const PrinceNames = {
     Nothing: "null",
-    Sam: "sam",
-    John: "john",
+    William: "Prince William",
+    Fresh: "Prince Fresh",
     Fred: "fred"
 }
 
@@ -269,7 +269,7 @@ function addNewPrince() {
     changeNodeIdAndValue(cloneNode, "PrinceStatus1", "PrinceStatus" + nextPrinceNumber, newPrince.status);
     changeNodeIdAndValue(cloneNode, "PrinceFavor1", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret1", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
-    changeNodeIdAndValue(cloneNode, "PrinceTurnNumber1", "PrinceTurnNumber" + nextPrinceNumber, newPrince.numActions);
+    //changeNodeIdAndValue(cloneNode, "PrinceTurnNumber1", "PrinceTurnNumber" + nextPrinceNumber, newPrince.numActions);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns1", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
     changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel1", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.faction_Arcane.level);
     changeNodeIdAndValue(cloneNode, "PrinceBeastLevel1", "PrinceBeastLevel" + nextPrinceNumber, newPrince.faction_Beast.level);
@@ -295,7 +295,7 @@ function addNewPrince() {
 }
 
 function getNextPrinceName(princeNumber) {
-    return Object.keys(PrinceNames)[princeNumber];
+    return Object.values(PrinceNames)[princeNumber];
 }
 
 function getNextPrinceNumber() {
@@ -345,6 +345,7 @@ function test() {
 }
 
 function princeStartTurn() {
+    document.getElementById("addPrinceButton").disabled = true;
     assessThreat();
 }
 
@@ -451,12 +452,12 @@ function enableDisableTurnButtons() {
 function searchAndPlayClick(selectedFaction) {
     // todo refactor this
     CurrentPrince.currentActionNum = 1;
-    document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = 1;
+    //document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = 1;
     switch (selectedFaction) {
         case Factions.Arcane:
             CurrentPrince.faction_Arcane.level += 1
             CurrentPrince.numActions = CurrentPrince.faction_Arcane.level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Arcane.level;
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Arcane.level;
             document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Arcane.level;
             alignFaction(CurrentPrince.faction_Arcane);
             CurrentPrince.currentFaction = CurrentPrince.faction_Arcane;
@@ -464,7 +465,7 @@ function searchAndPlayClick(selectedFaction) {
         case Factions.Beast:
             CurrentPrince.faction_Beast.level += 1
             CurrentPrince.numActions = CurrentPrince.faction_Beast.level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Beast.level;
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Beast.level;
             document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Beast.level;
             alignFaction(CurrentPrince.faction_Beast);
             CurrentPrince.currentFaction = CurrentPrince.faction_Beast;
@@ -472,7 +473,7 @@ function searchAndPlayClick(selectedFaction) {
         case Factions.Discord:
             CurrentPrince.faction_Discord.level += 1
             CurrentPrince.numActions = CurrentPrince.faction_Discord.level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Discord.level;
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Discord.level;
             document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Discord.level;
             alignFaction(CurrentPrince.faction_Discord);
             CurrentPrince.currentFaction = CurrentPrince.faction_Discord;
@@ -480,7 +481,7 @@ function searchAndPlayClick(selectedFaction) {
         case Factions.Hearth:
             CurrentPrince.faction_Hearth.level += 1
             CurrentPrince.numActions = CurrentPrince.faction_Hearth.level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Hearth.level;
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Hearth.level;
             document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Hearth.level;
             alignFaction(CurrentPrince.faction_Hearth);
             CurrentPrince.currentFaction = CurrentPrince.faction_Hearth;
@@ -488,7 +489,7 @@ function searchAndPlayClick(selectedFaction) {
         case Factions.Nomad:
             CurrentPrince.faction_Nomad.level += 1
             CurrentPrince.numActions = CurrentPrince.faction_Nomad.level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Nomad.level;
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Nomad.level;
             document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Nomad.level;
             alignFaction(CurrentPrince.faction_Nomad);
             CurrentPrince.currentFaction = CurrentPrince.faction_Nomad;
@@ -496,14 +497,25 @@ function searchAndPlayClick(selectedFaction) {
         case Factions.Order:
             CurrentPrince.faction_Order.level += 1
             CurrentPrince.numActions = CurrentPrince.faction_Order.level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Order.level;
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Order.level;
             document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.faction_Order.level;
             alignFaction(CurrentPrince.faction_Order);
             CurrentPrince.currentFaction = CurrentPrince.faction_Order;
             break;
     }
 
+    addTurnNumberLabel()
     princeNextStep();
+}
+
+function addTurnNumberLabel() {
+    let turnNumberLabel = document.getElementById("prince1_turnNumber1").cloneNode()
+    turnNumberLabel.classList.remove("d-none")
+    turnNumberLabel.id = "prince1_turnNumber1".replace("prince1", "prince" + CurrentPrince.princeNumber).replace("turnNumber1", "turnNumber" + CurrentPrince.currentActionNum)
+    turnNumberLabel.innerHTML = "Turn #" + CurrentPrince.currentActionNum
+
+    let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber)
+    ele.appendChild(turnNumberLabel)
 }
 
 function alignFaction(faction) {
@@ -656,6 +668,7 @@ function showBannersDialog() {
 }
 
 function okClick() {
+    addTurnNumberLabel();
     princeNextStep();
 }
 
@@ -919,9 +932,9 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
 
             //todo factor this
             CurrentPrince.currentActionNum += 1;
-            if (CurrentPrince.currentActionNum <= CurrentPrince.numActions) {
-                document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.currentActionNum;
-            }
+            // if (CurrentPrince.currentActionNum <= CurrentPrince.numActions) {
+            //     document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.currentActionNum;
+            // }
 
             // Remove existing steps and move next
             //document.getElementById("steps_Prince" + CurrentPrince.princeNumber).innerHTML = "";
