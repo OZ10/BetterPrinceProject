@@ -194,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("PrinceName" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.name;
     document.getElementById("PrinceFavor" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.numFavor;
     document.getElementById("PrinceStatus" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.status;
+    document.getElementById("PrinceColumn" + CurrentPrince.princeNumber).classList.add("chancellor");
 
     Princes[1] = Prince1;
 });
@@ -261,6 +262,9 @@ function addNewPrince() {
     let cloneNode = document.getElementById("PrinceColumn1").cloneNode(true);
     cloneNode.Id = "PrinceColumn" + nextPrinceNumber;
 
+    cloneNode.classList.remove("chancellor");
+    cloneNode.classList.add("exile" + nextPrinceNumber);
+
     changeNodeIdAndValue(cloneNode, "PrinceName1", "PrinceName" + nextPrinceNumber, newPrince.name);
     changeNodeIdAndValue(cloneNode, "PrinceStatus1", "PrinceStatus" + nextPrinceNumber, newPrince.status);
     changeNodeIdAndValue(cloneNode, "PrinceFavor1", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
@@ -276,11 +280,11 @@ function addNewPrince() {
 
     // buttons
     changeNodeIdAndValue(cloneNode, "PrinceStartTurn1", "PrinceStartTurn" + nextPrinceNumber, "Start Turn");
-    changeNodeIdAndValue(cloneNode, "PrinceNextStep1", "PrinceNextStep" + nextPrinceNumber, "Next Step");
+    // changeNodeIdAndValue(cloneNode, "PrinceNextStep1", "PrinceNextStep" + nextPrinceNumber, "Next Step");
     let button = getElementById(cloneNode, "PrinceStartTurn" + nextPrinceNumber)
     button.disabled = true;
-    button = getElementById(cloneNode, "PrinceNextStep" + nextPrinceNumber)
-    button.disabled = true;
+    // button = getElementById(cloneNode, "PrinceNextStep" + nextPrinceNumber)
+    // button.disabled = true;
 
     // steps
     changeNodeIdAndValue(cloneNode, "steps_Prince1", "steps_Prince" + nextPrinceNumber, "");

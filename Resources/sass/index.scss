@@ -6,3 +6,36 @@
     font-weight: bold;
     color: $primary;
 }
+
+.prince{
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.chancellor{
+    @extend .prince;
+    background-color: blueviolet;
+    color: whitesmoke;
+}
+
+.exile2{
+    @extend .prince;
+    background-color: gold;
+}
+
+.exile3{
+    @extend .prince;
+    background-color: crimson;
+    color: whitesmoke;
+}
+
+.exile4{
+    @extend .prince;
+    background-color: cornflowerblue;
+    color: whitesmoke;
+}
+
+.acc{
+    @extend .accordion;
+    background-color: aqua;
+}

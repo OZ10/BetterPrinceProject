@@ -18,8 +18,8 @@
     <header class="">
       <div class="d-flex justify-content-between mainheader">Better Prince Project
         <div>
-          <button onclick="addNewPrince()">Add Prince</button>
-          <button onclick="test()">Click!</button>
+          <button class="btn btn-primary" onclick="addNewPrince()">Add Prince</button>
+          <button class="btn btn-secondary" onclick="test()">Click!</button>
           <button type="button" class="btn btn-primary" onclick="changeRound()">
             <span class="icon-medium" id="roundnumber" data-bs-toggle="tooltip" title="Round" data-bs-placement="bottom"
               data-bs-target="#roundtracker">
@@ -32,7 +32,7 @@
 
     <div class="container-fluid">
       <div class="row" id="Princes">
-        <div class="col" id="PrinceColumn1">
+        <div class="col p-3 m-1" id="PrinceColumn1">
           <div class="row" id="PrinceRow1">
             <h5 class="col-md-auto">
               <div>Prince</div>
@@ -84,79 +84,78 @@
               </div>
             </h4>
 
-            <div class="accordion">
+
+
+            <div>
+              <button class="btn btn-primary m-2" id="PrinceStartTurn1" onclick="princeStartTurn()">Start Turn</button>
+              <!-- <button id="PrinceNextStep1" onclick="princeNextStep()">Next Step</button> -->
+            </div>
+
+            <div id="steps_Prince1">
+
+            </div>
+
+            <div class="accordion d-none">
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingDebug">
                   <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#debugMenu">
                     Debug Menu
                   </button>
                 </h2>
-
-                <div id="debugMenu" class="accordion-collapse collapse">
-                  <div class="accordion-body">
-                    <div class="row">
-                      <div class="col-md-auto">
-                        <div>Arcane Level: </div>
-                      </div>
-                      <div class="col-md-auto">
-                        <div id="PrinceArcaneLevel1">0</div>
-                      </div>
+              </div>
+              <div id="debugMenu" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                  <div class="row">
+                    <div class="col-md-auto">
+                      <div>Arcane Level: </div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-auto">
-                        <div>Beast Level: </div>
-                      </div>
-                      <div class="col-md-auto">
-                        <div id="PrinceBeastLevel1">0</div>
-                      </div>
+                    <div class="col-md-auto">
+                      <div id="PrinceArcaneLevel1">0</div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-auto">
-                        <div>Discord Level: </div>
-                      </div>
-                      <div class="col-md-auto">
-                        <div id="PrinceDiscordLevel1">0</div>
-                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-auto">
+                      <div>Beast Level: </div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-auto">
-                        <div>Hearth Level: </div>
-                      </div>
-                      <div class="col-md-auto">
-                        <div id="PrinceHearthLevel1">0</div>
-                      </div>
+                    <div class="col-md-auto">
+                      <div id="PrinceBeastLevel1">0</div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-auto">
-                        <div>Nomad Level: </div>
-                      </div>
-                      <div class="col-md-auto">
-                        <div id="PrinceNomadLevel1">0</div>
-                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-auto">
+                      <div>Discord Level: </div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-auto">
-                        <div>Order Level: </div>
-                      </div>
-                      <div class="col-md-auto">
-                        <div id="PrinceOrderLevel1">0</div>
-                      </div>
+                    <div class="col-md-auto">
+                      <div id="PrinceDiscordLevel1">0</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-auto">
+                      <div>Hearth Level: </div>
+                    </div>
+                    <div class="col-md-auto">
+                      <div id="PrinceHearthLevel1">0</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-auto">
+                      <div>Nomad Level: </div>
+                    </div>
+                    <div class="col-md-auto">
+                      <div id="PrinceNomadLevel1">0</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-auto">
+                      <div>Order Level: </div>
+                    </div>
+                    <div class="col-md-auto">
+                      <div id="PrinceOrderLevel1">0</div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div>
-                <button id="PrinceStartTurn1" onclick="princeStartTurn()">Start Turn</button>
-                <button id="PrinceNextStep1" onclick="princeNextStep()">Next Step</button>
-              </div>
-
-
             </div>
-          </div>
-
-          <div class="accordion" id="steps_Prince1">
-
           </div>
 
         </div>
@@ -164,49 +163,55 @@
     </div>
   </main>
 
-  <div class="accordion-item d-none" id="step_YesNo">
-    <h2 class="accordion-header">
-      <button class="accordion-button" id="step_YesNo_accord_btn_Prince1_step1" data-bs-toggle="collapse" data-bs-target="#accord_Prince1_step1">
-        Step 1
-      </button>
-    </h2>
+  <div class="accordion d-none" id="step_YesNo">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button" id="step_YesNo_accord_btn_Prince1_step1" data-bs-toggle="collapse"
+          data-bs-target="#accord_Prince1_step1">
+          Step 1
+        </button>
+      </h2>
 
-    <div class="accordion-collapse collapse" id="step_YesNo_accord_Prince1_step1">
-      <div class="accordion-body">
-        <p id="step_YesNo_accord_title_Prince1_step1">
-          Title
-        </p>
-        <p id="step_YesNo_accord_body_Prince1_step1">
-          Body
-        </p>
-        <button class="btn btn-primary" onclick="yesNoClick('Yes');">
-          Yes
-        </button>
-        <button class="btn btn-secondary" onclick="yesNoClick('No');">
-          No
-        </button>
+      <div class="accordion-collapse collapse" id="step_YesNo_accord_Prince1_step1">
+        <div class="accordion-body">
+          <b id="step_YesNo_accord_title_Prince1_step1">
+            Title
+          </b>
+          <p id="step_YesNo_accord_body_Prince1_step1">
+            Body
+          </p>
+          <button class="btn btn-primary" onclick="yesNoClick('Yes');">
+            Yes
+          </button>
+          <button class="btn btn-secondary" onclick="yesNoClick('No');">
+            No
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="accordion-item d-none" id="step_Ok">
-    <h2 class="accordion-header">
-      <button class="accordion-button" id="step_Ok_accord_btn_Prince1_step1" data-bs-toggle="collapse" data-bs-target="#accord_Prince1_step1">
-        Step 1
-      </button>
-    </h2>
-
-    <div class="accordion-collapse collapse" id="step_Ok_accord_Prince1_step1">
-      <div class="accordion-body">
-        <p id="step_Ok_accord_title_Prince1_step1">
-          Title
-        </p>
-        <p id="step_Ok_accord_body_Prince1_step1">
-          Body
-        </p>
-        <button class="btn btn-primary" onclick="okClick('Yes');">
-          Ok
+  <div class="accordion d-none mb-2" id="step_Ok">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button" id="step_Ok_accord_btn_Prince1_step1" data-bs-toggle="collapse"
+          data-bs-target="#accord_Prince1_step1">
+          Step 1
         </button>
+      </h2>
+
+      <div class="accordion-collapse collapse" id="step_Ok_accord_Prince1_step1">
+        <div class="accordion-body">
+          <b id="step_Ok_accord_title_Prince1_step1">
+            Title
+          </b>
+          <p id="step_Ok_accord_body_Prince1_step1">
+            Body
+          </p>
+          <button class="btn btn-primary" onclick="okClick('Yes');">
+            Ok
+          </button>
+        </div>
       </div>
     </div>
   </div>
