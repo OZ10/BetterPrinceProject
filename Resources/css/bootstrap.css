@@ -10885,42 +10885,4 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
-}
-.mainheader {
-  background-color: #e9ecef;
-  padding: 20px 10px 20px 10px;
-  font-weight: bold;
-  color: #1c2025;
-  border-radius: 10px;
-}
-
-.prince, .exile4, .exile3, .exile2, .chancellor {
-  max-width: 400px;
-  border-radius: 10px;
-}
-
-.chancellor {
-  background-color: blueviolet;
-  color: whitesmoke;
-}
-
-.exile2 {
-  background-color: gold;
-}
-
-.exile3 {
-  background-color: crimson;
-  color: whitesmoke;
-}
-
-.exile4 {
-  background-color: cornflowerblue;
-  color: whitesmoke;
-}
-
-.turnCounter {
-  background-color: black;
-  color: whitesmoke;
-  border-radius: 10px;
-  padding-inline: 20px;
-}/*# sourceMappingURL=index.css.map */
+}/*# sourceMappingURL=bootstrap.css.map */
