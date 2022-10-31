@@ -172,6 +172,7 @@ class Prince {
 
     stepCount;
     factions;
+    isCurrent;
 
     getFactionAlignmentList(alignment) {
         let list = "";
@@ -189,15 +190,33 @@ let CurrentPrince;
 let Princes = new Array(1);
 
 document.addEventListener("DOMContentLoaded", () => {
-    Prince1 = createNewPrince(getNextPrinceName(1), Status.Chancellor, 1);
-    CurrentPrince = Prince1;
-    document.getElementById("PrinceName" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.name;
-    document.getElementById("PrinceFavor" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.numFavor;
-    document.getElementById("PrinceStatus" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.status;
-    document.getElementById("PrinceColumn" + CurrentPrince.princeNumber).classList.add("chancellor");
+    //localStorage.clear();
+    if (localStorage.length > 0) {
+        for (let [princeNum, prince] of Object.entries(localStorage)) {
+            Princes[princeNum] = JSON.parse(prince);
+            createNewPrinceNode(princeNum, Princes[princeNum]);
 
-    Princes[1] = Prince1;
+            if (Princes[princeNum].isCurrent) {
+                CurrentPrince = Princes[princeNum];
+            }
+        }
+
+        hideAddNewPrinceButton();
+        enableDisableTurnButtons();
+    } else {
+        Princes[1] = createNewPrince(getNextPrinceName(1), Status.Chancellor, 1);
+        Princes[1].isCurrent = true;
+        createNewPrinceNode(1, Princes[1]);
+        CurrentPrince = Princes[1];
+    }
+
 });
+
+function resetGame() {
+    localStorage.clear();
+    document.getElementById("Princes").innerHTML = "";
+    document.getElementById("addNewPrinceColumn").classList.remove("d-none");
+}
 
 function createNewPrince(name, status, number) {
     return new Prince(name,
@@ -259,17 +278,24 @@ function addNewPrince() {
     let newPrince = createNewPrince(getNextPrinceName(nextPrinceNumber), Status.Exile, nextPrinceNumber);
     Princes[nextPrinceNumber] = newPrince;
 
+    createNewPrinceNode(nextPrinceNumber, newPrince)
+}
+
+function createNewPrinceNode(nextPrinceNumber, newPrince) {
     let cloneNode = document.getElementById("PrinceColumn1").cloneNode(true);
     cloneNode.Id = "PrinceColumn" + nextPrinceNumber;
+    cloneNode.classList.remove("d-none");
 
-    cloneNode.classList.remove("chancellor");
-    cloneNode.classList.add("exile" + nextPrinceNumber);
+    if (newPrince.status == Status.Chancellor) {
+        cloneNode.classList.add("chancellor");
+    } else {
+        cloneNode.classList.add("exile" + nextPrinceNumber);
+    }
 
     changeNodeIdAndValue(cloneNode, "PrinceName1", "PrinceName" + nextPrinceNumber, newPrince.name);
     changeNodeIdAndValue(cloneNode, "PrinceStatus1", "PrinceStatus" + nextPrinceNumber, newPrince.status);
     changeNodeIdAndValue(cloneNode, "PrinceFavor1", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret1", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
-    //changeNodeIdAndValue(cloneNode, "PrinceTurnNumber1", "PrinceTurnNumber" + nextPrinceNumber, newPrince.numActions);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns1", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
     changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel1", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.faction_Arcane.level);
     changeNodeIdAndValue(cloneNode, "PrinceBeastLevel1", "PrinceBeastLevel" + nextPrinceNumber, newPrince.faction_Beast.level);
@@ -280,18 +306,20 @@ function addNewPrince() {
 
     // buttons
     changeNodeIdAndValue(cloneNode, "PrinceStartTurn1", "PrinceStartTurn" + nextPrinceNumber, "Start Turn");
-    // changeNodeIdAndValue(cloneNode, "PrinceNextStep1", "PrinceNextStep" + nextPrinceNumber, "Next Step");
-    let button = getElementById(cloneNode, "PrinceStartTurn" + nextPrinceNumber)
-    button.disabled = true;
-    // button = getElementById(cloneNode, "PrinceNextStep" + nextPrinceNumber)
-    // button.disabled = true;
+    let button = getElementById(cloneNode, "PrinceStartTurn" + nextPrinceNumber);
+
+    // todo refactor this
+    if (newPrince.isCurrent) {
+        button.disabled = false
+    } else {
+        button.disabled = true
+    }
 
     // steps
     changeNodeIdAndValue(cloneNode, "steps_Prince1", "steps_Prince" + nextPrinceNumber, "");
 
+    //document.getElementById("Princes").insertBefore(cloneNode, document.getElementById("addNewPrinceColumn")); // appendChild(cloneNode);
     document.getElementById("Princes").appendChild(cloneNode);
-
-    //alert(princeColumn2.getElementById("PrinceName").innerHTML);
 }
 
 function getNextPrinceName(princeNumber) {
@@ -308,15 +336,20 @@ function getNextPrinceNumber() {
 }
 
 function getNextAvailablePrince() {
+    // Length == 2 means there is only one prince
     if (Princes.length == 2) { return CurrentPrince };
 
+    // If the prince is the last prince in the array set the start number to 0
     let startNum = (CurrentPrince.princeNumber == Princes.length) ? 0 : CurrentPrince.princeNumber;
 
     for (let count = startNum; count < Princes.length; count++) {
         const prince = Princes[count];
         if (prince.princeNumber != startNum) {
             return prince;
-        } else if (count == Princes.length - 1) { count = 0 }
+        } else {
+            // rest the loop to start at the beginning
+            if (count == Princes.length - 1) { count = 0 }
+        }
     }
 }
 
@@ -345,8 +378,13 @@ function test() {
 }
 
 function princeStartTurn() {
-    document.getElementById("addPrinceButton").disabled = true;
+    // Hide the add new prince button
+    hideAddNewPrinceButton()
     assessThreat();
+}
+
+function hideAddNewPrinceButton() {
+    document.getElementById("addNewPrinceColumn").classList.add("d-none")
 }
 
 function assessThreat() {
@@ -404,38 +442,21 @@ function cleanUp() {
         "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
     messageBox.show();
 
-    // Whole Step node
-    // let newStepNode = document.getElementById("step_Ok").cloneNode(true);
-    // newStepNode.id = "step_Ok" + CurrentPrince.stepCount;
-    // // Unhide the step
-    // newStepNode.classList.remove("d-none");
-
-    // // Step button node
-    // let stepBtnName = getStepNodeId("step_Ok_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
-
-    // changeNodeIdAndValue(newStepNode, "step_Ok_accord_btn_Prince1_step1", stepBtnName, "CLEANUP");
-
-    // // Step Detail node
-    // let stepName = getStepNodeId("step_Ok_accord_Prince1_step1");
-    // changeNodeId(newStepNode, "step_Ok_accord_Prince1_step1", stepName);
-
-    // // Change button target
-    // getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
-
-    // // Title Step node
-    // // let stepTitleName = getStepNodeId("step_Ok_accord_title_Prince1_step1");
-    // // changeNodeIdAndValue(newStepNode, "step_Ok_accord_title_Prince1_step1", stepTitleName, title);
-
-    // // Body Step node
-    // let stepBodyName = "step_Ok_accord_body_Prince1_step1";
-    // changeNodeIdAndValue(newStepNode, "step_Ok_accord_body_Prince1_step1", stepBodyName, "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.");
-
-    // // Add new step
+    // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
     princeSteps.innerHTML = "";
     // princeSteps.appendChild(newStepNode);
 
+    Princes.forEach(prince => {
+        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
+    })
+
     CurrentPrince = getNextAvailablePrince();
+
+    Princes.forEach(prince => {
+        prince.isCurrent = (prince.name == CurrentPrince.name) ? true: false;
+    });
+
     enableDisableTurnButtons();
 }
 

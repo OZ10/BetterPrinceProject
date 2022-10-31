@@ -5,8 +5,11 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="resources/css/index.css" rel="stylesheet">
+
+
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
 
     <title>Better Prince Project</title>
 </head>
@@ -16,7 +19,8 @@
         <header class="">
             <div class="d-flex justify-content-between mainheader">Better Prince Project
                 <div>
-                    <button class="btn btn-primary" id="addPrinceButton" onclick="addNewPrince()">Add Prince</button>
+                    <!-- <button class="btn btn-primary" id="addPrinceButton" onclick="addNewPrince()">Add Prince</button> -->
+                    <button class="btn btn-primary" onclick="resetGame()">Reset</button>
                     <button class="btn btn-secondary" onclick="test()">Click!</button>
                     <button type="button" class="btn btn-primary" onclick="changeRound()">
                         <span class="icon-medium" id="roundnumber" data-bs-toggle="tooltip" title="Round"
@@ -29,140 +33,137 @@
         </header>
 
         <div class="container-fluid">
-            <div class="row" id="Princes">
-                <div class="col p-3 m-1" id="PrinceColumn1">
-                    <div class="d-flex justify-content-between row" id="PrinceRow1">
-
-                        <h5 class="col-md-auto">
-                            <div id="PrinceName1">John</div>
-                        </h5>
-
-                        <div class="col-md-auto">
-                            <div class="turnCounter" id="PrinceTotalTurns1">#0</div>
-                        </div>
-
-                        <h6 class="row">
-                            <div class="col-md-auto">
-                                <div>Status: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <div id="PrinceStatus1"></div>
-                            </div>
-                        </h6>
-
-                        <div class="row d-none">
-                            <div class="col-md-auto">
-                                <div>Favor: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <div id="PrinceFavor1">0</div>
-                            </div>
-                        </div>
-
-                        <div class="row d-none">
-                            <div class="col-md-auto">
-                                <div>Secret: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <div id="PrinceSecret1">0</div>
-                            </div>
-                        </div>
-
-                        <!-- <h4 class="row">
-              <div class="col-md-auto">
-                <div>Turn Number</div>
-              </div>
-              <div class="col-md-auto">
-                <div id="PrinceTurnNumber1">0</div>
-              </div>
-              <div class="col-md-auto">
-                <div> Of </div>
-              </div>
-              <div class="col-md-auto">
-                <div id="PrinceTotalTurns1">0</div>
-              </div>
-            </h4> -->
-
-
-
-                        <div>
-                            <button class="btn btn-primary m-2" id="PrinceStartTurn1" onclick="princeStartTurn()">Start
-                                Turn</button>
-                            <!-- <button id="PrinceNextStep1" onclick="princeNextStep()">Next Step</button> -->
-                        </div>
-
-                        <div id="steps_Prince1">
-
-                        </div>
-
-                        <div class="accordion d-none">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingDebug">
-                                    <button class="accordion-button" data-bs-toggle="collapse"
-                                        data-bs-target="#debugMenu">
-                                        Debug Menu
-                                    </button>
-                                </h2>
-                            </div>
-                            <div id="debugMenu" class="accordion-collapse collapse">
-                                <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="col-md-auto">
-                                            <div>Arcane Level: </div>
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <div id="PrinceArcaneLevel1">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-auto">
-                                            <div>Beast Level: </div>
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <div id="PrinceBeastLevel1">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-auto">
-                                            <div>Discord Level: </div>
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <div id="PrinceDiscordLevel1">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-auto">
-                                            <div>Hearth Level: </div>
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <div id="PrinceHearthLevel1">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-auto">
-                                            <div>Nomad Level: </div>
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <div id="PrinceNomadLevel1">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-auto">
-                                            <div>Order Level: </div>
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <div id="PrinceOrderLevel1">0</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="row">
+                <div class="col" id="Princes"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="col p-3 m-1 addNewPrince" id="addNewPrinceColumn">
+                        <div class="d-flex justify-content-between row" id="addNewPrinceRow">
+                            <button class="btnNoBackground" id="addPrinceButton" onclick="addNewPrince()">
+                                <span class="material-icons md-48">
+                                    add_circle_outline
+                                </span>
+                            </button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </main>
+
+    <div class="col p-3 m-1 d-none" id="PrinceColumn1">
+        <div class="d-flex justify-content-between row" id="PrinceRow1">
+
+            <h5 class="col-md-auto">
+                <div id="PrinceName1">John</div>
+            </h5>
+
+            <div class="col-md-auto">
+                <div class="turnCounter" id="PrinceTotalTurns1">#0</div>
+            </div>
+
+            <h6 class="row">
+                <div class="col-md-auto">
+                    <div>Status: </div>
+                </div>
+                <div class="col-md-auto">
+                    <div id="PrinceStatus1"></div>
+                </div>
+            </h6>
+
+            <div class="row d-none">
+                <div class="col-md-auto">
+                    <div>Favor: </div>
+                </div>
+                <div class="col-md-auto">
+                    <div id="PrinceFavor1">0</div>
+                </div>
+            </div>
+
+            <div class="row d-none">
+                <div class="col-md-auto">
+                    <div>Secret: </div>
+                </div>
+                <div class="col-md-auto">
+                    <div id="PrinceSecret1">0</div>
+                </div>
+            </div>
+
+            <div>
+                <button class="btn btn-primary m-2" id="PrinceStartTurn1" onclick="princeStartTurn()">Start
+                    Turn</button>
+                <!-- <button id="PrinceNextStep1" onclick="princeNextStep()">Next Step</button> -->
+            </div>
+
+            <div id="steps_Prince1">
+
+            </div>
+
+            <div class="accordion d-none">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingDebug">
+                        <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#debugMenu">
+                            Debug Menu
+                        </button>
+                    </h2>
+                </div>
+                <div id="debugMenu" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <div>Arcane Level: </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <div id="PrinceArcaneLevel1">0</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <div>Beast Level: </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <div id="PrinceBeastLevel1">0</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <div>Discord Level: </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <div id="PrinceDiscordLevel1">0</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <div>Hearth Level: </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <div id="PrinceHearthLevel1">0</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <div>Nomad Level: </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <div id="PrinceNomadLevel1">0</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <div>Order Level: </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <div id="PrinceOrderLevel1">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <div class="accordion d-none m-1" id="step_YesNo">
         <div class="accordion-item">
