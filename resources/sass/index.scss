@@ -1,6 +1,19 @@
-@import "../bootstrap-5.2.0-beta1/scss/bootstrap.scss";
 
-.mainheader{
+// OVERRIDES HERE
+$gray-200: #e9ecef;
+
+$primary: black;
+// $secondary:     $gray-600;
+// $success:       $gree;
+// $info:          $cyan;
+// $warning:       $yellow;
+// $danger:        $red;
+// $light:         $gray-100;
+// $dark:          $gray-900;
+
+@import "../bootstrap5.2.2/scss/bootstrap";
+
+.mainheader {
     background-color: $gray-200;
     padding: 20px 10px 20px 10px;
     font-weight: bold;
@@ -8,35 +21,35 @@
     border-radius: 10px;
 }
 
-.prince{
+.prince {
     max-width: 400px;
     border-radius: 10px;
 }
 
-.chancellor{
+.chancellor {
     @extend .prince;
     background-color: blueviolet;
     color: whitesmoke;
 }
 
-.exile2{
+.exile2 {
     @extend .prince;
     background-color: gold;
 }
 
-.exile3{
+.exile3 {
     @extend .prince;
     background-color: crimson;
     color: whitesmoke;
 }
 
-.exile4{
+.exile4 {
     @extend .prince;
     background-color: cornflowerblue;
     color: whitesmoke;
 }
 
-.turnCounter{
+.turnCounter {
     background-color: black;
     color: whitesmoke;
     border-radius: 10px;
