@@ -185,21 +185,30 @@ class Prince {
     }
 }
 
-let Prince1;
 let CurrentPrince;
 let Princes = new Array(1);
 
 document.addEventListener("DOMContentLoaded", () => {
     //localStorage.clear();
     if (localStorage.length > 0) {
-        for (let [princeNum, prince] of Object.entries(localStorage)) {
-            Princes[princeNum] = JSON.parse(prince);
-            createNewPrinceNode(princeNum, Princes[princeNum]);
 
-            if (Princes[princeNum].isCurrent) {
-                CurrentPrince = Princes[princeNum];
+        for (let princeNumber = 1; princeNumber < localStorage.length + 1; princeNumber++) {
+            Princes[princeNumber] = JSON.parse(localStorage.getItem(princeNumber));
+            createNewPrinceNode(princeNumber, Princes[princeNumber]);
+
+            if (Princes[princeNumber].isCurrent) {
+                CurrentPrince = Princes[princeNumber];
             }
         }
+
+        // for (let [princeNum, prince] of Object.entries(localStorage)) {
+        //     Princes[princeNum] = JSON.parse(prince);
+        //     createNewPrinceNode(princeNum, Princes[princeNum]);
+
+        //     if (Princes[princeNum].isCurrent) {
+        //         CurrentPrince = Princes[princeNum];
+        //     }
+        // }
 
         hideAddNewPrinceButton();
         enableDisableTurnButtons();
@@ -216,6 +225,7 @@ function resetGame() {
     localStorage.clear();
     document.getElementById("Princes").innerHTML = "";
     document.getElementById("addNewPrinceColumn").classList.remove("d-none");
+    Princes = new Array(1);
 }
 
 function createNewPrince(name, status, number) {
@@ -442,10 +452,9 @@ function cleanUp() {
         "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
     messageBox.show();
 
-    // Add new step
+    // Remove 
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
     princeSteps.innerHTML = "";
-    // princeSteps.appendChild(newStepNode);
 
     Princes.forEach(prince => {
         localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
