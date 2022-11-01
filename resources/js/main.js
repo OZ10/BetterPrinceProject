@@ -189,7 +189,7 @@ let CurrentPrince;
 let Princes = new Array(1);
 
 document.addEventListener("DOMContentLoaded", () => {
-    //localStorage.clear();
+
     if (localStorage.length > 0) {
 
         for (let princeNumber = 1; princeNumber < localStorage.length + 1; princeNumber++) {
@@ -201,15 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // for (let [princeNum, prince] of Object.entries(localStorage)) {
-        //     Princes[princeNum] = JSON.parse(prince);
-        //     createNewPrinceNode(princeNum, Princes[princeNum]);
-
-        //     if (Princes[princeNum].isCurrent) {
-        //         CurrentPrince = Princes[princeNum];
-        //     }
-        // }
-
         hideAddNewPrinceButton();
         enableDisableTurnButtons();
     } else {
@@ -218,7 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
         createNewPrinceNode(1, Princes[1]);
         CurrentPrince = Princes[1];
     }
-
 });
 
 function resetGame() {
@@ -247,17 +237,6 @@ function createNewPrince(name, status, number) {
         number,
         null);
 }
-
-// function newGame(){
-//     Prince1 = new Prince("John",
-//                         2,
-//                         1,
-//                         Mind.SUP_1,
-//                         Mind.SUP_1,
-//                         Status.Chancellor,
-//                         2,
-//                         Threat.None)
-// }
 
 function changeRound() {
     let round = getRoundNumber();
@@ -452,19 +431,21 @@ function cleanUp() {
         "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
     messageBox.show();
 
-    // Remove 
+    // Remove steps
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
     princeSteps.innerHTML = "";
 
-    Princes.forEach(prince => {
-        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
-    })
+    CurrentPrince.currentActionNum = 0;
 
     CurrentPrince = getNextAvailablePrince();
 
     Princes.forEach(prince => {
         prince.isCurrent = (prince.name == CurrentPrince.name) ? true: false;
     });
+
+    Princes.forEach(prince => {
+        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
+    })
 
     enableDisableTurnButtons();
 }
