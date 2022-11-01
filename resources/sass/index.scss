@@ -31,45 +31,21 @@ $primary: black;
     background-color: $gray-200;
 }
 
-// .chancellor {
-//     @extend .prince;
-//     background-color: blueviolet;
-//     color: whitesmoke;
-// }
-
-// .exile2 {
-//     @extend .prince;
-//     background-color: gold;
-//     color: black;
-// }
-
-// .exile3 {
-//     @extend .prince;
-//     background-color: crimson;
-//     color: whitesmoke;
-// }
-
-// .exile4 {
-//     @extend .prince;
-//     background-color: cornflowerblue;
-//     color: whitesmoke;
-// }
-
 .chancellor {
     @extend .prince;
-    background-color: gray;
+    background-color: blueviolet;
     color: whitesmoke;
 }
 
 .exile2 {
     @extend .prince;
-    background-color: grey;
+    background-color: gold;
     color: black;
 }
 
 .exile3 {
     @extend .prince;
-    background-color: lightgray;
+    background-color: crimson;
     color: whitesmoke;
 }
 
@@ -78,6 +54,30 @@ $primary: black;
     background-color: cornflowerblue;
     color: whitesmoke;
 }
+
+// .chancellor {
+//     @extend .prince;
+//     background-color: gray;
+//     color: whitesmoke;
+// }
+
+// .exile2 {
+//     @extend .prince;
+//     background-color: grey;
+//     color: black;
+// }
+
+// .exile3 {
+//     @extend .prince;
+//     background-color: lightgray;
+//     color: whitesmoke;
+// }
+
+// .exile4 {
+//     @extend .prince;
+//     background-color: cornflowerblue;
+//     color: whitesmoke;
+// }
 
 .turnCounter {
     background-color: black;
