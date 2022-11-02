@@ -286,6 +286,11 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     changeNodeIdAndValue(cloneNode, "PrinceFavor1", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret1", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns1", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
+
+    // Debug options
+    changeNodeId(cloneNode, "PrinceMindOptions1", "PrinceMindOptions" + nextPrinceNumber);
+    let mindSelect = getElementById(cloneNode, "PrinceMindOptions" + nextPrinceNumber);
+    mindSelect.value = newPrince.mindCurrent;
     changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel1", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.faction_Arcane.level);
     changeNodeIdAndValue(cloneNode, "PrinceBeastLevel1", "PrinceBeastLevel" + nextPrinceNumber, newPrince.faction_Beast.level);
     changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel1", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.faction_Discord.level);
@@ -355,12 +360,12 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
     let newNode = getElementById(rootNode, rootNodeId);
     newNode.id = newNodeId;
 
-    if(newNode.nodeName == "INPUT"){
+    if (newNode.nodeName == "INPUT") {
         newNode.value = newValue;
-    }else{
+    } else {
         newNode.innerHTML = newValue;
     }
-    
+
 }
 
 function test() {
@@ -426,53 +431,17 @@ function searchAndPlay() {
     //CurrentPrince.stepCount = CurrentPrince.currentActionNum;
 }
 
-function cleanUp() {
-    const messageBox = new bootstrap.Modal(
-        document.getElementById("messageBox")
-    );
-
-    document.getElementById("messageBoxTitle").innerHTML =
-        "Cleanup";
-    document.getElementById("messageBoxBody").innerHTML =
-        "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
-    messageBox.show();
-
-    // Remove steps
-    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
-    princeSteps.innerHTML = "";
-
-    CurrentPrince.currentActionNum = 0;
-
-    CurrentPrince = getNextAvailablePrince();
-
-    Princes.forEach(prince => {
-        prince.isCurrent = (prince.name == CurrentPrince.name) ? true: false;
-    });
-
-    Princes.forEach(prince => {
-        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
-    })
-
-    enableDisableTurnButtons();
-}
-
-function enableDisableTurnButtons() {
-    // Enabled or disable turns buttons based on the current prince
-    let buttons = document.querySelectorAll("[id^='PrinceStartTurn'], [id^='PrinceNextStep']");
-    buttons.forEach(
-        function (b) {
-            // Disable the button if the suffix number is not equal to the Current Prince number
-            b.disabled = (b.id.slice(-1) != CurrentPrince.princeNumber) ? true : false;
-        })
-}
-
 function searchAndPlayClick(selectedFaction) {
+
+    SetValuesFromDebug();
+
     // todo refactor this
+
     CurrentPrince.currentActionNum = 1;
     //document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = 1;
     switch (selectedFaction) {
         case Factions.Arcane:
-            CurrentPrince.faction_Arcane.level += 1
+            CurrentPrince.faction_Arcane.level += 1;
             CurrentPrince.numActions = CurrentPrince.faction_Arcane.level
             document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Arcane.level;
             document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.faction_Arcane.level;
@@ -480,7 +449,7 @@ function searchAndPlayClick(selectedFaction) {
             CurrentPrince.currentFaction = CurrentPrince.faction_Arcane;
             break;
         case Factions.Beast:
-            CurrentPrince.faction_Beast.level += 1
+            CurrentPrince.faction_Beast.level += 1;
             CurrentPrince.numActions = CurrentPrince.faction_Beast.level
             document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.faction_Beast.level;
             document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.faction_Beast.level;
@@ -523,6 +492,65 @@ function searchAndPlayClick(selectedFaction) {
 
     addTurnNumberLabel()
     princeNextStep();
+}
+
+function SetValuesFromDebug() {
+    // Sets the faction levels and prince mind from the debug menu
+    // Allows the user to enter different values in case they have been set incorrectly
+    // because of a bug or the user picked the wrong options
+    let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
+    CurrentPrince.mindStart = mindSelect.value;
+    CurrentPrince.mindCurrent = mindSelect.value;
+
+    CurrentPrince.faction_Arcane.level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
+    CurrentPrince.faction_Beast.level = parseInt(document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value);
+    CurrentPrince.faction_Discord.level = parseInt(document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value);
+    CurrentPrince.faction_Hearth.level = parseInt(document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value);
+    CurrentPrince.faction_Nomad.level = parseInt(document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value);
+    CurrentPrince.faction_Order.level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
+}
+
+function cleanUp() {
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("messageBox")
+    );
+
+    document.getElementById("messageBoxTitle").innerHTML =
+        "Cleanup";
+    document.getElementById("messageBoxBody").innerHTML =
+        "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
+    messageBox.show();
+
+    // Remove steps
+    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
+    princeSteps.innerHTML = "";
+
+    CurrentPrince.currentActionNum = 0;
+
+    let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
+    mindSelect.value = CurrentPrince.mindCurrent;
+
+    CurrentPrince = getNextAvailablePrince();
+
+    Princes.forEach(prince => {
+        prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false;
+    });
+
+    Princes.forEach(prince => {
+        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
+    })
+
+    enableDisableTurnButtons();
+}
+
+function enableDisableTurnButtons() {
+    // Enabled or disable turns buttons based on the current prince
+    let buttons = document.querySelectorAll("[id^='PrinceStartTurn'], [id^='PrinceNextStep']");
+    buttons.forEach(
+        function (b) {
+            // Disable the button if the suffix number is not equal to the Current Prince number
+            b.disabled = (b.id.slice(-1) != CurrentPrince.princeNumber) ? true : false;
+        })
 }
 
 function addTurnNumberLabel() {
