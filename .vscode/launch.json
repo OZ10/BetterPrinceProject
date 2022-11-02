@@ -7,7 +7,14 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open index.html",
+            "name": "HOME Open index.html",
+            "file": "C:\\Users\\OZ10\\Documents\\GitHub\\BetterPrinceProject\\index.html"
+        },
+
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "OFFICE Open index.html",
             "file": "c:\\Workspace\\GitHub\\BetterPrinceProject\\index.html"
         }
     ]
