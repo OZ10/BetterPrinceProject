@@ -10986,6 +10986,14 @@ textarea.form-control-lg {
 
 .material-icons.md-48 {
   font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnSizeMed {
+  height: 50px;
+  width: 50px;
 }
 
 .btnNoBackground {
@@ -11001,7 +11009,6 @@ textarea.form-control-lg {
   border: 1px solid transparent;
   padding: 0.25rem;
   border-radius: 50%;
-  height: 100px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 

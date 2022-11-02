@@ -20,7 +20,9 @@
             <div class="d-flex justify-content-between mainheader">Better Prince Project
                 <div>
                     <!-- <button class="btn btn-primary" id="addPrinceButton" onclick="addNewPrince()">Add Prince</button> -->
-                    <button class="btn btn-primary" onclick="resetGame()">Reset</button>
+                    <button class="btn btn-primary" onclick="resetGame()">
+                        <span class="material-icons">replay</span>
+                    </button>
                     <button class="btn btn-secondary" onclick="test()">Click!</button>
                     <button type="button" class="btn btn-primary" onclick="changeRound()">
                         <span class="icon-medium" id="roundnumber" data-bs-toggle="tooltip" title="Round"
@@ -39,8 +41,8 @@
             <div class="row">
                 <div class="col">
                     <div class="col p-3 m-1 addNewPrince" id="addNewPrinceColumn">
-                        <div class="d-flex justify-content-between row" id="addNewPrinceRow">
-                            <button class="btnNoBackground" id="addPrinceButton" onclick="addNewPrince()">
+                        <div class="justify-content-center row" id="addNewPrinceRow">
+                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton" onclick="addNewPrince()">
                                 <span class="material-icons md-48">
                                     add_circle_outline
                                 </span>
@@ -90,17 +92,17 @@
                 </div>
             </div>
 
-            <div>
-                <button class="btn btn-primary m-2" id="PrinceStartTurn1" onclick="princeStartTurn()">Start
-                    Turn</button>
-                <!-- <button id="PrinceNextStep1" onclick="princeNextStep()">Next Step</button> -->
+            <div class="row m-1 justify-content-center">
+                <button class="btnNoBackground btnSizeMed" id="PrinceStartTurn1" onclick="princeStartTurn()">
+                    <span class="material-icons md-48">expand_more</span>
+                </button>
             </div>
 
             <div id="steps_Prince1">
 
             </div>
 
-            <div class="accordion d-none">
+            <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingDebug">
                         <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#debugMenu">
@@ -111,51 +113,51 @@
                 <div id="debugMenu" class="accordion-collapse collapse">
                     <div class="accordion-body">
                         <div class="row">
-                            <div class="col-md-auto">
+                            <div class="col-6">
                                 <div>Arcane Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <div id="PrinceArcaneLevel1">0</div>
+                                <input type="text" id="PrinceArcaneLevel1" value="0"></input>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-auto">
+                            <div class="col-6">
                                 <div>Beast Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <div id="PrinceBeastLevel1">0</div>
+                                <input id="PrinceBeastLevel1"></input>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-auto">
+                            <div class="col-6">
                                 <div>Discord Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <div id="PrinceDiscordLevel1">0</div>
+                                <input id="PrinceDiscordLevel1"></input>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-auto">
+                            <div class="col-6">
                                 <div>Hearth Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <div id="PrinceHearthLevel1">0</div>
+                                <input id="PrinceHearthLevel1"></input>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-auto">
+                            <div class="col-6">
                                 <div>Nomad Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <div id="PrinceNomadLevel1">0</div>
+                                <input id="PrinceNomadLevel1"></input>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-auto">
+                            <div class="col-6">
                                 <div>Order Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <div id="PrinceOrderLevel1">0</div>
+                                <input id="PrinceOrderLevel1"></input>
                             </div>
                         </div>
                     </div>
