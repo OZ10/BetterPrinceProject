@@ -451,14 +451,14 @@ function assessThreat() {
     // Set values from debug menu if they've changed
     SetValuesFromDebug();
 
-    if (CurrentPrince.status == Status.Chancellor) {
+    // if (CurrentPrince.status == Status.Chancellor) {
         const messageBox = new bootstrap.Modal(
             document.getElementById("assessThreatDialog")
         );
         messageBox.show();
-    } else {
-        searchAndPlay();
-    }
+    // } else {
+    //     searchAndPlay();
+    // }
 }
 
 function assessThreatYesNoClick(answer) {
@@ -502,7 +502,7 @@ function secondSearchAndPlay() {
 
 function searchAndPlayClick(selectedFaction) {
 
-    //SetValuesFromDebug();
+    showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
 
     if (secondSearchAndPlay() == false) {
         //SetValuesFromDebug();
@@ -586,13 +586,12 @@ function SetValuesFromDebug() {
 
 function showStandardMessageDialog(title, message) {
     const messageBox = new bootstrap.Modal(
-        document.getElementById("cleanupBox")
+        document.getElementById("messageBox")
     );
 
-    // document.getElementById("messageBoxTitle").innerHTML =
-    //     "Cleanup";
-    // document.getElementById("messageBoxBody").innerHTML =
-    //     "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
+    document.getElementById("messageBoxTitle").innerHTML = title;
+    document.getElementById("messageBoxBody").innerHTML = message;
+
     messageBox.show();
 }
 
