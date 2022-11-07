@@ -185,6 +185,14 @@ class Prince {
     }
 }
 
+class GameSettings {
+    constructor(selectedOath,
+        roundNumber) {
+        this.selectedOath = selectedOath,
+            this.roundNumber = roundNumber
+    }
+}
+
 let CurrentPrince;
 let Princes = new Array(1);
 
@@ -192,18 +200,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (localStorage.length > 0) {
 
+        //TODO Refactor this
         for (let princeNumber = 1; princeNumber < localStorage.length + 1; princeNumber++) {
-            Princes[princeNumber] = JSON.parse(localStorage.getItem(princeNumber));
-            createNewPrinceNode(princeNumber, Princes[princeNumber]);
+            let prince = JSON.parse(localStorage.getItem(princeNumber));
 
-            if (Princes[princeNumber].isCurrent) {
-                CurrentPrince = Princes[princeNumber];
+            if (prince != null) {
+                Princes[princeNumber] = JSON.parse(localStorage.getItem(princeNumber));
+                createNewPrinceNode(princeNumber, Princes[princeNumber]);
+
+                if (Princes[princeNumber].isCurrent) {
+                    CurrentPrince = Princes[princeNumber];
+                }
             }
         }
+
+        let gameSettings = JSON.parse(localStorage.getItem("settings"));
+        document.getElementById("selectOath").innerHTML = gameSettings.selectedOath;
+        document.getElementById("roundnumber").innerHTML = gameSettings.roundNumber;
 
         hideAddNewPrinceButton();
         enableDisableTurnButtons();
     } else {
+        let newGameSettings = new GameSettings("SUP", 1);
+        localStorage.setItem("settings", JSON.stringify(newGameSettings));
+        //localStorage.setItem("princes", "");
+
         Princes[1] = createNewPrince(getNextPrinceName(1), Status.Chancellor, 1);
         Princes[1].isCurrent = true;
         createNewPrinceNode(1, Princes[1]);
@@ -387,7 +408,24 @@ function hideAddNewPrinceButton() {
     document.getElementById("addNewPrinceColumn").classList.add("d-none")
 }
 
+function oathClick(selectedOath) {
+    switch (selectedOath) {
+        case "SUP":
+            break;
+        case "DS":
+            break;
+        case "PF":
+            break;
+        case "RB":
+            break;
+    }
+}
+
 function assessThreat() {
+
+    // Set values from debug menu if they've changed
+    SetValuesFromDebug();
+
     if (CurrentPrince.status == Status.Chancellor) {
         const messageBox = new bootstrap.Modal(
             document.getElementById("assessThreatDialog")
@@ -433,7 +471,7 @@ function searchAndPlay() {
 
 function searchAndPlayClick(selectedFaction) {
 
-    SetValuesFromDebug();
+    //SetValuesFromDebug();
 
     // todo refactor this
 
@@ -512,13 +550,13 @@ function SetValuesFromDebug() {
 
 function cleanUp() {
     const messageBox = new bootstrap.Modal(
-        document.getElementById("messageBox")
+        document.getElementById("cleanupBox")
     );
 
-    document.getElementById("messageBoxTitle").innerHTML =
-        "Cleanup";
-    document.getElementById("messageBoxBody").innerHTML =
-        "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
+    // document.getElementById("messageBoxTitle").innerHTML =
+    //     "Cleanup";
+    // document.getElementById("messageBoxBody").innerHTML =
+    //     "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
     messageBox.show();
 
     // Remove steps
@@ -534,13 +572,30 @@ function cleanUp() {
 
     Princes.forEach(prince => {
         prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false;
+        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
     });
 
-    Princes.forEach(prince => {
-        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
-    })
+    // Princes.forEach(prince => {
+    //     localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
+    // })
 
     enableDisableTurnButtons();
+
+    //showRoundChangeDialog();
+}
+
+function showRoundChangeDialog(){
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("roundChange")
+    );
+    messageBox.show();
+}
+
+function roundChangeClick(answer){
+    if(answer == "Yes"){
+        //localStorage.settItem("settings");
+        changeRound();
+    }
 }
 
 function enableDisableTurnButtons() {
