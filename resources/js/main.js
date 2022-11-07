@@ -200,6 +200,7 @@ class GameSettings {
 
 let CurrentPrince;
 let Princes = new Array(1);
+let CurrentGameSettings;
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -219,23 +220,52 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        let gameSettings = JSON.parse(localStorage.getItem("settings"));
-        document.getElementById("selectOath").innerHTML = gameSettings.selectedOath;
-        document.getElementById("roundnumber").innerHTML = gameSettings.roundNumber;
+        CurrentGameSettings = JSON.parse(localStorage.getItem("settings"));
+        document.getElementById("selectedOath").innerHTML = CurrentGameSettings.selectedOath;
+        document.getElementById("roundnumber").innerHTML = CurrentGameSettings.roundNumber;
 
         hideAddNewPrinceButton();
         enableDisableTurnButtons();
     } else {
-        let newGameSettings = new GameSettings("SUP", 1);
-        localStorage.setItem("settings", JSON.stringify(newGameSettings));
-        //localStorage.setItem("princes", "");
-
         Princes[1] = createNewPrince(getNextPrinceName(1), Status.Chancellor, 1);
         Princes[1].isCurrent = true;
         createNewPrinceNode(1, Princes[1]);
         CurrentPrince = Princes[1];
+
+        showOathSelectionDialog();
     }
 });
+
+function showOathSelectionDialog(){
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("oathSelectionDialog")
+    );
+    messageBox.show();
+}
+
+function oathClick(selectedOath) {
+    let startingMind;
+    switch (selectedOath) {
+        case "SUP":
+            startingMind = "sup_1";
+            break;
+        case "DS":
+            startingMind = "ds_1";
+            break;
+        case "PF":
+            startingMind = "pf_1";
+            break;
+        case "RB":
+            startingMind = "rb_1";
+            break;
+    }
+
+    document.getElementById("selectedOath").innerHTML = startingMind;
+
+    document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber).value = startingMind;
+    CurrentGameSettings = new GameSettings(selectedOath, 1);
+    localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
+}
 
 function resetGame() {
     localStorage.clear();
@@ -267,7 +297,10 @@ function createNewPrince(name, status, number) {
 function changeRound() {
     let round = getRoundNumber();
     round++;
-    document.getElementById("roundnumber").innerHTML = round++
+    document.getElementById("roundnumber").innerHTML = round;
+
+    CurrentGameSettings.roundNumber = round;
+    localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
 
     if (round == 10) {
         const messageBox = new bootstrap.Modal(
@@ -413,19 +446,6 @@ function hideAddNewPrinceButton() {
     document.getElementById("addNewPrinceColumn").classList.add("d-none")
 }
 
-function oathClick(selectedOath) {
-    switch (selectedOath) {
-        case "SUP":
-            break;
-        case "DS":
-            break;
-        case "PF":
-            break;
-        case "RB":
-            break;
-    }
-}
-
 function assessThreat() {
 
     // Set values from debug menu if they've changed
@@ -485,7 +505,7 @@ function searchAndPlayClick(selectedFaction) {
     //SetValuesFromDebug();
 
     if (secondSearchAndPlay() == false) {
-        SetValuesFromDebug();
+        //SetValuesFromDebug();
         CurrentPrince.currentActionNum = 1;
     }
 
@@ -614,15 +634,15 @@ function cleanUp() {
     //showRoundChangeDialog();
 }
 
-function showRoundChangeDialog(){
+function showRoundChangeDialog() {
     const messageBox = new bootstrap.Modal(
         document.getElementById("roundChange")
     );
     messageBox.show();
 }
 
-function roundChangeClick(answer){
-    if(answer == "Yes"){
+function roundChangeClick(answer) {
+    if (answer == "Yes") {
         //localStorage.settItem("settings");
         changeRound();
     }
@@ -1082,7 +1102,7 @@ function tradeFor() {
     let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
 
     let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
-        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()<br><br>";
 
     let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
         : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
