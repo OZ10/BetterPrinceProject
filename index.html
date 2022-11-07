@@ -8,6 +8,16 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="resources/css/index.css" rel="stylesheet">
 
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+
+<style>
+    body {
+      font-family: 'Marck Script', cursive;
+      font-size: 48px;
+    }
+  </style> -->
 
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
 
@@ -19,7 +29,7 @@
         <header class="">
             <div class="d-flex justify-content-between mainheader">Better Prince Project
                 <div>
-                    <!-- <button class="btn btn-primary" id="addPrinceButton" onclick="addNewPrince()">Add Prince</button> -->
+                    <span id="selectedOath">Oath</span>
                     <button class="btn btn-primary" onclick="resetGame()">
                         <span class="material-icons">replay</span>
                     </button>
@@ -112,51 +122,51 @@
                 </div>
                 <div id="debugMenu" class="accordion-collapse collapse">
                     <div class="accordion-body">
-                      <div class="row">
-                        <div class="col-6">
-                            <div>Mind Start:</div>
-                        </div>
-                        <div class="col-md-auto">
-                          <select class="form-select" id="PrinceMindOptions1">
-                            <option>sup_1</option>
-                            <option>sup_2</option>
-                            <option>sup_3</option>
-                            <option>sup_4</option>
-                            <option>sup_5</option>
-                            <option>sup_6</option>
-                            <option>sup_7</option>
-                            <option>sup_8</option>
-                            
-                            <option>ds_1</option>
-                            <option>ds_2</option>
-                            <option>ds_3</option>
-                            <option>ds_4</option>
-                            <option>ds_5</option>
-                            <option>ds_6</option>
-                            <option>ds_7</option>
-                            <option>ds_8</option>
+                        <div class="row">
+                            <div class="col-6">
+                                <div>Mind Start:</div>
+                            </div>
+                            <div class="col-md-auto">
+                                <select class="form-select" id="PrinceMindOptions1">
+                                    <option>sup_1</option>
+                                    <option>sup_2</option>
+                                    <option>sup_3</option>
+                                    <option>sup_4</option>
+                                    <option>sup_5</option>
+                                    <option>sup_6</option>
+                                    <option>sup_7</option>
+                                    <option>sup_8</option>
 
-                            <option>pf_1</option>
-                            <option>pf_2</option>
-                            <option>pf_3</option>
-                            <option>pf_4</option>
-                            <option>pf_5</option>
-                            <option>pf_6</option>
-                            <option>pf_7</option>
-                            <option>pf_8</option>
+                                    <option>ds_1</option>
+                                    <option>ds_2</option>
+                                    <option>ds_3</option>
+                                    <option>ds_4</option>
+                                    <option>ds_5</option>
+                                    <option>ds_6</option>
+                                    <option>ds_7</option>
+                                    <option>ds_8</option>
 
-                            <option>rb_1</option>
-                            <option>rb_2</option>
-                            <option>rb_3</option>
-                            <option>rb_4</option>
-                            <option>rb_5</option>
-                            <option>rb_6</option>
-                            <option>rb_7</option>
-                            <option>rb_8</option>
-                            <option>rb_9</option>
-                          </select>
+                                    <option>pf_1</option>
+                                    <option>pf_2</option>
+                                    <option>pf_3</option>
+                                    <option>pf_4</option>
+                                    <option>pf_5</option>
+                                    <option>pf_6</option>
+                                    <option>pf_7</option>
+                                    <option>pf_8</option>
+
+                                    <option>rb_1</option>
+                                    <option>rb_2</option>
+                                    <option>rb_3</option>
+                                    <option>rb_4</option>
+                                    <option>rb_5</option>
+                                    <option>rb_6</option>
+                                    <option>rb_7</option>
+                                    <option>rb_8</option>
+                                    <option>rb_9</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
                         <div class="row">
                             <div class="col-6">
                                 <div>Arcane Level: </div>
@@ -287,6 +297,25 @@
         </div>
     </div>
 
+    <!-- Cleanup Box -->
+    <div class="modal fade" id="cleanupBox" tabindex="-1" aria-labelledby="CleanupBox" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cleanp</h5>
+                </div>
+                <div class="modal-body d-flex">
+                    <p>Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-target="#roundChange" data-bs-toggle="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Yes/No Box -->
     <div class="modal fade" id="yesNo" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
         data-bs-backdrop="static">
@@ -306,7 +335,30 @@
                     <button type="button" class="btn btn-secondary" onclick="yesNoClick('No');" data-bs-dismiss="modal">
                         No
                     </button>
-                    <!-- <input type="text" id="answer" value=""> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Round Change Box -->
+    <div class="modal fade" id="roundChange" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">End of Round</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex">
+                    <p>Have all players had a turn this round?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="roundChangeClick('Yes');" data-bs-dismiss="modal">
+                        Yes
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="roundChangeClick('No');" data-bs-dismiss="modal">
+                        No
+                    </button>
                 </div>
             </div>
         </div>
@@ -403,7 +455,36 @@
                         data-bs-dismiss="modal">
                         Oath of Relics and Banners
                     </button>
-                    <!-- <input type="text" id="answer" value=""> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oath Selection Box -->
+    <div class="modal fade" id="oathSelectionDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Which Oath Was Selected?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex">
+                    <p id="oathDialogMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="oathClick('SUP');" data-bs-dismiss="modal">
+                        Oath of Supremacy
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="oathClick('DS');" data-bs-dismiss="modal">
+                        Oath of The Darkest Secret
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="oathClick('PF');" data-bs-dismiss="modal">
+                        Oath of The People's Favor
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="oathClick('RB');" data-bs-dismiss="modal">
+                        Oath of Relics and Banners
+                    </button>
                 </div>
             </div>
         </div>
