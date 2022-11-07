@@ -83,6 +83,7 @@ const Mind = {
     SUP_8: "sup_8",
     SUP_8_BR: "sup_8_br",
     DS_1: "ds_1",
+    DS_1_HOLD: "ds_1_hold",
     DS_1_BR: "ds_1_br",
     DS_1_PAY: "ds_1_pay",
     DS_2: "ds_2",
@@ -97,6 +98,7 @@ const Mind = {
     DS_7_DS: "ds_7_ds",
     DS_8: "ds_8",
     PF_1: "pf_1",
+    PF_1_HOLD: "pf_1_hold",
     PF_1_BR: "pf_1_br",
     PF_1_PAY: "pf_1_pay",
     PF_2: "pf_2",
@@ -110,6 +112,7 @@ const Mind = {
     PF_7: "pf_7",
     PF_8: "pf_8",
     RB_1: "rb_1",
+    RB_1_MOVE: "rb_1_move",
     RB_1_BR: "rb_1_br",
     RB_2: "rb_2",
     RB_2_PAY: "rb_2_pay",
@@ -117,6 +120,7 @@ const Mind = {
     RB_3_PAY: "rb_3_pay",
     RB_4: "rb_4",
     RB_5: "rb_5",
+    RB_5_MOVE: "rb_5_move",
     RB_6: "rb_6",
     RB_6_MOST: "rb_6_most",
     RB_6_PAY: "rb_6_pay",
@@ -125,7 +129,8 @@ const Mind = {
     RB_8: "rb_8",
     RB_8_MOST: "rb_8_most",
     RB_8_BR: "rb_8_br",
-    RB_9: "rb_9"
+    RB_9: "rb_9",
+    RB_9_MOVE: "rb_9_move"
 }
 
 class Prince {
@@ -173,16 +178,16 @@ class Prince {
     stepCount;
     factions;
     isCurrent;
+}
 
-    getFactionAlignmentList(alignment) {
-        let list = "";
-        this.factions.forEach(function (faction) {
-            if (faction.alignment == alignment) {
-                list += faction.name + "(" + faction.level + ") ";
-            }
-        })
-        return list.toUpperCase();
-    }
+function getFactionAlignmentList(alignment) {
+    let list = "";
+    CurrentPrince.factions.forEach(function (faction) {
+        if (faction.alignment == alignment) {
+            list += faction.name + "(" + faction.level + ") ";
+        }
+    })
+    return list.toUpperCase();
 }
 
 class GameSettings {
@@ -436,7 +441,7 @@ function assessThreat() {
     }
 }
 
-function assessthreatYesNoClick(answer) {
+function assessThreatYesNoClick(answer) {
     if (answer == 'Yes') {
         const messageBox = new bootstrap.Modal(
             document.getElementById("threatDialog")
@@ -469,14 +474,22 @@ function searchAndPlay() {
     //CurrentPrince.stepCount = CurrentPrince.currentActionNum;
 }
 
+function secondSearchAndPlay() {
+    // Check to see if the Prince has just carried out a second Search & Play
+    // A second Search & Play will skip certain actions
+    return (CurrentPrince.mindCurrent == Mind.PF_7 || CurrentPrince.mindCurrent == Mind.DS_8) ? true : false;
+}
+
 function searchAndPlayClick(selectedFaction) {
 
     //SetValuesFromDebug();
 
-    // todo refactor this
+    if (secondSearchAndPlay() == false) {
+        SetValuesFromDebug();
+        CurrentPrince.currentActionNum = 1;
+    }
 
-    CurrentPrince.currentActionNum = 1;
-    //document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = 1;
+    // todo refactor this
     switch (selectedFaction) {
         case Factions.Arcane:
             CurrentPrince.faction_Arcane.level += 1;
@@ -528,8 +541,11 @@ function searchAndPlayClick(selectedFaction) {
             break;
     }
 
+    // PF_6 is Search and Play for a second time. This does not add additional actions
+    //if(CurrentPrince.mindCurrent != Mind.PF_6){
     addTurnNumberLabel()
     princeNextStep();
+    //}
 }
 
 function SetValuesFromDebug() {
@@ -548,7 +564,7 @@ function SetValuesFromDebug() {
     CurrentPrince.faction_Order.level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
 }
 
-function cleanUp() {
+function showStandardMessageDialog(title, message) {
     const messageBox = new bootstrap.Modal(
         document.getElementById("cleanupBox")
     );
@@ -558,6 +574,20 @@ function cleanUp() {
     // document.getElementById("messageBoxBody").innerHTML =
     //     "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
     messageBox.show();
+}
+
+function cleanUp() {
+    showStandardMessageDialog("Cleanup",
+        "Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.");
+    // const messageBox = new bootstrap.Modal(
+    //     document.getElementById("messageBox")
+    // );
+
+    // document.getElementById("messageBoxTitle").innerHTML =
+    //     "Cleanup";
+    // document.getElementById("messageBoxBody").innerHTML =
+    //     "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
+    // messageBox.show();
 
     // Remove steps
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
@@ -629,17 +659,6 @@ function alignFaction(faction) {
 }
 
 function showYesNoDialog(title, message, actionName) {
-    // const messageBox = new bootstrap.Modal(
-    //     document.getElementById("yesNo")
-    // );
-
-    // document.getElementById("yesNoTitle").innerHTML =
-    //     title;
-    // document.getElementById("yesNoMessage").innerHTML =
-    //     message;
-    // messageBox.show();
-
-    //let CurrentPrince.stepCount = CurrentPrince.currentActionNum;
 
     // Whole Step node
     let newStepNode = document.getElementById("step_YesNo").cloneNode(true);
@@ -717,15 +736,6 @@ function getStepNodeId(oldId) {
 }
 
 function showMessageDialog(title, message) {
-    // const messageBox = new bootstrap.Modal(
-    //     document.getElementById("messageBox")
-    // );
-
-    // document.getElementById("messageBoxTitle").innerHTML =
-    //     title;
-    // document.getElementById("messageBoxBody").innerHTML =
-    //     message;
-    // messageBox.show();
 
     // Whole Step node
     let newStepNode = document.getElementById("step_Ok").cloneNode(true);
@@ -768,8 +778,12 @@ function showBannersDialog() {
 }
 
 function okClick() {
-    addTurnNumberLabel();
-    princeNextStep();
+    if (secondSearchAndPlay()) {
+        searchAndPlay();
+    } else {
+        addTurnNumberLabel();
+        princeNextStep();
+    }
 }
 
 function yesNoClick(answer) {
@@ -785,10 +799,6 @@ function bannersDialogClick(answer) {
     }
 
     princeNextStep();
-}
-
-function delay() {
-    return new Promise(resolve => setTimeout(resolve, 500));
 }
 
 // Below are the questions that the user is asked to help resolve the bot's turn
@@ -833,6 +843,9 @@ function princeNextStep() {
             case Mind.DS_1:
                 questionHoldTheBanner(BannerNames.DARKESTSECRET);
                 break;
+            case Mind.DS_1_HOLD:
+                questionHolderOfBanner(BannerNames.DARKESTSECRET);
+                break;
             case Mind.DS_1_BR:
                 questionBattleReady();
                 break;
@@ -874,6 +887,9 @@ function princeNextStep() {
             case Mind.PF_1:
                 questionHoldTheBanner(BannerNames.PEOPLESFAVOR);
                 break;
+            case Mind.PF_1_HOLD:
+                questionHolderOfBanner(BannerNames.PEOPLESFAVOR);
+                break;
             case Mind.PF_1_BR:
                 questionBattleReady();
                 break;
@@ -913,6 +929,11 @@ function princeNextStep() {
 
             case Mind.RB_1:
                 questionHoldTheBanner("most RELICS and BANNERS");
+                break;
+            case Mind.RB_1_MOVE:
+            case Mind.RB_5_MOVE:
+            case Mind.RB_9_MOVE:
+                questionAlreadyAtSiteWithMost("RELIC");
                 break;
             case Mind.RB_1_BR:
                 questionBattleReady();
@@ -983,8 +1004,16 @@ function questionMoveToSiteWithMost(currency) {
     showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?", ActionNames.Move);
 }
 
+function questionAlreadyAtSiteWithMost(item) {
+    showYesNoDialog("Am I...", "Already at a site with a  " + item + "?", ActionNames.Move);
+}
+
 function questionTradeWithSite(currency) {
     showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?", ActionNames.Trade);
+}
+
+function questionHolderOfBanner(bannerName) {
+    showYesNoDialog("Does...", "Another player hold the " + bannerName + "?", ActionNames.Hold + bannerName);
 }
 
 function questionPayForBanner(bannerName) {
@@ -1007,15 +1036,8 @@ function sup_1(answer) {
         return;
     }
 
-    // await delay();
-    // showYesNoDialog("Am I...", "Battle Ready?", resolve)
-
     CurrentPrince.mindCurrent = Mind.SUP_1_BR;
     princeNextStep();
-    // await new Promise((resolve) => showYesNoDialog("Am I...", "Battle Ready?", resolve));
-    // alert("fin!");
-    //SUP_2();
-    // return;
 }
 
 //todo rename this?
@@ -1028,17 +1050,10 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
         if (yesSkipToNext) {
             princeNextStep();
         } else {
-            showMessageDialog(yesMessageTitle, yesMessage)
 
-            //todo factor this
+            showMessageDialog(yesMessageTitle, yesMessage);
+
             CurrentPrince.currentActionNum += 1;
-            // if (CurrentPrince.currentActionNum <= CurrentPrince.numActions) {
-            //     document.getElementById("PrinceTurnNumber" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.currentActionNum;
-            // }
-
-            // Remove existing steps and move next
-            //document.getElementById("steps_Prince" + CurrentPrince.princeNumber).innerHTML = "";
-            //princeNextStep();
         }
         return;
     } else {
@@ -1060,34 +1075,36 @@ function OutcomeBanners(answer, noMind) {
 
 function sup_1_br(answer) {
     Outcome(answer, "Fight", fightText(), Mind.SUP_8, false, Mind.SUP_2);
-    // if (answer == 'Yes') {
-    //     showMessageDialog("Fight", fightText())
-    //     CurrentPrince.mindCurrent = Mind.SUP_8;
-    //     // princeNextStep();
-    //     return;
-    // }
-
-    // CurrentPrince.mindCurrent = Mind.SUP_2;
-    // princeNextStep();
 }
 
 function tradeFor() {
+    let factionListFriend = getFactionAlignmentList(Alignments.Friend);
+    let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
+
+    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
+
+    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
+        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+
     switch (CurrentPrince.mindCurrent) {
         case Mind.SUP_4:
         case Mind.PF_2:
             //Currency.FAVOR;
-            //return "Gain FAVOR from each empty card at your site whose suit matches any Friend, gaining the amount of FAVOR in the Relationships box for that card’s suit";
-            return "Gain FAVOR from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the backets ()";
+            return favorFriendMessage;
+        //return "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
         case Mind.DS_2:
             //Currency.SECRETS;
-            return "Gain SECRETS from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the backets ()";
+            return favorConspiratorMessage;
+        //return "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
         case Mind.DS_4:
         case Mind.PF_4:
         case Mind.RB_3:
         case Mind.RB_5:
             //Currency.BOTH;
-            return "Gain FAVOR from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the backets ()" +
-                "Gain SECRETS from each empty card at your site whose suit matches: " + CurrentPrince.getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the backets ()";
+            return favorFriendMessage +
+                favorConspiratorMessage
+        //"Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
         //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
     }
 }
@@ -1141,14 +1158,6 @@ function sup_5_br(answer) {
 
 function sup_7(answer) {
     OutcomeBanners(answer, Mind.SUP_5);
-    // if (answer == "Yes") {
-    //     showMessageDialog("Banners", "Yo")
-    //     // CurrentPrince.mindCurrent = Mind.SUP_2_BR;
-    //     return;
-    // }
-
-    // CurrentPrince.mindCurrent = Mind.SUP_5;
-    // princeNextStep();
 }
 
 function sup_8(answer) {
@@ -1160,15 +1169,11 @@ function sup_8_br(answer) {
 }
 
 function ds_1(answer) {
-    Outcome(answer, "", "", Mind.DS_8, true, Mind.DS_1_BR);
-    // if (answer == "Yes") {
-    //     CurrentPrince.mindCurrent = Mind.DS_8;
-    //     princeNextStep();
-    //     return;
-    // }
+    Outcome(answer, "", "", Mind.DS_8, true, Mind.DS_1_HOLD);
+}
 
-    // CurrentPrince.mindCurrent = Mind.DS_1_BR;
-    // princeNextStep();
+function ds_1_hold(answer) {
+    Outcome(answer, "", "", Mind.DS_1_BR, true, Mind.DS_1_PAY);
 }
 
 function ds_1_br(answer) {
@@ -1220,15 +1225,11 @@ function ds_8(answer) {
 }
 
 function pf_1(answer) {
-    Outcome(answer, "Search", searchText(), Mind.PF_7, false, Mind.PF_1_BR);
-    // if (answer == "Yes") {
-    //     CurrentPrince.mindCurrent = Mind.PF_7;
-    //     princeNextStep();
-    //     return;
-    // }
+    Outcome(answer, "Search", searchText(), Mind.PF_7, false, Mind.PF_1_HOLD);
+}
 
-    // CurrentPrince.mindCurrent = Mind.PF_1_BR;
-    // princeNextStep();
+function pf_1_hold(answer) {
+    Outcome(answer, "", "", Mind.PF_1_BR, true, Mind.PF_1_PAY);
 }
 
 function pf_1_br(answer) {
@@ -1277,14 +1278,6 @@ function pf_7(answer) {
 
 function pf_8(answer) {
     Outcome(answer, "", "", Mind.DS_8, true, Mind.PF_3);
-    // if (answer == "Yes") {
-    //     CurrentPrince.mindCurrent = Mind.DS_8;
-    //     princeNextStep();
-    //     return;
-    // }
-
-    // CurrentPrince.mindCurrent = Mind.PF_3;
-    // princeNextStep();
 }
 
 function rb_1(answer) {
@@ -1292,7 +1285,11 @@ function rb_1(answer) {
 }
 
 function rb_1_br(answer) {
-    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_2);
+    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_1_MOVE);
+}
+
+function rb_1_move(answer) {
+    Outcome(answer, "", "", Mind.RB_2_PAY, true, Mind.RB_2);
 }
 
 function rb_2(answer) {
@@ -1316,7 +1313,11 @@ function rb_4(answer) {
 }
 
 function rb_5(answer) {
-    Outcome(answer, "Trade", tradeText(), Mind.RB_6, false, Mind.RB_6);
+    Outcome(answer, "Trade", tradeText(), Mind.RB_6, false, Mind.RB_5_MOVE);
+}
+
+function rb_5_move(answer) {
+    Outcome(answer, "", "", Mind.RB_6_PAY, true, Mind.RB_6);
 }
 
 function rb_6(answer) {
@@ -1328,7 +1329,7 @@ function rb_6_most(answer) {
 }
 
 function rb_6_pay(answer) {
-    Outcome(answer, "Pay", payMessage("RELIC"), Mind.RB_8, true, Mind.RB_7);
+    Outcome(answer, "Pay", payMessage("RELIC"), Mind.RB_8, false, Mind.RB_7);
 }
 
 function rb_7(answer) {
@@ -1352,7 +1353,11 @@ function rb_8_br(answer) {
 }
 
 function rb_9(answer) {
-    Outcome(answer, "", "", Mind.SUP_5, true, Mind.RB_6);
+    Outcome(answer, "", "", Mind.SUP_5, true, Mind.RB_9_MOVE);
+}
+
+function rb_9_move(answer) {
+    Outcome(answer, "", "", Mind.RB_6_PAY, true, Mind.RB_6);
 }
 
 function payMessage(paymentType) {
