@@ -596,17 +596,17 @@ function showStandardMessageDialog(title, message) {
 }
 
 function cleanUp() {
-    showStandardMessageDialog("Cleanup",
-        "Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.");
-    // const messageBox = new bootstrap.Modal(
-    //     document.getElementById("messageBox")
-    // );
+    // showStandardMessageDialog("Cleanup",
+        // "Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.");
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("CleanupDialog")
+    );
 
     // document.getElementById("messageBoxTitle").innerHTML =
     //     "Cleanup";
     // document.getElementById("messageBoxBody").innerHTML =
     //     "Return any favor on cards to their matching favor banks. If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.";
-    // messageBox.show();
+     messageBox.show();
 
     // Remove steps
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
