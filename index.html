@@ -332,7 +332,10 @@
                     <h5 class="modal-title">Cleanup</h5>
                 </div>
                 <div class="modal-body d-flex">
-                    <p>Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.</p>
+                    <p>Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not
+                        hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except
+                        an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may
+                        take it to become a Citizen.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-target="#roundChange" data-bs-toggle="modal">
@@ -380,10 +383,12 @@
                     <p>Have all players had a turn this round?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="roundChangeClick('Yes');" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-primary" onclick="roundChangeClick('Yes');"
+                        data-bs-dismiss="modal">
                         Yes
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="roundChangeClick('No');" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" onclick="roundChangeClick('No');"
+                        data-bs-dismiss="modal">
                         No
                     </button>
                 </div>
@@ -524,37 +529,40 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Search And Play</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
-                <div class="modal-body d-flex">
+                <div class="modal-body">
                     <p id="searchAndPlayDialogMessage">Which faction did you draw?</p>
+                    <p class="d-none" id="searchAndPlayFriendMessage">Play As <b>Friend</b>, otherwise play <i>Unaligned</i> as
+                        <b>Friend</b>, otherwise play as <b>Conspirator</b></p>
+                    <p class="d-none" id="searchAndPlayConspiratorMessage">Play As <b>Conspirator</b>, otherwise play <i>Unaligned</i>
+                        as <b>Conspirator</b>, otherwise play as <b>Friend</b></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('discord');"
-                        data-bs-dismiss="modal">
-                        Discord
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('arcane');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnarcane"
+                        onclick="searchAndPlayClick('arcane');" data-bs-dismiss="modal">
                         Arcane
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('order');"
-                        data-bs-dismiss="modal">
-                        Order
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('hearth');"
-                        data-bs-dismiss="modal">
-                        Hearth
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('beast');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnbeast"
+                        onclick="searchAndPlayClick('beast');" data-bs-dismiss="modal">
                         Beast
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('nomad');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtndiscord"
+                        onclick="searchAndPlayClick('discord');" data-bs-dismiss="modal">
+                        Discord
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnhearth"
+                        onclick="searchAndPlayClick('hearth');" data-bs-dismiss="modal">
+                        Hearth
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnnomad"
+                        onclick="searchAndPlayClick('nomad');" data-bs-dismiss="modal">
                         Nomad
                     </button>
-                    <!-- <input type="text" id="answer" value=""> -->
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnorder"
+                        onclick="searchAndPlayClick('order');" data-bs-dismiss="modal">
+                        Order
+                    </button>
                 </div>
             </div>
         </div>
