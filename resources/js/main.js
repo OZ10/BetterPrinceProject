@@ -363,6 +363,7 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns1", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
 
     // Debug options
+    //changeNodeId(cloneNode, "Prince1DebugMenu", "Prince" + nextPrinceNumber + "DebugMenu");
     changeNodeId(cloneNode, "PrinceMindOptions1", "PrinceMindOptions" + nextPrinceNumber);
     let mindSelect = getElementById(cloneNode, "PrinceMindOptions" + nextPrinceNumber);
     mindSelect.value = newPrince.mindCurrent;
@@ -689,38 +690,26 @@ function showYesNoDialog(title, message, actionName) {
 
     // Step button node
     let stepBtnName = getStepNodeId("step_YesNo_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
-    //nodeNameBtn = nodeNameBtn.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    //nodeNameBtn = nodeNameBtn.replace("step1", "step" + CurrentPrince.stepCount);
 
     changeNodeIdAndValue(newStepNode, "step_YesNo_accord_btn_Prince1_step1", stepBtnName, actionName);
 
     // Step Detail node
     let stepName = getStepNodeId("step_YesNo_accord_Prince1_step1");
-    // nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    // nodeName = nodeName.replace("step1", "step" + CurrentPrince.stepCount);
 
     changeNodeId(newStepNode, "step_YesNo_accord_Prince1_step1", stepName);
-    //getElementById(cloneNode, nodeName).classList.remove("collapse");
 
     // Change button target
     getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
 
     // Title Step node
     let stepTitleName = getStepNodeId("step_YesNo_accord_title_Prince1_step1");
-    // nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    // nodeName = nodeName.replace("step1", "step" + CurrentPrince.stepCount);
 
     changeNodeIdAndValue(newStepNode, "step_YesNo_accord_title_Prince1_step1", stepTitleName, title);
 
     // Body Step node
     let stepBodyName = "step_YesNo_accord_body_Prince1_step1";
-    // nodeName = nodeName.replace("Prince1", "Prince" + CurrentPrince.princeNumber);
-    // nodeName = nodeName.replace("step1", "step" + CurrentPrince.stepCount);
 
     changeNodeIdAndValue(newStepNode, "step_YesNo_accord_body_Prince1_step1", stepBodyName, message);
-
-    //getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = title;
-    //getElementById(cloneNode, "accord_body_Prince1_step1").textContent = message;
 
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
@@ -740,16 +729,6 @@ function ShowHideSteps(princeSteps, stepName) {
             step.classList.add("collapse")
         }
     })
-
-    // todo find a decent method to disable accordions
-    // allSteps = princeSteps.querySelectorAll("[id^='step_YesNo_accord_btn_Prince" + CurrentPrince.princeNumber + "_step'], [id^='step_Ok_accord_btn_Prince" + CurrentPrince.princeNumber + "_step']")
-    // allSteps.forEach(function (step) {
-    //     if (stepName == step.id) {
-    //         step.disabled = false;
-    //     } else {
-    //         step.disabled = true;
-    //     }
-    // })
 }
 
 function getStepNodeId(oldId) {
