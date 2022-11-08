@@ -184,10 +184,23 @@ function getFactionAlignmentList(alignment) {
     let list = "";
     CurrentPrince.factions.forEach(function (faction) {
         if (faction.alignment == alignment) {
-            list += faction.name + "(" + faction.level + ") ";
+            list += faction.name + "(" + convertFactionLevelToFavor(faction.level) + ") ";
         }
     })
     return list.toUpperCase();
+}
+
+function convertFactionLevelToFavor(level){
+    // Faction level dictates how much favor is traded for
+    switch (level){
+        case 2:
+            return "1";
+        case 3:
+        case 4:
+            return "2";
+        case 5:
+            return "3";
+    }
 }
 
 class GameSettings {
