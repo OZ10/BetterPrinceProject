@@ -64,15 +64,15 @@
         </div>
     </main>
 
-    <div class="col p-3 m-1 d-none" id="PrinceColumn1">
-        <div class="d-flex justify-content-between row" id="PrinceRow1">
+    <div class="col p-3 m-1 d-none" id="PrinceColumn">
+        <div class="d-flex justify-content-between row" id="PrinceRow">
 
             <h5 class="col-md-auto">
-                <div id="PrinceName1">John</div>
+                <div id="PrinceName">John</div>
             </h5>
 
             <div class="col-md-auto">
-                <div class="turnCounter" id="PrinceTotalTurns1">#0</div>
+                <div class="turnCounter" id="PrinceTotalTurns">#0</div>
             </div>
 
             <h6 class="row">
@@ -80,7 +80,12 @@
                     <div>Status: </div>
                 </div>
                 <div class="col-md-auto">
-                    <div id="PrinceStatus1"></div>
+                    <div class="d-none" id="PrinceStatusSelected"></div>
+                    <select class="form-select" id="PrinceStatus" onchange="changeStatus(value);">
+                        <option>chancellor</option>
+                        <option>citizen</option>
+                        <option>exile</option>
+                    </select>
                 </div>
             </h6>
 
@@ -89,7 +94,7 @@
                     <div>Favor: </div>
                 </div>
                 <div class="col-md-auto">
-                    <div id="PrinceFavor1">0</div>
+                    <div id="PrinceFavor">0</div>
                 </div>
             </div>
 
@@ -98,17 +103,17 @@
                     <div>Secret: </div>
                 </div>
                 <div class="col-md-auto">
-                    <div id="PrinceSecret1">0</div>
+                    <div id="PrinceSecret">0</div>
                 </div>
             </div>
 
             <div class="row m-1 justify-content-center">
-                <button class="btnNoBackground btnSizeMed" id="PrinceStartTurn1" onclick="princeStartTurn()">
+                <button class="btnNoBackground btnSizeMed" id="PrinceStartTurn" onclick="princeStartTurn()">
                     <span class="material-icons md-48">expand_more</span>
                 </button>
             </div>
 
-            <div id="steps_Prince1">
+            <div id="steps_Prince">
 
             </div>
 
@@ -127,7 +132,7 @@
                                 <div>Mind Start:</div>
                             </div>
                             <div class="col-md-auto">
-                                <select class="form-select" id="PrinceMindOptions1">
+                                <select class="form-select" id="PrinceMindOptions">
                                     <option>sup_1</option>
                                     <option>sup_1_br</option>
                                     <option>sup_2</option>
@@ -199,7 +204,7 @@
                                 <div>Arcane Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceArcaneLevel1" value="0"></input>
+                                <input type="number" id="PrinceArcaneLevel" value="0"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -207,7 +212,7 @@
                                 <div>Beast Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceBeastLevel1"></input>
+                                <input type="number" id="PrinceBeastLevel"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -215,7 +220,7 @@
                                 <div>Discord Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceDiscordLevel1"></input>
+                                <input type="number" id="PrinceDiscordLevel"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -223,7 +228,7 @@
                                 <div>Hearth Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceHearthLevel1"></input>
+                                <input type="number" id="PrinceHearthLevel"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -231,7 +236,7 @@
                                 <div>Nomad Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceNomadLevel1"></input>
+                                <input type="number" id="PrinceNomadLevel"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -239,7 +244,7 @@
                                 <div>Order Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceOrderLevel1"></input>
+                                <input type="number" id="PrinceOrderLevel"></input>
                             </div>
                         </div>
                     </div>
@@ -252,18 +257,18 @@
     <div class="accordion d-none m-1" id="step_YesNo">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" id="step_YesNo_accord_btn_Prince1_step1" data-bs-toggle="collapse"
-                    data-bs-target="#accord_Prince1_step1">
+                <button class="accordion-button" id="YesNo_accord_btn_Prince_step" data-bs-toggle="collapse"
+                    data-bs-target="#accord_Prince_step">
                     Step 1
                 </button>
             </h2>
 
-            <div class="accordion-collapse collapse" id="step_YesNo_accord_Prince1_step1">
+            <div class="accordion-collapse collapse" id="YesNo_accord_Prince_step">
                 <div class="accordion-body">
-                    <b id="step_YesNo_accord_title_Prince1_step1">
+                    <b id="YesNo_accord_title_Prince_step">
                         Title
                     </b>
-                    <p id="step_YesNo_accord_body_Prince1_step1">
+                    <p id="YesNo_accord_body_Prince_step">
                         Body
                     </p>
                     <button class="btn btn-primary" onclick="yesNoClick('Yes');">
@@ -280,18 +285,18 @@
     <div class="accordion d-none mb-4" id="step_Ok">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" id="step_Ok_accord_btn_Prince1_step1" data-bs-toggle="collapse"
-                    data-bs-target="#accord_Prince1_step1">
+                <button class="accordion-button" id="Ok_accord_btn_Prince_step" data-bs-toggle="collapse"
+                    data-bs-target="#accord_Prince_step">
                     Step 1
                 </button>
             </h2>
 
-            <div class="accordion-collapse collapse" id="step_Ok_accord_Prince1_step1">
+            <div class="accordion-collapse collapse" id="Ok_accord_Prince_step">
                 <div class="accordion-body">
-                    <b id="step_Ok_accord_title_Prince1_step1">
+                    <b id="Ok_accord_title_Prince_step">
                         Title
                     </b>
-                    <p id="step_Ok_accord_body_Prince1_step1">
+                    <p id="Ok_accord_body_Prince_step">
                         Body
                     </p>
                     <button class="btn btn-primary" onclick="okClick('Yes');">
@@ -302,7 +307,7 @@
         </div>
     </div>
 
-    <div class="d-none" id="prince1_turnNumber1">Turn #1</div>
+    <div class="d-none" id="prince_turnNumber">Turn #1</div>
 
     <!-- Message Box -->
     <div class="modal fade" id="messageBox" tabindex="-1" aria-labelledby="MessageBox" aria-hidden="true">

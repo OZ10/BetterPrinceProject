@@ -280,6 +280,7 @@ function oathClick(selectedOath) {
     document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber).value = startingMind;
     CurrentGameSettings = new GameSettings(selectedOath, 1);
     localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
+    savePrinceSettings();
 }
 
 function resetGame() {
@@ -345,8 +346,8 @@ function addNewPrince() {
 }
 
 function createNewPrinceNode(nextPrinceNumber, newPrince) {
-    let cloneNode = document.getElementById("PrinceColumn1").cloneNode(true);
-    cloneNode.Id = "PrinceColumn" + nextPrinceNumber;
+    let cloneNode = document.getElementById("PrinceColumn").cloneNode(true);
+    cloneNode.id = "PrinceColumn" + nextPrinceNumber;
     cloneNode.classList.remove("d-none");
 
     if (newPrince.status == Status.Chancellor) {
@@ -355,26 +356,27 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
         cloneNode.classList.add("exile" + nextPrinceNumber);
     }
 
-    changeNodeIdAndValue(cloneNode, "PrinceName1", "PrinceName" + nextPrinceNumber, newPrince.name);
-    changeNodeIdAndValue(cloneNode, "PrinceStatus1", "PrinceStatus" + nextPrinceNumber, newPrince.status);
-    changeNodeIdAndValue(cloneNode, "PrinceFavor1", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
-    changeNodeIdAndValue(cloneNode, "PrinceSecret1", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
-    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns1", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
+    changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
+    changeNodeIdAndValue(cloneNode, "PrinceStatusSelected", "PrinceStatusSelected" + nextPrinceNumber, newPrince.status);
+    changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
+    changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
+    changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
+    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
 
     // Debug options
     //changeNodeId(cloneNode, "Prince1DebugMenu", "Prince" + nextPrinceNumber + "DebugMenu");
-    changeNodeId(cloneNode, "PrinceMindOptions1", "PrinceMindOptions" + nextPrinceNumber);
+    changeNodeId(cloneNode, "PrinceMindOptions", "PrinceMindOptions" + nextPrinceNumber);
     let mindSelect = getElementById(cloneNode, "PrinceMindOptions" + nextPrinceNumber);
     mindSelect.value = newPrince.mindCurrent;
-    changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel1", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Arcane)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel1", "PrinceBeastLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Beast)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel1", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Discord)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel1", "PrinceHearthLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Hearth)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel1", "PrinceNomadLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Nomad)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel1", "PrinceOrderLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Order)[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Arcane)[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel", "PrinceBeastLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Beast)[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Discord)[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel", "PrinceHearthLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Hearth)[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel", "PrinceNomadLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Nomad)[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel", "PrinceOrderLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Order)[1].level);
 
     // buttons
-    changeNodeId(cloneNode, "PrinceStartTurn1", "PrinceStartTurn" + nextPrinceNumber);
+    changeNodeId(cloneNode, "PrinceStartTurn", "PrinceStartTurn" + nextPrinceNumber);
     let button = getElementById(cloneNode, "PrinceStartTurn" + nextPrinceNumber);
 
     // todo refactor this
@@ -385,7 +387,7 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     }
 
     // steps
-    changeNodeIdAndValue(cloneNode, "steps_Prince1", "steps_Prince" + nextPrinceNumber, "");
+    changeNodeIdAndValue(cloneNode, "steps_Prince", "steps_Prince" + nextPrinceNumber, "");
 
     //document.getElementById("Princes").insertBefore(cloneNode, document.getElementById("addNewPrinceColumn")); // appendChild(cloneNode);
     document.getElementById("Princes").appendChild(cloneNode);
@@ -435,7 +437,7 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
     let newNode = getElementById(rootNode, rootNodeId);
     newNode.id = newNodeId;
 
-    if (newNode.nodeName == "INPUT") {
+    if (newNode.nodeName == "INPUT" || newNode.nodeName == "SELECT") {
         newNode.value = newValue;
     } else {
         newNode.innerHTML = newValue;
@@ -443,13 +445,18 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
 
 }
 
+function changeStatus(value){
+    getElementById(document, "PrinceStatusSelected" + CurrentPrince.princeNumber).innerHTML = value;
+    getElementById(document, "PrinceStatus" + CurrentPrince.princeNumber).classList.add("d-none");
+}
+
 function test() {
     let cloneNode = document.getElementById("step_YesNo").cloneNode(true);
     cloneNode.classList.remove("d-none");
-    getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = "Can I.....";
-    getElementById(cloneNode, "accord_body_Prince1_step1").textContent = "Muster?";
+    getElementById(cloneNode, "accord_btn_Prince_step").innerHTML = "Can I.....";
+    getElementById(cloneNode, "accord_body_Prince_step").textContent = "Muster?";
 
-    document.getElementById("accord_Prince1").appendChild(cloneNode);
+    document.getElementById("accord_Prince").appendChild(cloneNode);
 }
 
 function princeStartTurn() {
@@ -657,12 +664,16 @@ function cleanUp() {
 
     CurrentPrince = getNextAvailablePrince();
 
-    Princes.forEach(prince => {
-        prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false;
-        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
-    });
+    savePrinceSettings()
 
     enableDisableTurnButtons();
+}
+
+function savePrinceSettings() {
+    Princes.forEach(prince => {
+        prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false
+        localStorage.setItem(prince.princeNumber, JSON.stringify(prince))
+    })
 }
 
 function showRoundChangeDialog() {
@@ -686,13 +697,19 @@ function enableDisableTurnButtons() {
         function (b) {
             // Disable the button if the suffix number is not equal to the Current Prince number
             b.disabled = (b.id.slice(-1) != CurrentPrince.princeNumber) ? true : false;
+
+            if(b.id.slice(-1) == CurrentPrince.princeNumber){
+                b.classList.remove("d-none");
+            }else{
+                b.classList.add("d-none");
+            }
         })
 }
 
 function addTurnNumberLabel() {
-    let turnNumberLabel = document.getElementById("prince1_turnNumber1").cloneNode()
+    let turnNumberLabel = document.getElementById("prince_turnNumber").cloneNode()
     turnNumberLabel.classList.remove("d-none")
-    turnNumberLabel.id = "prince1_turnNumber1".replace("prince1", "prince" + CurrentPrince.princeNumber).replace("turnNumber1", "turnNumber" + CurrentPrince.currentActionNum)
+    turnNumberLabel.id = "prince_turnNumber".replace("prince", "prince" + CurrentPrince.princeNumber).replace("turnNumber", "turnNumber" + CurrentPrince.currentActionNum)
     turnNumberLabel.innerHTML = "Turn #" + CurrentPrince.currentActionNum
 
     let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber)
@@ -718,27 +735,27 @@ function showYesNoDialog(title, message, actionName) {
     newStepNode.classList.remove("d-none");
 
     // Step button node
-    let stepBtnName = getStepNodeId("step_YesNo_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
+    let stepBtnName = getStepNodeId("YesNo_accord_btn_Prince_step"); //"accord_btn_Prince1_step1";
 
-    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_btn_Prince1_step1", stepBtnName, actionName);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_btn_Prince_step", stepBtnName, actionName);
 
     // Step Detail node
-    let stepName = getStepNodeId("step_YesNo_accord_Prince1_step1");
+    let stepName = getStepNodeId("YesNo_accord_Prince_step");
 
-    changeNodeId(newStepNode, "step_YesNo_accord_Prince1_step1", stepName);
+    changeNodeId(newStepNode, "YesNo_accord_Prince_step", stepName);
 
     // Change button target
     getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
 
     // Title Step node
-    let stepTitleName = getStepNodeId("step_YesNo_accord_title_Prince1_step1");
+    let stepTitleName = getStepNodeId("YesNo_accord_title_Prince_step");
 
-    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_title_Prince1_step1", stepTitleName, title);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_title_Prince_step", stepTitleName, title);
 
     // Body Step node
-    let stepBodyName = "step_YesNo_accord_body_Prince1_step1";
+    let stepBodyName = getStepNodeId("YesNo_accord_body_Prince_step");
 
-    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_body_Prince1_step1", stepBodyName, message);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", stepBodyName, message);
 
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
@@ -750,7 +767,7 @@ function showYesNoDialog(title, message, actionName) {
 }
 
 function ShowHideSteps(princeSteps, stepName) {
-    let allSteps = princeSteps.querySelectorAll("[id^='step_YesNo_accord_Prince" + CurrentPrince.princeNumber + "_step'], [id^='step_Ok_accord_Prince" + CurrentPrince.princeNumber + "_step']")
+    let allSteps = princeSteps.querySelectorAll("[id^='YesNo_accord_Prince" + CurrentPrince.princeNumber + "_step'], [id^='Ok_accord_Prince" + CurrentPrince.princeNumber + "_step']")
     allSteps.forEach(function (step) {
         if (stepName == step.id) {
             step.classList.remove("collapse")
@@ -761,7 +778,7 @@ function ShowHideSteps(princeSteps, stepName) {
 }
 
 function getStepNodeId(oldId) {
-    return oldId.replace("Prince1", "Prince" + CurrentPrince.princeNumber).replace("step1", "step" + CurrentPrince.stepCount);
+    return oldId.replace("Prince", "Prince" + CurrentPrince.princeNumber).replace("step", "step" + CurrentPrince.stepCount);
 }
 
 function showMessageDialog(title, message) {
@@ -773,24 +790,24 @@ function showMessageDialog(title, message) {
     newStepNode.classList.remove("d-none");
 
     // Step button node
-    let stepBtnName = getStepNodeId("step_Ok_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
+    let stepBtnName = getStepNodeId("Ok_accord_btn_Prince_step"); //"accord_btn_Prince1_step1";
 
-    changeNodeIdAndValue(newStepNode, "step_Ok_accord_btn_Prince1_step1", stepBtnName, "OUTCOME");
+    changeNodeIdAndValue(newStepNode, "Ok_accord_btn_Prince_step", stepBtnName, "OUTCOME");
 
     // Step Detail node
-    let stepName = getStepNodeId("step_Ok_accord_Prince1_step1");
-    changeNodeId(newStepNode, "step_Ok_accord_Prince1_step1", stepName);
+    let stepName = getStepNodeId("Ok_accord_Prince_step");
+    changeNodeId(newStepNode, "Ok_accord_Prince_step", stepName);
 
     // Change button target
     getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
 
     // Title Step node
-    let stepTitleName = getStepNodeId("step_Ok_accord_title_Prince1_step1");
-    changeNodeIdAndValue(newStepNode, "step_Ok_accord_title_Prince1_step1", stepTitleName, title);
+    let stepTitleName = getStepNodeId("Ok_accord_title_Prince_step");
+    changeNodeIdAndValue(newStepNode, "Ok_accord_title_Prince_step", stepTitleName, title);
 
     // Body Step node
-    let stepBodyName = "step_Ok_accord_body_Prince1_step1";
-    changeNodeIdAndValue(newStepNode, "step_Ok_accord_body_Prince1_step1", stepBodyName, message);
+    let stepBodyName = "Ok_accord_body_Prince_step";
+    changeNodeIdAndValue(newStepNode, "Ok_accord_body_Prince_step", stepBodyName, message);
 
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
