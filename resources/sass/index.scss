@@ -109,3 +109,9 @@ $primary: black;
 .btnNoBackground:hover {
     background-color: $gray-400;
 }
+
+div[disabled]{
+    pointer-events: none;
+    opacity: 0.5;
+    background: #CCC;
+}
