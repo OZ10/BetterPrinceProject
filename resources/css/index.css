@@ -10943,7 +10943,7 @@ textarea.form-control-lg {
   border-radius: 10px;
 }
 
-.prince, .exile4, .exile3, .exile2, .chancellor, .addNewPrince {
+.prince, .exile4, .exile3, .exile2, .exile1, .chancellor, .addNewPrince {
   max-width: 400px;
   border-radius: 10px;
 }
@@ -10957,19 +10957,24 @@ textarea.form-control-lg {
   color: whitesmoke;
 }
 
-.exile2 {
+.exile1 {
   background-color: gold;
   color: black;
 }
 
-.exile3 {
+.exile2 {
   background-color: crimson;
   color: whitesmoke;
 }
 
-.exile4 {
+.exile3 {
   background-color: cornflowerblue;
   color: whitesmoke;
+}
+
+.exile4 {
+  background-color: gainsboro;
+  color: black;
 }
 
 .friend {
@@ -11024,8 +11029,7 @@ textarea.form-control-lg {
   background-color: #ced4da;
 }
 
-div[disabled] {
+div.disabled {
   pointer-events: none;
-  opacity: 0.5;
-  background: #CCC;
+  opacity: 0.3;
 }/*# sourceMappingURL=index.css.map */

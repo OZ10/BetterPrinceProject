@@ -36,22 +36,28 @@ $primary: black;
     color: whitesmoke;
 }
 
-.exile2 {
+.exile1 {
     @extend .prince;
     background-color: gold;
     color: black;
 }
 
-.exile3 {
+.exile2 {
     @extend .prince;
     background-color: crimson;
     color: whitesmoke;
 }
 
-.exile4 {
+.exile3 {
     @extend .prince;
     background-color: cornflowerblue;
     color: whitesmoke;
+}
+
+.exile4 {
+    @extend .prince;
+    background-color: gainsboro;
+    color: black;
 }
 
 .friend{
@@ -110,8 +116,8 @@ $primary: black;
     background-color: $gray-400;
 }
 
-div[disabled]{
+div.disabled{
     pointer-events: none;
-    opacity: 0.5;
-    background: #CCC;
+    opacity: 0.3;
+    //background: #CCC;
 }

@@ -160,20 +160,14 @@ class Prince {
         this.status = status;
         this.numwarbands = numwarbands;
         this.currentThreat = currentThreat;
-        this.faction_Discord = faction_Discord,
-            this.faction_Arcane = faction_Arcane,
-            this.faction_Order = faction_Order,
-            this.faction_Hearth = faction_Hearth,
-            this.faction_Beast = faction_Beast,
-            this.faction_Nomad = faction_Nomad,
-            this.numActions = numActions,
+        this.numActions = numActions,
             this.currentActionNum = currentActionNum,
             this.princeNumber = princeNumber,
             this.currentFaction = currentFaction;
         this.factions = new Array(0);
-        this.factions.push([Factions.Arcane, faction_Arcane], [Factions.Beast, faction_Beast],
-            [Factions.Discord, faction_Discord], [Factions.Hearth, faction_Hearth],
-            [Factions.Nomad, faction_Nomad], [Factions.Order, faction_Order]);
+        this.factions.push(faction_Arcane, faction_Beast,
+            faction_Discord, faction_Hearth,
+            faction_Nomad,  faction_Order);
         this.stepCount = 1;
     }
 
@@ -185,8 +179,8 @@ class Prince {
 function getFactionAlignmentList(alignment) {
     let list = "";
     CurrentPrince.factions.forEach(faction => {
-        if (faction[1].alignment == alignment) {
-            list += faction[1].name + "(" + convertFactionLevelToFavor(faction[1].level) + ") ";
+        if (faction.alignment == alignment) {
+            list += faction.name + "(" + convertFactionLevelToFavor(faction.level) + ") ";
         }
     })
     return list.toUpperCase();
@@ -240,14 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("roundnumber").innerHTML = CurrentGameSettings.roundNumber;
 
         hideAddNewPrinceButton();
-        enableDisableTurnButtons();
-    } else {
-        Princes[1] = createNewPrince(getNextPrinceName(1), Status.Chancellor, 1);
-        Princes[1].isCurrent = true;
-        createNewPrinceNode(1, Princes[1]);
-        CurrentPrince = Princes[1];
-
-        showOathSelectionDialog();
+        enableDisablePrinces();
     }
 });
 
@@ -335,14 +322,23 @@ function getRoundNumber() {
     return document.getElementById("roundnumber").innerHTML;
 }
 
-function addNewPrince() {
+function addNewPrinceClick() {
 
     let nextPrinceNumber = getNextPrinceNumber();
 
     let newPrince = createNewPrince(getNextPrinceName(nextPrinceNumber), Status.Exile, nextPrinceNumber);
     Princes[nextPrinceNumber] = newPrince;
 
+    // Make Prince current if there is currently only one Prince (Princes array has a blank entry at 1)
+    if (Princes.length == 2) {
+        newPrince.isCurrent = true;
+        CurrentPrince = newPrince;
+        showOathSelectionDialog();
+    }
+
     createNewPrinceNode(nextPrinceNumber, newPrince)
+
+    savePrinceSettings();
 }
 
 function createNewPrinceNode(nextPrinceNumber, newPrince) {
@@ -357,7 +353,6 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     }
 
     changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
-    changeNodeIdAndValue(cloneNode, "PrinceStatusSelected", "PrinceStatusSelected" + nextPrinceNumber, newPrince.status);
     changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
     changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
@@ -368,12 +363,12 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     changeNodeId(cloneNode, "PrinceMindOptions", "PrinceMindOptions" + nextPrinceNumber);
     let mindSelect = getElementById(cloneNode, "PrinceMindOptions" + nextPrinceNumber);
     mindSelect.value = newPrince.mindCurrent;
-    changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Arcane)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel", "PrinceBeastLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Beast)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Discord)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel", "PrinceHearthLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Hearth)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel", "PrinceNomadLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Nomad)[1].level);
-    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel", "PrinceOrderLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Order)[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.factions[0].level);
+    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel", "PrinceBeastLevel" + nextPrinceNumber, newPrince.factions[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.factions[2].level);
+    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel", "PrinceHearthLevel" + nextPrinceNumber, newPrince.factions[3].level);
+    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel", "PrinceNomadLevel" + nextPrinceNumber, newPrince.factions[4].level);
+    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel", "PrinceOrderLevel" + nextPrinceNumber, newPrince.factions[5].level);
 
     // buttons
     changeNodeId(cloneNode, "PrinceStartTurn", "PrinceStartTurn" + nextPrinceNumber);
@@ -381,9 +376,11 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 
     // todo refactor this
     if (newPrince.isCurrent) {
-        button.disabled = false
+        // button.disabled = false;
+        cloneNode.classList.remove("disabled");
     } else {
-        button.disabled = true
+        // button.disabled = true;
+        cloneNode.classList.add("disabled")
     }
 
     // steps
@@ -445,9 +442,58 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
 
 }
 
-function changeStatus(value){
-    getElementById(document, "PrinceStatusSelected" + CurrentPrince.princeNumber).innerHTML = value;
-    getElementById(document, "PrinceStatus" + CurrentPrince.princeNumber).classList.add("d-none");
+function changeStatus(status) {
+    CurrentPrince.status = status;
+    Princes[CurrentPrince.princeNumber].status = status;
+    // let prince = getPrince();
+    // prince.status = status;
+
+    let princeNode = document.getElementById("PrinceColumn" + CurrentPrince.princeNumber);
+    princeNode.classList.remove("chancellor");
+    princeNode.classList.remove("exile1");
+    princeNode.classList.remove("exile2");
+    princeNode.classList.remove("exile3");
+    princeNode.classList.remove("exile4");
+
+    if (status == Status.Chancellor) {
+        princeNode.classList.add(Status.Chancellor);
+    } else {
+        princeNode.classList.add(status + CurrentPrince.princeNumber);
+    }
+
+    savePrinceSettings();
+
+}
+
+function princeMindChange(value) {
+    CurrentPrince.mindCurrent = value;
+    savePrinceSettings();
+}
+
+function factionLevelChange(id, value) {
+    let princeNumber = CurrentPrince.princeNumber;
+    switch (id) {
+        case "PrinceArcaneLevel" + princeNumber:
+            CurrentPrince.factions[0].level = value;
+            break;
+        case "PrinceBeastLevel" + princeNumber:
+            CurrentPrince.factions[1].level = value;
+            break;
+        case "PrinceDiscordLevel" + princeNumber:
+            CurrentPrince.factions[2].level = value;
+            break;
+        case "PrinceHearthLevel" + princeNumber:
+            CurrentPrince.factions[3].level = value;
+            break;
+        case "PrinceNomadLevel" + princeNumber:
+            CurrentPrince.factions[4].level = value;
+            break;
+        case "PrinceOrderLevel" + princeNumber:
+            CurrentPrince.factions[5].level = value;
+            break;
+    }
+
+    savePrinceSettings();
 }
 
 function test() {
@@ -472,7 +518,7 @@ function hideAddNewPrinceButton() {
 function assessThreat() {
 
     // Set values from debug menu if they've changed
-    SetValuesFromDebug();
+    //SetValuesFromDebug();
 
     // if (CurrentPrince.status == Status.Chancellor) {
     const messageBox = new bootstrap.Modal(
@@ -522,14 +568,14 @@ function searchAndPlay() {
     }
 
     CurrentPrince.factions.forEach(faction => {
-        switch (faction[1].alignment) {
+        switch (faction.alignment) {
             case Alignments.Friend:
-                document.getElementById("searchAndPlayBtn" + faction[1].name).classList.add("friend");
-                document.getElementById("searchAndPlayBtn" + faction[1].name).classList.remove("conspirator");
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("friend");
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("conspirator");
                 break;
             case Alignments.Conspirator:
-                document.getElementById("searchAndPlayBtn" + faction[1].name).classList.remove("friend");
-                document.getElementById("searchAndPlayBtn" + faction[1].name).classList.add("conspirator");
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("friend");
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("conspirator");
                 break;
         }
     })
@@ -563,52 +609,52 @@ function searchAndPlayClick(selectedFaction) {
     // todo refactor this
     switch (selectedFaction) {
         case Factions.Arcane:
-            CurrentPrince.factions.at(Factions.Arcane)[1].level += 1;
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Arcane)[1].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Arcane)[1].level;
-            document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Arcane)[1].level;
-            alignFaction(CurrentPrince.factions.at(Factions.Arcane)[1]);
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Arcane)[1];
+            CurrentPrince.factions[0].level += 1;
+            CurrentPrince.numActions = CurrentPrince.factions[0].level
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[0].level;
+            document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[0].level;
+            alignFaction(CurrentPrince.factions[0]);
+            CurrentPrince.currentFaction = CurrentPrince[0];
             break;
         case Factions.Beast:
-            CurrentPrince.factions.at(Factions.Beast)[1].level += 1;
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Beast).level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Beast)[1].level;
-            document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Beast)[1].level;
-            alignFaction(CurrentPrince.factions.at(Factions.Beast)[1]);
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Beast)[1];
+            CurrentPrince.factions[1].level += 1;
+            CurrentPrince.numActions = CurrentPrince.factions[1].level
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[1].level;
+            document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[1].level;
+            alignFaction(CurrentPrince.factions[1]);
+            CurrentPrince.currentFaction = CurrentPrince[1];
             break;
         case Factions.Discord:
-            CurrentPrince.factions.at(Factions.Discord)[1].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Discord)[1].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Discord)[1].level;
-            document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Discord)[1].level;
-            alignFaction(CurrentPrince.factions.at(Factions.Discord)[1]);
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Discord)[1];
+            CurrentPrince.factions[2].level += 1
+            CurrentPrince.numActions = CurrentPrince.factions[2].level
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[2].level;
+            document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[2].level;
+            alignFaction(CurrentPrince.factions[2]);
+            CurrentPrince.currentFaction = CurrentPrince[2];
             break;
         case Factions.Hearth:
-            CurrentPrince.factions.at(Factions.Hearth)[1].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Hearth)[1].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Hearth)[1].level;
-            document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Hearth)[1].level;
-            alignFaction(CurrentPrince.factions.at(Factions.Hearth)[1]);
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Hearth)[1];
+            CurrentPrince.factions[3].level += 1
+            CurrentPrince.numActions = CurrentPrince.factions[3].level
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[3].level;
+            document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[3].level;
+            alignFaction(CurrentPrince.factions[3]);
+            CurrentPrince.currentFaction = CurrentPrince[3];
             break;
         case Factions.Nomad:
-            CurrentPrince.factions.at(Factions.Nomad)[1].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Nomad)[1].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Nomad)[1].level;
-            document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Nomad)[1].level;
-            alignFaction(CurrentPrince.factions.at(Factions.Nomad)[1]);
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Nomad)[1];
+            CurrentPrince.factions[4].level += 1
+            CurrentPrince.numActions = CurrentPrince.factions[4].level
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[4].level;
+            document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[4].level;
+            alignFaction(CurrentPrince.factions[4]);
+            CurrentPrince.currentFaction = CurrentPrince.factions[4];
             break;
         case Factions.Order:
-            CurrentPrince.factions.at(Factions.Order)[1].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Order)[1].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Order)[1].level;
-            document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Order)[1].level;
-            alignFaction(CurrentPrince.factions.at(Factions.Order)[1]);
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Order)[1];
+            CurrentPrince.factions[5].level += 1
+            CurrentPrince.numActions = CurrentPrince.factions[5].level
+            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[5].level;
+            document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[5].level;
+            alignFaction(CurrentPrince.factions[5]);
+            CurrentPrince.currentFaction = CurrentPrince.factions[5];
             break;
     }
 
@@ -623,16 +669,16 @@ function SetValuesFromDebug() {
     // Sets the faction levels and prince mind from the debug menu
     // Allows the user to enter different values in case they have been set incorrectly
     // because of a bug or the user picked the wrong options
-    let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
-    CurrentPrince.mindStart = mindSelect.value;
-    CurrentPrince.mindCurrent = mindSelect.value;
+    // let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
+    // CurrentPrince.mindStart = mindSelect.value;
+    // CurrentPrince.mindCurrent = mindSelect.value;
 
-    CurrentPrince.factions.at(Factions.Arcane)[1].level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Beast)[1].level = parseInt(document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Discord)[1].level = parseInt(document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Hearth)[1].level = parseInt(document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Nomad)[1].level = parseInt(document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Order)[1].level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Arcane)[1].level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Beast)[1].level = parseInt(document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Discord)[1].level = parseInt(document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Hearth)[1].level = parseInt(document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Nomad)[1].level = parseInt(document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Order)[1].level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
 }
 
 function showStandardMessageDialog(title, message) {
@@ -666,7 +712,7 @@ function cleanUp() {
 
     savePrinceSettings()
 
-    enableDisableTurnButtons();
+    enableDisablePrinces();
 }
 
 function savePrinceSettings() {
@@ -674,6 +720,14 @@ function savePrinceSettings() {
         prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false
         localStorage.setItem(prince.princeNumber, JSON.stringify(prince))
     })
+}
+
+function getPrince() {
+    for (let index = 1; index < Princes.length; index++) {
+        if (Princes[index].princeNumber == CurrentPrince.princeNumber) {
+            return Princes[index];
+        }
+    }
 }
 
 function showRoundChangeDialog() {
@@ -690,20 +744,17 @@ function roundChangeClick(answer) {
     }
 }
 
-function enableDisableTurnButtons() {
-    // Enabled or disable turns buttons based on the current prince
-    let buttons = document.querySelectorAll("[id^='PrinceStartTurn'], [id^='PrinceNextStep']");
-    buttons.forEach(
-        function (b) {
-            // Disable the button if the suffix number is not equal to the Current Prince number
-            b.disabled = (b.id.slice(-1) != CurrentPrince.princeNumber) ? true : false;
-
-            if(b.id.slice(-1) == CurrentPrince.princeNumber){
-                b.classList.remove("d-none");
-            }else{
-                b.classList.add("d-none");
+function enableDisablePrinces() {
+    let princeNodes = document.querySelectorAll("[id^='PrinceColumn']");
+    princeNodes.forEach(
+        function (node) {
+            if (node.id.slice(-1) == CurrentPrince.princeNumber) {
+                node.classList.remove("disabled");
+            } else {
+                node.classList.add("disabled");
             }
-        })
+        }
+    )
 }
 
 function addTurnNumberLabel() {

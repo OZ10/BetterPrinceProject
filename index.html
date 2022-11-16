@@ -52,7 +52,7 @@
                 <div class="col">
                     <div class="col p-3 m-1 addNewPrince" id="addNewPrinceColumn">
                         <div class="justify-content-center row" id="addNewPrinceRow">
-                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton" onclick="addNewPrince()">
+                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton" onclick="addNewPrinceClick()">
                                 <span class="material-icons md-48">
                                     add_circle_outline
                                 </span>
@@ -64,7 +64,7 @@
         </div>
     </main>
 
-    <div class="col p-3 m-1 d-none" id="PrinceColumn">
+    <div class="col p-3 m-1 d-none disabled" id="PrinceColumn">
         <div class="d-flex justify-content-between row" id="PrinceRow">
 
             <h5 class="col-md-auto">
@@ -80,7 +80,6 @@
                     <div>Status: </div>
                 </div>
                 <div class="col-md-auto">
-                    <div class="d-none" id="PrinceStatusSelected"></div>
                     <select class="form-select" id="PrinceStatus" onchange="changeStatus(value);">
                         <option>chancellor</option>
                         <option>citizen</option>
@@ -132,7 +131,7 @@
                                 <div>Mind Start:</div>
                             </div>
                             <div class="col-md-auto">
-                                <select class="form-select" id="PrinceMindOptions">
+                                <select class="form-select" id="PrinceMindOptions" onchange="princeMindChange(value);">
                                     <option>sup_1</option>
                                     <option>sup_1_br</option>
                                     <option>sup_2</option>
@@ -204,7 +203,7 @@
                                 <div>Arcane Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceArcaneLevel" value="0"></input>
+                                <input type="number" id="PrinceArcaneLevel" value="0" onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -212,7 +211,7 @@
                                 <div>Beast Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceBeastLevel"></input>
+                                <input type="number" id="PrinceBeastLevel" onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -220,7 +219,7 @@
                                 <div>Discord Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceDiscordLevel"></input>
+                                <input type="number" id="PrinceDiscordLevel" onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -228,7 +227,7 @@
                                 <div>Hearth Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceHearthLevel"></input>
+                                <input type="number" id="PrinceHearthLevel" onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -236,7 +235,7 @@
                                 <div>Nomad Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceNomadLevel"></input>
+                                <input type="number" id="PrinceNomadLevel" onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -244,7 +243,7 @@
                                 <div>Order Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceOrderLevel"></input>
+                                <input type="number" id="PrinceOrderLevel" onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                     </div>
