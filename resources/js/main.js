@@ -78,7 +78,6 @@ const Mind = {
     SUP_4: "sup_4",
     SUP_5: "sup_5",
     SUP_5_BR: "sup_5_br",
-    SUP_6: "sup_6",
     SUP_7: "sup_7",
     SUP_8: "sup_8",
     SUP_8_BR: "sup_8_br",
@@ -167,13 +166,15 @@ class Prince {
         this.factions = new Array(0);
         this.factions.push(faction_Arcane, faction_Beast,
             faction_Discord, faction_Hearth,
-            faction_Nomad,  faction_Order);
+            faction_Nomad, faction_Order);
         this.stepCount = 1;
+        this.tacticsLevel = 1;
     }
 
     stepCount;
     factions;
     isCurrent;
+    tacticsLevel;
 }
 
 function getFactionAlignmentList(alignment) {
@@ -372,21 +373,17 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 
     // buttons
     changeNodeId(cloneNode, "PrinceStartTurn", "PrinceStartTurn" + nextPrinceNumber);
-    let button = getElementById(cloneNode, "PrinceStartTurn" + nextPrinceNumber);
 
-    // todo refactor this
+    // enable or disable prince
     if (newPrince.isCurrent) {
-        // button.disabled = false;
         cloneNode.classList.remove("disabled");
     } else {
-        // button.disabled = true;
         cloneNode.classList.add("disabled")
     }
 
     // steps
     changeNodeIdAndValue(cloneNode, "steps_Prince", "steps_Prince" + nextPrinceNumber, "");
 
-    //document.getElementById("Princes").insertBefore(cloneNode, document.getElementById("addNewPrinceColumn")); // appendChild(cloneNode);
     document.getElementById("Princes").appendChild(cloneNode);
 }
 
@@ -445,8 +442,6 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
 function changeStatus(status) {
     CurrentPrince.status = status;
     Princes[CurrentPrince.princeNumber].status = status;
-    // let prince = getPrince();
-    // prince.status = status;
 
     let princeNode = document.getElementById("PrinceColumn" + CurrentPrince.princeNumber);
     princeNode.classList.remove("chancellor");
@@ -466,11 +461,13 @@ function changeStatus(status) {
 }
 
 function princeMindChange(value) {
+    // From debug menu
     CurrentPrince.mindCurrent = value;
     savePrinceSettings();
 }
 
 function factionLevelChange(id, value) {
+    // From debug menu
     let princeNumber = CurrentPrince.princeNumber;
     switch (id) {
         case "PrinceArcaneLevel" + princeNumber:
@@ -516,18 +513,10 @@ function hideAddNewPrinceButton() {
 }
 
 function assessThreat() {
-
-    // Set values from debug menu if they've changed
-    //SetValuesFromDebug();
-
-    // if (CurrentPrince.status == Status.Chancellor) {
     const messageBox = new bootstrap.Modal(
         document.getElementById("assessThreatDialog")
     );
     messageBox.show();
-    // } else {
-    //     searchAndPlay();
-    // }
 }
 
 function assessThreatYesNoClick(answer) {
@@ -568,25 +557,24 @@ function searchAndPlay() {
     }
 
     CurrentPrince.factions.forEach(faction => {
+        // reset button colours
+        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("friend");
+        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("conspirator");
+
+        // set button text
+        document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + faction.level + ")";
+        //document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + (faction.level == 1) ? 0 : faction.level + ")";
+
+        // add button colour
         switch (faction.alignment) {
             case Alignments.Friend:
                 document.getElementById("searchAndPlayBtn" + faction.name).classList.add("friend");
-                document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("conspirator");
                 break;
             case Alignments.Conspirator:
-                document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("friend");
                 document.getElementById("searchAndPlayBtn" + faction.name).classList.add("conspirator");
                 break;
         }
     })
-
-    // if (faction.alignment == Alignments.None) {
-    //     if (CurrentPrince.mindCurrent.slice(0, 2) == "su" || CurrentPrince.mindCurrent.slice(0, 2) == "pf") {
-    //         faction.alignment = Alignments.Friend;
-    //     } else {
-    //         faction.alignment = Alignments.Conspirator;
-    //     }
-    // }
 
     messageBox.show();
 }
@@ -602,67 +590,109 @@ function searchAndPlayClick(selectedFaction) {
     showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
 
     if (secondSearchAndPlay() == false) {
-        //SetValuesFromDebug();
         CurrentPrince.currentActionNum = 1;
     }
 
+    let factionNumber = getFactionNumber(selectedFaction);
+
+    CurrentPrince.factions[factionNumber].level += 1;
+    CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
+    document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
+    document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[factionNumber].level;
+    alignFaction(CurrentPrince.factions[factionNumber]);
+    CurrentPrince.currentFaction = CurrentPrince[factionNumber];
+
     // todo refactor this
-    switch (selectedFaction) {
-        case Factions.Arcane:
-            CurrentPrince.factions[0].level += 1;
-            CurrentPrince.numActions = CurrentPrince.factions[0].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[0].level;
-            document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[0].level;
-            alignFaction(CurrentPrince.factions[0]);
-            CurrentPrince.currentFaction = CurrentPrince[0];
-            break;
-        case Factions.Beast:
-            CurrentPrince.factions[1].level += 1;
-            CurrentPrince.numActions = CurrentPrince.factions[1].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[1].level;
-            document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[1].level;
-            alignFaction(CurrentPrince.factions[1]);
-            CurrentPrince.currentFaction = CurrentPrince[1];
-            break;
-        case Factions.Discord:
-            CurrentPrince.factions[2].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions[2].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[2].level;
-            document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[2].level;
-            alignFaction(CurrentPrince.factions[2]);
-            CurrentPrince.currentFaction = CurrentPrince[2];
-            break;
-        case Factions.Hearth:
-            CurrentPrince.factions[3].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions[3].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[3].level;
-            document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[3].level;
-            alignFaction(CurrentPrince.factions[3]);
-            CurrentPrince.currentFaction = CurrentPrince[3];
-            break;
-        case Factions.Nomad:
-            CurrentPrince.factions[4].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions[4].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[4].level;
-            document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[4].level;
-            alignFaction(CurrentPrince.factions[4]);
-            CurrentPrince.currentFaction = CurrentPrince.factions[4];
-            break;
-        case Factions.Order:
-            CurrentPrince.factions[5].level += 1
-            CurrentPrince.numActions = CurrentPrince.factions[5].level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[5].level;
-            document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[5].level;
-            alignFaction(CurrentPrince.factions[5]);
-            CurrentPrince.currentFaction = CurrentPrince.factions[5];
-            break;
-    }
+    // switch (selectedFaction) {
+    //     case Factions.Arcane:
+    //         CurrentPrince.factions[0].level += 1;
+    //         CurrentPrince.numActions = CurrentPrince.factions[0].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[0].level;
+    //         document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[0].level;
+    //         alignFaction(CurrentPrince.factions[0]);
+    //         CurrentPrince.currentFaction = CurrentPrince[0];
+    //         break;
+    //     case Factions.Beast:
+    //         CurrentPrince.factions[1].level += 1;
+    //         CurrentPrince.numActions = CurrentPrince.factions[1].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[1].level;
+    //         document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[1].level;
+    //         alignFaction(CurrentPrince.factions[1]);
+    //         CurrentPrince.currentFaction = CurrentPrince[1];
+    //         break;
+    //     case Factions.Discord:
+    //         CurrentPrince.factions[2].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[2].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[2].level;
+    //         document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[2].level;
+    //         alignFaction(CurrentPrince.factions[2]);
+    //         CurrentPrince.currentFaction = CurrentPrince[2];
+    //         break;
+    //     case Factions.Hearth:
+    //         CurrentPrince.factions[3].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[3].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[3].level;
+    //         document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[3].level;
+    //         alignFaction(CurrentPrince.factions[3]);
+    //         CurrentPrince.currentFaction = CurrentPrince[3];
+    //         break;
+    //     case Factions.Nomad:
+    //         CurrentPrince.factions[4].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[4].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[4].level;
+    //         document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[4].level;
+    //         alignFaction(CurrentPrince.factions[4]);
+    //         CurrentPrince.currentFaction = CurrentPrince.factions[4];
+    //         break;
+    //     case Factions.Order:
+    //         CurrentPrince.factions[5].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[5].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[5].level;
+    //         document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[5].level;
+    //         alignFaction(CurrentPrince.factions[5]);
+    //         CurrentPrince.currentFaction = CurrentPrince.factions[5];
+    //         break;
+    // }
 
     // PF_6 is Search and Play for a second time. This does not add additional actions
     //if(CurrentPrince.mindCurrent != Mind.PF_6){
-    addTurnNumberLabel()
+
+    updateTactics();
+    addTurnNumberLabel();
     princeNextStep();
     //}
+}
+
+function getFactionNumber(selectedFaction) {
+    switch (selectedFaction) {
+        case Factions.Arcane:
+            return 0;
+        case Factions.Beast:
+            return 1;
+        case Factions.Discord:
+            return 2;
+        case Factions.Hearth:
+            return 3;
+        case Factions.Nomad:
+            return 4;
+        case Factions.Order:
+            return 5;
+    }
+}
+
+function updateTactics() {
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("numberInputBox")
+    );
+
+    document.getElementById("numberInputTitle").innerHTML = "Update Tactics";
+    document.getElementById("numberInputBody").innerHTML = "How many Battle Plan cards did you draw?";
+    document.getElementById("currentNumber").value = 0;
+    messageBox.show();
+}
+
+function numberBoxClick(){
+    CurrentPrince.tacticsLevel += parseInt(document.getElementById("currentNumber").value);
 }
 
 function SetValuesFromDebug() {
@@ -1174,61 +1204,6 @@ function sup_1_br(answer) {
     Outcome(answer, "Fight", fightText(), Mind.SUP_8, false, Mind.SUP_2);
 }
 
-function tradeFor() {
-    let factionListFriend = getFactionAlignmentList(Alignments.Friend);
-    let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
-
-    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
-        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()<br><br>";
-
-    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
-        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-
-    switch (CurrentPrince.mindCurrent) {
-        case Mind.SUP_4:
-        case Mind.PF_2:
-            //Currency.FAVOR;
-            return favorFriendMessage;
-        //return "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
-        case Mind.DS_2:
-            //Currency.SECRETS;
-            return favorConspiratorMessage;
-        //return "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-        case Mind.DS_4:
-        case Mind.PF_4:
-        case Mind.RB_3:
-        case Mind.RB_5:
-            //Currency.BOTH;
-            return favorFriendMessage +
-                favorConspiratorMessage
-        //"Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-        //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
-    }
-}
-
-function fightText() {
-    return "Travel and fight";
-}
-
-function musterText() {
-    return "Place one favor on each empty card at your site, starting with the card closest to the site. Gain two warbands per favor placed. Do not place favor from your Ambition box.";
-}
-
-function moveText() {
-    return "Travel to the site that best meets the condition listed on your action space.";
-}
-
-function tradeText() {
-    // if(CurrentPrince.currentFaction.alignment == Alignments.Friend){
-    //     return "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";    
-    // }
-    return tradeFor() // "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";
-}
-
-function searchText() {
-    return "Resolve the Search and Play One Card phase again. (This does not increase the number of actions you can take this turn.)";
-}
-
 function sup_2(answer) {
     Outcome(answer, "Muster", musterText(), Mind.SUP_2_BR, false, Mind.SUP_3);
 }
@@ -1382,7 +1357,7 @@ function rb_1(answer) {
 }
 
 function rb_1_br(answer) {
-    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_1_MOVE);
+    Outcome(answer, "Fight", MoveToRelicsAndFightMessage(), Mind.RB_9, false, Mind.RB_1_MOVE);
 }
 
 function rb_1_move(answer) {
@@ -1434,7 +1409,7 @@ function rb_7(answer) {
 }
 
 function rb_7_br(answer) {
-    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_4);
+    Outcome(answer, "Fight", MoveToRelicsAndFightMessage(), Mind.RB_9, false, Mind.RB_4);
 }
 
 function rb_8(answer) {
@@ -1446,7 +1421,7 @@ function rb_8_most(answer) {
 }
 
 function rb_8_br(answer) {
-    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_5);
+    Outcome(answer, "Fight", MoveToRelicsAndFightMessage(), Mind.RB_9, false, Mind.RB_5);
 }
 
 function rb_9(answer) {
@@ -1467,6 +1442,65 @@ function payMessage(paymentType) {
     }
 }
 
+function fightText() {
+    return "Move to site of a rival site with the fewest warbands and Battle!";
+}
+
 function MoveToBannerAndFightMessage(bannerName) {
     return "Move to site of the holder of " + bannerName + " and Battle!";
+}
+
+function MoveToRelicsAndFightMessage() {
+    return "Move to site of the holder of the most RELICS and Battle!";
+}
+
+function tradeFor() {
+    let factionListFriend = getFactionAlignmentList(Alignments.Friend);
+    let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
+
+    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()<br><br>";
+
+    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
+        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.SUP_4:
+        case Mind.PF_2:
+            //Currency.FAVOR;
+            return favorFriendMessage;
+        //return "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
+        case Mind.DS_2:
+            //Currency.SECRETS;
+            return favorConspiratorMessage;
+        //return "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+        case Mind.DS_4:
+        case Mind.PF_4:
+        case Mind.RB_3:
+        case Mind.RB_5:
+            //Currency.BOTH;
+            return favorFriendMessage +
+                favorConspiratorMessage
+        //"Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+        //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
+    }
+}
+
+function musterText() {
+    return "Place one favor on each empty card at your site, starting with the card closest to the site. Gain two warbands per favor placed. Do not place favor from your Ambition box.";
+}
+
+function moveText() {
+    return "Travel to the site that best meets the condition listed on your action space.";
+}
+
+function tradeText() {
+    // if(CurrentPrince.currentFaction.alignment == Alignments.Friend){
+    //     return "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";    
+    // }
+    return tradeFor() // "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";
+}
+
+function searchText() {
+    return "Resolve the Search and Play One Card phase again. (This does not increase the number of actions you can take this turn.)";
 }

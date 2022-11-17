@@ -140,7 +140,6 @@
                                     <option>sup_4</option>
                                     <option>sup_5</option>
                                     <option>sup_5_br</option>
-                                    <option>sup_6</option>
                                     <option>sup_7</option>
                                     <option>sup_8</option>
                                     <option>sup_8_br</option>
@@ -577,15 +576,15 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="messageBoxTitle"></h5>
+                    <h5 class="modal-title" id="numberInputTitle"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex">
-                    <p id="messageBoxBody">Please enter number of favor</p>
+                    <p id="numberInputBody"></p>
                 </div>
                 <div class="modal-footer">
-                    <input id="currentNumber" type="number" />
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <input id="currentNumber" type="number"/>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="numberBoxClick();">
                         Close
                     </button>
                 </div>
