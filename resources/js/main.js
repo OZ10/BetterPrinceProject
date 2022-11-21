@@ -168,7 +168,7 @@ class Prince {
             faction_Discord, faction_Hearth,
             faction_Nomad, faction_Order);
         this.stepCount = 1;
-        this.tacticsLevel = 1;
+        this.tacticsLevel = 0;
     }
 
     stepCount;
@@ -222,11 +222,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (prince != null) {
                 Princes[princeNumber] = JSON.parse(localStorage.getItem(princeNumber));
-                createNewPrinceNode(princeNumber, Princes[princeNumber]);
 
                 if (Princes[princeNumber].isCurrent) {
                     CurrentPrince = Princes[princeNumber];
                 }
+
+                createNewPrinceNode(princeNumber, Princes[princeNumber]);
             }
         }
 
@@ -355,6 +356,7 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 
     changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
     changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
+    changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, convertTacticLevelToDice(newPrince.tacticsLevel));
     changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
@@ -385,6 +387,26 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     changeNodeIdAndValue(cloneNode, "steps_Prince", "steps_Prince" + nextPrinceNumber, "");
 
     document.getElementById("Princes").appendChild(cloneNode);
+}
+
+function convertTacticLevelToDice(level) {
+    switch (level) {
+        case 0:
+            return CurrentPrince.tacticsLevel;
+        // case 0:
+        //     return 0;
+        case 1:
+        case 2:
+            return 1;
+        case 3:
+        case 4:
+            return 2;
+        case 5:
+            return 3;
+        default:
+            // Max level (3 dice)
+            return 3;
+    }
 }
 
 function getNextPrinceName(princeNumber) {
@@ -669,7 +691,7 @@ function searchAndPlayClick(selectedFaction) {
     // PF_6 is Search and Play for a second time. This does not add additional actions
     //if(CurrentPrince.mindCurrent != Mind.PF_6){
 
-    if(document.getElementById("cannotPlayCheck").checked){
+    if (document.getElementById("cannotPlayCheck").checked) {
         //displayCantPlayDialog();
         addAnActionLabel("CantPlay", "Can't Play Card", displayCantPlayDialog());
     }
@@ -680,17 +702,17 @@ function searchAndPlayClick(selectedFaction) {
     //}
 }
 
-function displayCantPlayDialog(){
+function displayCantPlayDialog() {
     let message;
     if (CurrentPrince.mindCurrent.slice(0, 2) == "su") {
         message = "Gain 2 warbands and tactics has increased!";
         CurrentPrince.tacticsLevel += 1;
-    }else if(CurrentPrince.mindCurrent.slice(0, 2) == "ds"){
+    } else if (CurrentPrince.mindCurrent.slice(0, 2) == "ds") {
         message = "Gain 1 warband, 1 SECRET and tactics has increased!";
         CurrentPrince.tacticsLevel += 1;
-    }else if(CurrentPrince.mindCurrent.slice(0, 2) == "pf"){
+    } else if (CurrentPrince.mindCurrent.slice(0, 2) == "pf") {
         message = "Gain 2 FAVOR!";
-    }else if(CurrentPrince.mindCurrent.slice(0, 2) == "rb"){
+    } else if (CurrentPrince.mindCurrent.slice(0, 2) == "rb") {
         message = "Gain 1 warband, 1 FAVOR and tactics has increased!";
         CurrentPrince.tacticsLevel += 1;
     }
@@ -698,11 +720,11 @@ function displayCantPlayDialog(){
     //showStandardMessageDialog("Can't Play Card?", message);
 }
 
-function increaseFactionLevel(factionNumber){
+function increaseFactionLevel(factionNumber) {
     // Faction levels start at zero but the first level (number of actions) is two
-    if (CurrentPrince.factions[factionNumber].level == 0){
+    if (CurrentPrince.factions[factionNumber].level == 0) {
         CurrentPrince.factions[factionNumber].level = 2;
-    }else{
+    } else {
         CurrentPrince.factions[factionNumber].level += 1;
     }
 }
@@ -735,8 +757,9 @@ function updateTactics() {
     messageBox.show();
 }
 
-function numberBoxClick(){
-    CurrentPrince.tacticsLevel += parseInt(document.getElementById("currentNumber").value);
+function numberBoxClick() {
+    CurrentPrince.tacticsLevel = convertTacticLevelToDice(parseInt(document.getElementById("currentNumber").value));
+    document.getElementById("PrinceTacticLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.tacticsLevel;
 }
 
 function SetValuesFromDebug() {
