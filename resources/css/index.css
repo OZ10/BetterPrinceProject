@@ -10943,6 +10943,19 @@ textarea.form-control-lg {
   border-radius: 10px;
 }
 
+.action {
+  max-width: 400px;
+  border-radius: 10px;
+  background-color: #e9ecef;
+  padding: 10px;
+  margin: 5px;
+}
+
+.turnLabel {
+  font-weight: bold;
+  margin-top: 15px;
+}
+
 .prince, .exile4, .exile3, .exile2, .exile1, .chancellor, .addNewPrince {
   max-width: 400px;
   border-radius: 10px;

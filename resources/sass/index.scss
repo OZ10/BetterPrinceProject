@@ -20,6 +20,19 @@ $primary: black;
     border-radius: 10px;
 }
 
+.action {
+    max-width: 400px;
+    border-radius: 10px;
+    background-color: $gray-200;
+    padding: 10px;
+    margin: 5px;
+}
+
+.turnLabel{
+    font-weight: bold;
+    margin-top: 15px;
+}
+
 .prince {
     max-width: 400px;
     border-radius: 10px;

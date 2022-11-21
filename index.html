@@ -52,7 +52,8 @@
                 <div class="col">
                     <div class="col p-3 m-1 addNewPrince" id="addNewPrinceColumn">
                         <div class="justify-content-center row" id="addNewPrinceRow">
-                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton" onclick="addNewPrinceClick()">
+                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton"
+                                onclick="addNewPrinceClick()">
                                 <span class="material-icons md-48">
                                     add_circle_outline
                                 </span>
@@ -202,7 +203,8 @@
                                 <div>Arcane Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceArcaneLevel" value="0" onchange="factionLevelChange(id,value);"></input>
+                                <input type="number" id="PrinceArcaneLevel" value="0"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -210,7 +212,8 @@
                                 <div>Beast Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceBeastLevel" onchange="factionLevelChange(id,value);"></input>
+                                <input type="number" id="PrinceBeastLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -218,7 +221,8 @@
                                 <div>Discord Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceDiscordLevel" onchange="factionLevelChange(id,value);"></input>
+                                <input type="number" id="PrinceDiscordLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -226,7 +230,8 @@
                                 <div>Hearth Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceHearthLevel" onchange="factionLevelChange(id,value);"></input>
+                                <input type="number" id="PrinceHearthLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -234,7 +239,8 @@
                                 <div>Nomad Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceNomadLevel" onchange="factionLevelChange(id,value);"></input>
+                                <input type="number" id="PrinceNomadLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -242,7 +248,8 @@
                                 <div>Order Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceOrderLevel" onchange="factionLevelChange(id,value);"></input>
+                                <input type="number" id="PrinceOrderLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                     </div>
@@ -305,7 +312,14 @@
         </div>
     </div>
 
-    <div class="d-none" id="prince_turnNumber">Turn #1</div>
+    <div class="d-none action" id="prince_action">
+        <div id="prince_action_title" style="font-weight: bold;"></div>
+        <p id="prince_action_detail">
+            This is an action
+        </p>
+    </div>
+
+    <div class="d-none turnLabel" id="prince_turnNumber">Turn #1</div>
 
     <!-- Message Box -->
     <div class="modal fade" id="messageBox" tabindex="-1" aria-labelledby="MessageBox" aria-hidden="true">
@@ -536,10 +550,14 @@
                 </div>
                 <div class="modal-body">
                     <p id="searchAndPlayDialogMessage">Which faction did you draw?</p>
-                    <p class="d-none" id="searchAndPlayFriendMessage">Play As <b>Friend</b>, otherwise play <i>Unaligned</i> as
-                        <b>Friend</b>, otherwise play as <b>Conspirator</b></p>
-                    <p class="d-none" id="searchAndPlayConspiratorMessage">Play As <b>Conspirator</b>, otherwise play <i>Unaligned</i>
-                        as <b>Conspirator</b>, otherwise play as <b>Friend</b></p>
+                    <p class="d-none" id="searchAndPlayFriendMessage">Play As <b>Friend</b>, otherwise play
+                        <i>Unaligned</i> as
+                        <b>Friend</b>, otherwise play as <b>Conspirator</b>
+                    </p>
+                    <p class="d-none" id="searchAndPlayConspiratorMessage">Play As <b>Conspirator</b>, otherwise play
+                        <i>Unaligned</i>
+                        as <b>Conspirator</b>, otherwise play as <b>Friend</b>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="searchAndPlayBtnarcane"
@@ -566,6 +584,12 @@
                         onclick="searchAndPlayClick('order');" data-bs-dismiss="modal">
                         Order
                     </button>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="cannotPlayCheck">
+                        <label class="form-check-label" for="cannotPlayCheck">
+                            I Cannot Play a Card!
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -583,7 +607,7 @@
                     <p id="numberInputBody"></p>
                 </div>
                 <div class="modal-footer">
-                    <input id="currentNumber" type="number"/>
+                    <input id="currentNumber" type="number" />
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="numberBoxClick();">
                         Close
                     </button>

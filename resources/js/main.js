@@ -287,12 +287,12 @@ function createNewPrince(name, status, number) {
         status,
         2,
         Threat.None,
-        new Faction(Factions.Discord, 1, Alignments.None),
-        new Faction(Factions.Arcane, 1, Alignments.None),
-        new Faction(Factions.Order, 1, Alignments.None),
-        new Faction(Factions.Hearth, 1, Alignments.None),
-        new Faction(Factions.Beast, 1, Alignments.None),
-        new Faction(Factions.Nomad, 1, Alignments.None),
+        new Faction(Factions.Discord, 0, Alignments.None),
+        new Faction(Factions.Arcane, 0, Alignments.None),
+        new Faction(Factions.Order, 0, Alignments.None),
+        new Faction(Factions.Hearth, 0, Alignments.None),
+        new Faction(Factions.Beast, 0, Alignments.None),
+        new Faction(Factions.Nomad, 0, Alignments.None),
         0, 0,
         number,
         null);
@@ -548,35 +548,46 @@ function searchAndPlay() {
         document.getElementById("searchAndPlayDialog")
     );
 
-    if (CurrentPrince.mindCurrent.slice(0, 2) == "su" || CurrentPrince.mindCurrent.slice(0, 2) == "pf") {
-        document.getElementById("searchAndPlayFriendMessage").classList.remove("d-none");
-        document.getElementById("searchAndPlayConspiratorMessage").classList.add("d-none");
-    } else {
-        document.getElementById("searchAndPlayFriendMessage").classList.add("d-none");
-        document.getElementById("searchAndPlayConspiratorMessage").classList.remove("d-none");
-    }
+    document.getElementById("cannotPlayCheck").checked = false;
 
+    showHideFriendConspiratorMessages()
+    changeFactionAlignmentButtons()
+
+    messageBox.show();
+}
+
+function showHideFriendConspiratorMessages() {
+    // Show the correct message depending on current Mind
+    if (CurrentPrince.mindCurrent.slice(0, 2) == "su" || CurrentPrince.mindCurrent.slice(0, 2) == "pf") {
+        document.getElementById("searchAndPlayFriendMessage").classList.remove("d-none")
+        document.getElementById("searchAndPlayConspiratorMessage").classList.add("d-none")
+    } else {
+        document.getElementById("searchAndPlayFriendMessage").classList.add("d-none")
+        document.getElementById("searchAndPlayConspiratorMessage").classList.remove("d-none")
+    }
+}
+
+function changeFactionAlignmentButtons() {
+    // Change colour of buttons depending on alignment
+    // and add number of actions in brackets
     CurrentPrince.factions.forEach(faction => {
         // reset button colours
-        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("friend");
-        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("conspirator");
+        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("friend")
+        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("conspirator")
 
         // set button text
-        document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + faction.level + ")";
+        document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + faction.level + ")"
         //document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + (faction.level == 1) ? 0 : faction.level + ")";
-
         // add button colour
         switch (faction.alignment) {
             case Alignments.Friend:
-                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("friend");
-                break;
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("friend")
+                break
             case Alignments.Conspirator:
-                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("conspirator");
-                break;
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("conspirator")
+                break
         }
     })
-
-    messageBox.show();
 }
 
 function secondSearchAndPlay() {
@@ -587,7 +598,8 @@ function secondSearchAndPlay() {
 
 function searchAndPlayClick(selectedFaction) {
 
-    showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
+    //showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
+    addAnActionLabel("Gain", "Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
 
     if (secondSearchAndPlay() == false) {
         CurrentPrince.currentActionNum = 1;
@@ -595,7 +607,7 @@ function searchAndPlayClick(selectedFaction) {
 
     let factionNumber = getFactionNumber(selectedFaction);
 
-    CurrentPrince.factions[factionNumber].level += 1;
+    increaseFactionLevel(factionNumber);
     CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
     document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
     document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[factionNumber].level;
@@ -657,10 +669,42 @@ function searchAndPlayClick(selectedFaction) {
     // PF_6 is Search and Play for a second time. This does not add additional actions
     //if(CurrentPrince.mindCurrent != Mind.PF_6){
 
+    if(document.getElementById("cannotPlayCheck").checked){
+        //displayCantPlayDialog();
+        addAnActionLabel("CantPlay", "Can't Play Card", displayCantPlayDialog());
+    }
+
     updateTactics();
     addTurnNumberLabel();
     princeNextStep();
     //}
+}
+
+function displayCantPlayDialog(){
+    let message;
+    if (CurrentPrince.mindCurrent.slice(0, 2) == "su") {
+        message = "Gain 2 warbands and tactics has increased!";
+        CurrentPrince.tacticsLevel += 1;
+    }else if(CurrentPrince.mindCurrent.slice(0, 2) == "ds"){
+        message = "Gain 1 warband, 1 SECRET and tactics has increased!";
+        CurrentPrince.tacticsLevel += 1;
+    }else if(CurrentPrince.mindCurrent.slice(0, 2) == "pf"){
+        message = "Gain 2 FAVOR!";
+    }else if(CurrentPrince.mindCurrent.slice(0, 2) == "rb"){
+        message = "Gain 1 warband, 1 FAVOR and tactics has increased!";
+        CurrentPrince.tacticsLevel += 1;
+    }
+    return message;
+    //showStandardMessageDialog("Can't Play Card?", message);
+}
+
+function increaseFactionLevel(factionNumber){
+    // Faction levels start at zero but the first level (number of actions) is two
+    if (CurrentPrince.factions[factionNumber].level == 0){
+        CurrentPrince.factions[factionNumber].level = 2;
+    }else{
+        CurrentPrince.factions[factionNumber].level += 1;
+    }
 }
 
 function getFactionNumber(selectedFaction) {
@@ -787,14 +831,26 @@ function enableDisablePrinces() {
     )
 }
 
-function addTurnNumberLabel() {
-    let turnNumberLabel = document.getElementById("prince_turnNumber").cloneNode()
-    turnNumberLabel.classList.remove("d-none")
-    turnNumberLabel.id = "prince_turnNumber".replace("prince", "prince" + CurrentPrince.princeNumber).replace("turnNumber", "turnNumber" + CurrentPrince.currentActionNum)
-    turnNumberLabel.innerHTML = "Turn #" + CurrentPrince.currentActionNum
+function addAnActionLabel(actionName, title, message) {
+    let actionLabel = document.getElementById("prince_action").cloneNode(true);
+    actionLabel.classList.remove("d-none");
+    actionLabel.id = "prince_action".replace("prince", "prince" + CurrentPrince.princeNumber).replace("action", "action" + actionName);
 
-    let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber)
-    ele.appendChild(turnNumberLabel)
+    changeNodeIdAndValue(actionLabel, "prince_action_title", "prince_action_title" + actionName, title);
+    changeNodeIdAndValue(actionLabel, "prince_action_detail", "prince_action_detail" + actionName, message);
+
+    let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber);
+    ele.appendChild(actionLabel);
+}
+
+function addTurnNumberLabel() {
+    let turnNumberLabel = document.getElementById("prince_turnNumber").cloneNode();
+    turnNumberLabel.classList.remove("d-none");
+    turnNumberLabel.id = "prince_turnNumber".replace("prince", "prince" + CurrentPrince.princeNumber).replace("turnNumber", "turnNumber" + CurrentPrince.currentActionNum);
+    turnNumberLabel.innerHTML = "Turn #" + CurrentPrince.currentActionNum;
+
+    let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber);
+    ele.appendChild(turnNumberLabel);
 }
 
 function alignFaction(faction) {
