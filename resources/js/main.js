@@ -78,7 +78,6 @@ const Mind = {
     SUP_4: "sup_4",
     SUP_5: "sup_5",
     SUP_5_BR: "sup_5_br",
-    SUP_6: "sup_6",
     SUP_7: "sup_7",
     SUP_8: "sup_8",
     SUP_8_BR: "sup_8_br",
@@ -160,32 +159,27 @@ class Prince {
         this.status = status;
         this.numwarbands = numwarbands;
         this.currentThreat = currentThreat;
-        this.faction_Discord = faction_Discord,
-            this.faction_Arcane = faction_Arcane,
-            this.faction_Order = faction_Order,
-            this.faction_Hearth = faction_Hearth,
-            this.faction_Beast = faction_Beast,
-            this.faction_Nomad = faction_Nomad,
-            this.numActions = numActions,
+        this.numActions = numActions,
             this.currentActionNum = currentActionNum,
             this.princeNumber = princeNumber,
             this.currentFaction = currentFaction;
         this.factions = new Array(0);
-        //this.factions.push(this.faction_Arcane, this.factions.at(Factions.Beast), this.factions.at(Factions.Discord), this.factions.at(Factions.Hearth), this.factions.at(Factions.Nomad), this.factions.at(Factions.Order));
-        this.factions.push([Factions.Arcane, this.faction_Arcane], [Factions.Beast, this.factions.at(Factions.Beast)],
-                            [Factions.Discord, this.factions.at(Factions.Discord)], [Factions.Hearth, this.factions.at(Factions.Hearth)],
-                            [Factions.Nomad, this.factions.at(Factions.Nomad)], [Factions.Order, this.factions.at(Factions.Order)]);
+        this.factions.push(faction_Arcane, faction_Beast,
+            faction_Discord, faction_Hearth,
+            faction_Nomad, faction_Order);
         this.stepCount = 1;
+        this.tacticsLevel = 0;
     }
 
     stepCount;
     factions;
     isCurrent;
+    tacticsLevel;
 }
 
 function getFactionAlignmentList(alignment) {
     let list = "";
-    CurrentPrince.factions.forEach(function (faction) {
+    CurrentPrince.factions.forEach(faction => {
         if (faction.alignment == alignment) {
             list += faction.name + "(" + convertFactionLevelToFavor(faction.level) + ") ";
         }
@@ -200,9 +194,9 @@ function convertFactionLevelToFavor(level) {
             return "1";
         case 3:
         case 4:
-            return "2";
         case 5:
-            return "3";
+            return "2";
+
     }
 }
 
@@ -228,11 +222,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (prince != null) {
                 Princes[princeNumber] = JSON.parse(localStorage.getItem(princeNumber));
-                createNewPrinceNode(princeNumber, Princes[princeNumber]);
 
                 if (Princes[princeNumber].isCurrent) {
                     CurrentPrince = Princes[princeNumber];
                 }
+
+                createNewPrinceNode(princeNumber, Princes[princeNumber]);
             }
         }
 
@@ -241,14 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("roundnumber").innerHTML = CurrentGameSettings.roundNumber;
 
         hideAddNewPrinceButton();
-        enableDisableTurnButtons();
-    } else {
-        Princes[1] = createNewPrince(getNextPrinceName(1), Status.Chancellor, 1);
-        Princes[1].isCurrent = true;
-        createNewPrinceNode(1, Princes[1]);
-        CurrentPrince = Princes[1];
-
-        showOathSelectionDialog();
+        enableDisablePrinces();
     }
 });
 
@@ -281,6 +269,7 @@ function oathClick(selectedOath) {
     document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber).value = startingMind;
     CurrentGameSettings = new GameSettings(selectedOath, 1);
     localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
+    savePrinceSettings();
 }
 
 function resetGame() {
@@ -299,12 +288,12 @@ function createNewPrince(name, status, number) {
         status,
         2,
         Threat.None,
-        new Faction(Factions.Discord, 1, Alignments.None),
-        new Faction(Factions.Arcane, 1, Alignments.None),
-        new Faction(Factions.Order, 1, Alignments.None),
-        new Faction(Factions.Hearth, 1, Alignments.None),
-        new Faction(Factions.Beast, 1, Alignments.None),
-        new Faction(Factions.Nomad, 1, Alignments.None),
+        new Faction(Factions.Discord, 0, Alignments.None),
+        new Faction(Factions.Arcane, 0, Alignments.None),
+        new Faction(Factions.Order, 0, Alignments.None),
+        new Faction(Factions.Hearth, 0, Alignments.None),
+        new Faction(Factions.Beast, 0, Alignments.None),
+        new Faction(Factions.Nomad, 0, Alignments.None),
         0, 0,
         number,
         null);
@@ -335,19 +324,28 @@ function getRoundNumber() {
     return document.getElementById("roundnumber").innerHTML;
 }
 
-function addNewPrince() {
+function addNewPrinceClick() {
 
     let nextPrinceNumber = getNextPrinceNumber();
 
     let newPrince = createNewPrince(getNextPrinceName(nextPrinceNumber), Status.Exile, nextPrinceNumber);
     Princes[nextPrinceNumber] = newPrince;
 
+    // Make Prince current if there is currently only one Prince (Princes array has a blank entry at 1)
+    if (Princes.length == 2) {
+        newPrince.isCurrent = true;
+        CurrentPrince = newPrince;
+        showOathSelectionDialog();
+    }
+
     createNewPrinceNode(nextPrinceNumber, newPrince)
+
+    savePrinceSettings();
 }
 
 function createNewPrinceNode(nextPrinceNumber, newPrince) {
-    let cloneNode = document.getElementById("PrinceColumn1").cloneNode(true);
-    cloneNode.Id = "PrinceColumn" + nextPrinceNumber;
+    let cloneNode = document.getElementById("PrinceColumn").cloneNode(true);
+    cloneNode.id = "PrinceColumn" + nextPrinceNumber;
     cloneNode.classList.remove("d-none");
 
     if (newPrince.status == Status.Chancellor) {
@@ -356,40 +354,59 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
         cloneNode.classList.add("exile" + nextPrinceNumber);
     }
 
-    changeNodeIdAndValue(cloneNode, "PrinceName1", "PrinceName" + nextPrinceNumber, newPrince.name);
-    changeNodeIdAndValue(cloneNode, "PrinceStatus1", "PrinceStatus" + nextPrinceNumber, newPrince.status);
-    changeNodeIdAndValue(cloneNode, "PrinceFavor1", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
-    changeNodeIdAndValue(cloneNode, "PrinceSecret1", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
-    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns1", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
+    changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
+    changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
+    changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, convertTacticLevelToDice(newPrince.tacticsLevel));
+    changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
+    changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
+    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
 
     // Debug options
     //changeNodeId(cloneNode, "Prince1DebugMenu", "Prince" + nextPrinceNumber + "DebugMenu");
-    changeNodeId(cloneNode, "PrinceMindOptions1", "PrinceMindOptions" + nextPrinceNumber);
+    changeNodeId(cloneNode, "PrinceMindOptions", "PrinceMindOptions" + nextPrinceNumber);
     let mindSelect = getElementById(cloneNode, "PrinceMindOptions" + nextPrinceNumber);
     mindSelect.value = newPrince.mindCurrent;
-    changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel1", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Arcane).level);
-    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel1", "PrinceBeastLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Beast).level);
-    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel1", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Discord).level);
-    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel1", "PrinceHearthLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Hearth).level);
-    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel1", "PrinceNomadLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Nomad).level);
-    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel1", "PrinceOrderLevel" + nextPrinceNumber, newPrince.factions.at(Factions.Order).level);
+    changeNodeIdAndValue(cloneNode, "PrinceArcaneLevel", "PrinceArcaneLevel" + nextPrinceNumber, newPrince.factions[0].level);
+    changeNodeIdAndValue(cloneNode, "PrinceBeastLevel", "PrinceBeastLevel" + nextPrinceNumber, newPrince.factions[1].level);
+    changeNodeIdAndValue(cloneNode, "PrinceDiscordLevel", "PrinceDiscordLevel" + nextPrinceNumber, newPrince.factions[2].level);
+    changeNodeIdAndValue(cloneNode, "PrinceHearthLevel", "PrinceHearthLevel" + nextPrinceNumber, newPrince.factions[3].level);
+    changeNodeIdAndValue(cloneNode, "PrinceNomadLevel", "PrinceNomadLevel" + nextPrinceNumber, newPrince.factions[4].level);
+    changeNodeIdAndValue(cloneNode, "PrinceOrderLevel", "PrinceOrderLevel" + nextPrinceNumber, newPrince.factions[5].level);
 
     // buttons
-    changeNodeId(cloneNode, "PrinceStartTurn1", "PrinceStartTurn" + nextPrinceNumber);
-    let button = getElementById(cloneNode, "PrinceStartTurn" + nextPrinceNumber);
+    changeNodeId(cloneNode, "PrinceStartTurn", "PrinceStartTurn" + nextPrinceNumber);
 
-    // todo refactor this
+    // enable or disable prince
     if (newPrince.isCurrent) {
-        button.disabled = false
+        cloneNode.classList.remove("disabled");
     } else {
-        button.disabled = true
+        cloneNode.classList.add("disabled")
     }
 
     // steps
-    changeNodeIdAndValue(cloneNode, "steps_Prince1", "steps_Prince" + nextPrinceNumber, "");
+    changeNodeIdAndValue(cloneNode, "steps_Prince", "steps_Prince" + nextPrinceNumber, "");
 
-    //document.getElementById("Princes").insertBefore(cloneNode, document.getElementById("addNewPrinceColumn")); // appendChild(cloneNode);
     document.getElementById("Princes").appendChild(cloneNode);
+}
+
+function convertTacticLevelToDice(level) {
+    switch (level) {
+        case 0:
+            return CurrentPrince.tacticsLevel;
+        // case 0:
+        //     return 0;
+        case 1:
+        case 2:
+            return 1;
+        case 3:
+        case 4:
+            return 2;
+        case 5:
+            return 3;
+        default:
+            // Max level (3 dice)
+            return 3;
+    }
 }
 
 function getNextPrinceName(princeNumber) {
@@ -436,7 +453,7 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
     let newNode = getElementById(rootNode, rootNodeId);
     newNode.id = newNodeId;
 
-    if (newNode.nodeName == "INPUT") {
+    if (newNode.nodeName == "INPUT" || newNode.nodeName == "SELECT") {
         newNode.value = newValue;
     } else {
         newNode.innerHTML = newValue;
@@ -444,13 +461,67 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
 
 }
 
+function changeStatus(status) {
+    CurrentPrince.status = status;
+    Princes[CurrentPrince.princeNumber].status = status;
+
+    let princeNode = document.getElementById("PrinceColumn" + CurrentPrince.princeNumber);
+    princeNode.classList.remove("chancellor");
+    princeNode.classList.remove("exile1");
+    princeNode.classList.remove("exile2");
+    princeNode.classList.remove("exile3");
+    princeNode.classList.remove("exile4");
+
+    if (status == Status.Chancellor) {
+        princeNode.classList.add(Status.Chancellor);
+    } else {
+        princeNode.classList.add(status + CurrentPrince.princeNumber);
+    }
+
+    savePrinceSettings();
+
+}
+
+function princeMindChange(value) {
+    // From debug menu
+    CurrentPrince.mindCurrent = value;
+    savePrinceSettings();
+}
+
+function factionLevelChange(id, value) {
+    // From debug menu
+    let princeNumber = CurrentPrince.princeNumber;
+    switch (id) {
+        case "PrinceArcaneLevel" + princeNumber:
+            CurrentPrince.factions[0].level = value;
+            break;
+        case "PrinceBeastLevel" + princeNumber:
+            CurrentPrince.factions[1].level = value;
+            break;
+        case "PrinceDiscordLevel" + princeNumber:
+            CurrentPrince.factions[2].level = value;
+            break;
+        case "PrinceHearthLevel" + princeNumber:
+            CurrentPrince.factions[3].level = value;
+            break;
+        case "PrinceNomadLevel" + princeNumber:
+            CurrentPrince.factions[4].level = value;
+            break;
+        case "PrinceOrderLevel" + princeNumber:
+            CurrentPrince.factions[5].level = value;
+            break;
+    }
+
+    savePrinceSettings();
+}
+
 function test() {
     let cloneNode = document.getElementById("step_YesNo").cloneNode(true);
     cloneNode.classList.remove("d-none");
-    getElementById(cloneNode, "accord_btn_Prince1_step1").innerHTML = "Can I.....";
-    getElementById(cloneNode, "accord_body_Prince1_step1").textContent = "Muster?";
+    getElementById(cloneNode, "accord_btn_Prince_step").innerHTML = "Can I.....";
+    getElementById(cloneNode, "accord_body_Prince_step").textContent = "Muster?";
 
-    document.getElementById("accord_Prince1").appendChild(cloneNode);
+    document.getElementById("accord_Prince").appendChild(cloneNode);
 }
 
 function princeStartTurn() {
@@ -464,18 +535,10 @@ function hideAddNewPrinceButton() {
 }
 
 function assessThreat() {
-
-    // Set values from debug menu if they've changed
-    SetValuesFromDebug();
-
-    // if (CurrentPrince.status == Status.Chancellor) {
     const messageBox = new bootstrap.Modal(
         document.getElementById("assessThreatDialog")
     );
     messageBox.show();
-    // } else {
-    //     searchAndPlay();
-    // }
 }
 
 function assessThreatYesNoClick(answer) {
@@ -506,7 +569,47 @@ function searchAndPlay() {
     const messageBox = new bootstrap.Modal(
         document.getElementById("searchAndPlayDialog")
     );
+
+    document.getElementById("cannotPlayCheck").checked = false;
+
+    showHideFriendConspiratorMessages()
+    changeFactionAlignmentButtons()
+
     messageBox.show();
+}
+
+function showHideFriendConspiratorMessages() {
+    // Show the correct message depending on current Mind
+    if (CurrentPrince.mindCurrent.slice(0, 2) == "su" || CurrentPrince.mindCurrent.slice(0, 2) == "pf") {
+        document.getElementById("searchAndPlayFriendMessage").classList.remove("d-none")
+        document.getElementById("searchAndPlayConspiratorMessage").classList.add("d-none")
+    } else {
+        document.getElementById("searchAndPlayFriendMessage").classList.add("d-none")
+        document.getElementById("searchAndPlayConspiratorMessage").classList.remove("d-none")
+    }
+}
+
+function changeFactionAlignmentButtons() {
+    // Change colour of buttons depending on alignment
+    // and add number of actions in brackets
+    CurrentPrince.factions.forEach(faction => {
+        // reset button colours
+        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("friend")
+        document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("conspirator")
+
+        // set button text
+        document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + faction.level + ")"
+        //document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + (faction.level == 1) ? 0 : faction.level + ")";
+        // add button colour
+        switch (faction.alignment) {
+            case Alignments.Friend:
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("friend")
+                break
+            case Alignments.Conspirator:
+                document.getElementById("searchAndPlayBtn" + faction.name).classList.add("conspirator")
+                break
+        }
+    })
 }
 
 function secondSearchAndPlay() {
@@ -517,86 +620,162 @@ function secondSearchAndPlay() {
 
 function searchAndPlayClick(selectedFaction) {
 
-    showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
+    //showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
+    addAnActionLabel("Gain", "Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
 
     if (secondSearchAndPlay() == false) {
-        //SetValuesFromDebug();
         CurrentPrince.currentActionNum = 1;
     }
 
+    let factionNumber = getFactionNumber(selectedFaction);
+
+    increaseFactionLevel(factionNumber);
+    CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
+    document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
+    document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[factionNumber].level;
+    alignFaction(CurrentPrince.factions[factionNumber]);
+    CurrentPrince.currentFaction = CurrentPrince[factionNumber];
+
     // todo refactor this
-    switch (selectedFaction) {
-        case Factions.Arcane:
-            CurrentPrince.factions.at(Factions.Arcane).level += 1;
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Arcane).level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Arcane).level;
-            document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Arcane).level;
-            alignFaction(CurrentPrince.factions.at(Factions.Arcane));
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Arcane);
-            break;
-        case Factions.Beast:
-            CurrentPrince.factions.at(Factions.Beast).level += 1;
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Beast).level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Beast).level;
-            document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Beast).level;
-            alignFaction(CurrentPrince.factions.at(Factions.Beast));
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Beast);
-            break;
-        case Factions.Discord:
-            CurrentPrince.factions.at(Factions.Discord).level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Discord).level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Discord).level;
-            document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Discord).level;
-            alignFaction(CurrentPrince.factions.at(Factions.Discord));
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Discord);
-            break;
-        case Factions.Hearth:
-            CurrentPrince.factions.at(Factions.Hearth).level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Hearth).level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Hearth).level;
-            document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Hearth).level;
-            alignFaction(CurrentPrince.factions.at(Factions.Hearth));
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Hearth);
-            break;
-        case Factions.Nomad:
-            CurrentPrince.factions.at(Factions.Nomad).level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Nomad).level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Nomad).level;
-            document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Nomad).level;
-            alignFaction(CurrentPrince.factions.at(Factions.Nomad));
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Nomad);
-            break;
-        case Factions.Order:
-            CurrentPrince.factions.at(Factions.Order).level += 1
-            CurrentPrince.numActions = CurrentPrince.factions.at(Factions.Order).level
-            document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions.at(Factions.Order).level;
-            document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions.at(Factions.Order).level;
-            alignFaction(CurrentPrince.factions.at(Factions.Order));
-            CurrentPrince.currentFaction = CurrentPrince.factions.at(Factions.Order);
-            break;
-    }
+    // switch (selectedFaction) {
+    //     case Factions.Arcane:
+    //         CurrentPrince.factions[0].level += 1;
+    //         CurrentPrince.numActions = CurrentPrince.factions[0].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[0].level;
+    //         document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[0].level;
+    //         alignFaction(CurrentPrince.factions[0]);
+    //         CurrentPrince.currentFaction = CurrentPrince[0];
+    //         break;
+    //     case Factions.Beast:
+    //         CurrentPrince.factions[1].level += 1;
+    //         CurrentPrince.numActions = CurrentPrince.factions[1].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[1].level;
+    //         document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[1].level;
+    //         alignFaction(CurrentPrince.factions[1]);
+    //         CurrentPrince.currentFaction = CurrentPrince[1];
+    //         break;
+    //     case Factions.Discord:
+    //         CurrentPrince.factions[2].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[2].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[2].level;
+    //         document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[2].level;
+    //         alignFaction(CurrentPrince.factions[2]);
+    //         CurrentPrince.currentFaction = CurrentPrince[2];
+    //         break;
+    //     case Factions.Hearth:
+    //         CurrentPrince.factions[3].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[3].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[3].level;
+    //         document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[3].level;
+    //         alignFaction(CurrentPrince.factions[3]);
+    //         CurrentPrince.currentFaction = CurrentPrince[3];
+    //         break;
+    //     case Factions.Nomad:
+    //         CurrentPrince.factions[4].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[4].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[4].level;
+    //         document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[4].level;
+    //         alignFaction(CurrentPrince.factions[4]);
+    //         CurrentPrince.currentFaction = CurrentPrince.factions[4];
+    //         break;
+    //     case Factions.Order:
+    //         CurrentPrince.factions[5].level += 1
+    //         CurrentPrince.numActions = CurrentPrince.factions[5].level
+    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[5].level;
+    //         document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[5].level;
+    //         alignFaction(CurrentPrince.factions[5]);
+    //         CurrentPrince.currentFaction = CurrentPrince.factions[5];
+    //         break;
+    // }
 
     // PF_6 is Search and Play for a second time. This does not add additional actions
     //if(CurrentPrince.mindCurrent != Mind.PF_6){
-    addTurnNumberLabel()
+
+    if (document.getElementById("cannotPlayCheck").checked) {
+        //displayCantPlayDialog();
+        addAnActionLabel("CantPlay", "Can't Play Card", displayCantPlayDialog());
+    }
+
+    updateTactics();
+    addTurnNumberLabel();
     princeNextStep();
     //}
+}
+
+function displayCantPlayDialog() {
+    let message;
+    if (CurrentPrince.mindCurrent.slice(0, 2) == "su") {
+        message = "Gain 2 warbands and tactics has increased!";
+        CurrentPrince.tacticsLevel += 1;
+    } else if (CurrentPrince.mindCurrent.slice(0, 2) == "ds") {
+        message = "Gain 1 warband, 1 SECRET and tactics has increased!";
+        CurrentPrince.tacticsLevel += 1;
+    } else if (CurrentPrince.mindCurrent.slice(0, 2) == "pf") {
+        message = "Gain 2 FAVOR!";
+    } else if (CurrentPrince.mindCurrent.slice(0, 2) == "rb") {
+        message = "Gain 1 warband, 1 FAVOR and tactics has increased!";
+        CurrentPrince.tacticsLevel += 1;
+    }
+    return message;
+    //showStandardMessageDialog("Can't Play Card?", message);
+}
+
+function increaseFactionLevel(factionNumber) {
+    // Faction levels start at zero but the first level (number of actions) is two
+    if (CurrentPrince.factions[factionNumber].level == 0) {
+        CurrentPrince.factions[factionNumber].level = 2;
+    } else {
+        CurrentPrince.factions[factionNumber].level += 1;
+    }
+}
+
+function getFactionNumber(selectedFaction) {
+    switch (selectedFaction) {
+        case Factions.Arcane:
+            return 0;
+        case Factions.Beast:
+            return 1;
+        case Factions.Discord:
+            return 2;
+        case Factions.Hearth:
+            return 3;
+        case Factions.Nomad:
+            return 4;
+        case Factions.Order:
+            return 5;
+    }
+}
+
+function updateTactics() {
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("numberInputBox")
+    );
+
+    document.getElementById("numberInputTitle").innerHTML = "Update Tactics";
+    document.getElementById("numberInputBody").innerHTML = "How many Battle Plan cards did you draw?";
+    document.getElementById("currentNumber").value = 0;
+    messageBox.show();
+}
+
+function numberBoxClick() {
+    CurrentPrince.tacticsLevel = convertTacticLevelToDice(parseInt(document.getElementById("currentNumber").value));
+    document.getElementById("PrinceTacticLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.tacticsLevel;
 }
 
 function SetValuesFromDebug() {
     // Sets the faction levels and prince mind from the debug menu
     // Allows the user to enter different values in case they have been set incorrectly
     // because of a bug or the user picked the wrong options
-    let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
-    CurrentPrince.mindStart = mindSelect.value;
-    CurrentPrince.mindCurrent = mindSelect.value;
+    // let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
+    // CurrentPrince.mindStart = mindSelect.value;
+    // CurrentPrince.mindCurrent = mindSelect.value;
 
-    CurrentPrince.factions.at(Factions.Arcane).level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Beast).level = parseInt(document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Discord).level = parseInt(document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Hearth).level = parseInt(document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Nomad).level = parseInt(document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value);
-    CurrentPrince.factions.at(Factions.Order).level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Arcane)[1].level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Beast)[1].level = parseInt(document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Discord)[1].level = parseInt(document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Hearth)[1].level = parseInt(document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Nomad)[1].level = parseInt(document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value);
+    // CurrentPrince.factions.at(Factions.Order)[1].level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
 }
 
 function showStandardMessageDialog(title, message) {
@@ -628,12 +807,24 @@ function cleanUp() {
 
     CurrentPrince = getNextAvailablePrince();
 
-    Princes.forEach(prince => {
-        prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false;
-        localStorage.setItem(prince.princeNumber, JSON.stringify(prince));
-    });
+    savePrinceSettings()
 
-    enableDisableTurnButtons();
+    enableDisablePrinces();
+}
+
+function savePrinceSettings() {
+    Princes.forEach(prince => {
+        prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false
+        localStorage.setItem(prince.princeNumber, JSON.stringify(prince))
+    })
+}
+
+function getPrince() {
+    for (let index = 1; index < Princes.length; index++) {
+        if (Princes[index].princeNumber == CurrentPrince.princeNumber) {
+            return Princes[index];
+        }
+    }
 }
 
 function showRoundChangeDialog() {
@@ -650,24 +841,39 @@ function roundChangeClick(answer) {
     }
 }
 
-function enableDisableTurnButtons() {
-    // Enabled or disable turns buttons based on the current prince
-    let buttons = document.querySelectorAll("[id^='PrinceStartTurn'], [id^='PrinceNextStep']");
-    buttons.forEach(
-        function (b) {
-            // Disable the button if the suffix number is not equal to the Current Prince number
-            b.disabled = (b.id.slice(-1) != CurrentPrince.princeNumber) ? true : false;
-        })
+function enableDisablePrinces() {
+    let princeNodes = document.querySelectorAll("[id^='PrinceColumn']");
+    princeNodes.forEach(
+        function (node) {
+            if (node.id.slice(-1) == CurrentPrince.princeNumber) {
+                node.classList.remove("disabled");
+            } else {
+                node.classList.add("disabled");
+            }
+        }
+    )
+}
+
+function addAnActionLabel(actionName, title, message) {
+    let actionLabel = document.getElementById("prince_action").cloneNode(true);
+    actionLabel.classList.remove("d-none");
+    actionLabel.id = "prince_action".replace("prince", "prince" + CurrentPrince.princeNumber).replace("action", "action" + actionName);
+
+    changeNodeIdAndValue(actionLabel, "prince_action_title", "prince_action_title" + actionName, title);
+    changeNodeIdAndValue(actionLabel, "prince_action_detail", "prince_action_detail" + actionName, message);
+
+    let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber);
+    ele.appendChild(actionLabel);
 }
 
 function addTurnNumberLabel() {
-    let turnNumberLabel = document.getElementById("prince1_turnNumber1").cloneNode()
-    turnNumberLabel.classList.remove("d-none")
-    turnNumberLabel.id = "prince1_turnNumber1".replace("prince1", "prince" + CurrentPrince.princeNumber).replace("turnNumber1", "turnNumber" + CurrentPrince.currentActionNum)
-    turnNumberLabel.innerHTML = "Turn #" + CurrentPrince.currentActionNum
+    let turnNumberLabel = document.getElementById("prince_turnNumber").cloneNode();
+    turnNumberLabel.classList.remove("d-none");
+    turnNumberLabel.id = "prince_turnNumber".replace("prince", "prince" + CurrentPrince.princeNumber).replace("turnNumber", "turnNumber" + CurrentPrince.currentActionNum);
+    turnNumberLabel.innerHTML = "Turn #" + CurrentPrince.currentActionNum;
 
-    let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber)
-    ele.appendChild(turnNumberLabel)
+    let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber);
+    ele.appendChild(turnNumberLabel);
 }
 
 function alignFaction(faction) {
@@ -689,27 +895,27 @@ function showYesNoDialog(title, message, actionName) {
     newStepNode.classList.remove("d-none");
 
     // Step button node
-    let stepBtnName = getStepNodeId("step_YesNo_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
+    let stepBtnName = getStepNodeId("YesNo_accord_btn_Prince_step"); //"accord_btn_Prince1_step1";
 
-    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_btn_Prince1_step1", stepBtnName, actionName);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_btn_Prince_step", stepBtnName, actionName);
 
     // Step Detail node
-    let stepName = getStepNodeId("step_YesNo_accord_Prince1_step1");
+    let stepName = getStepNodeId("YesNo_accord_Prince_step");
 
-    changeNodeId(newStepNode, "step_YesNo_accord_Prince1_step1", stepName);
+    changeNodeId(newStepNode, "YesNo_accord_Prince_step", stepName);
 
     // Change button target
     getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
 
     // Title Step node
-    let stepTitleName = getStepNodeId("step_YesNo_accord_title_Prince1_step1");
+    let stepTitleName = getStepNodeId("YesNo_accord_title_Prince_step");
 
-    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_title_Prince1_step1", stepTitleName, title);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_title_Prince_step", stepTitleName, title);
 
     // Body Step node
-    let stepBodyName = "step_YesNo_accord_body_Prince1_step1";
+    let stepBodyName = getStepNodeId("YesNo_accord_body_Prince_step");
 
-    changeNodeIdAndValue(newStepNode, "step_YesNo_accord_body_Prince1_step1", stepBodyName, message);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", stepBodyName, message);
 
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
@@ -721,7 +927,7 @@ function showYesNoDialog(title, message, actionName) {
 }
 
 function ShowHideSteps(princeSteps, stepName) {
-    let allSteps = princeSteps.querySelectorAll("[id^='step_YesNo_accord_Prince" + CurrentPrince.princeNumber + "_step'], [id^='step_Ok_accord_Prince" + CurrentPrince.princeNumber + "_step']")
+    let allSteps = princeSteps.querySelectorAll("[id^='YesNo_accord_Prince" + CurrentPrince.princeNumber + "_step'], [id^='Ok_accord_Prince" + CurrentPrince.princeNumber + "_step']")
     allSteps.forEach(function (step) {
         if (stepName == step.id) {
             step.classList.remove("collapse")
@@ -732,7 +938,7 @@ function ShowHideSteps(princeSteps, stepName) {
 }
 
 function getStepNodeId(oldId) {
-    return oldId.replace("Prince1", "Prince" + CurrentPrince.princeNumber).replace("step1", "step" + CurrentPrince.stepCount);
+    return oldId.replace("Prince", "Prince" + CurrentPrince.princeNumber).replace("step", "step" + CurrentPrince.stepCount);
 }
 
 function showMessageDialog(title, message) {
@@ -744,24 +950,24 @@ function showMessageDialog(title, message) {
     newStepNode.classList.remove("d-none");
 
     // Step button node
-    let stepBtnName = getStepNodeId("step_Ok_accord_btn_Prince1_step1"); //"accord_btn_Prince1_step1";
+    let stepBtnName = getStepNodeId("Ok_accord_btn_Prince_step"); //"accord_btn_Prince1_step1";
 
-    changeNodeIdAndValue(newStepNode, "step_Ok_accord_btn_Prince1_step1", stepBtnName, "OUTCOME");
+    changeNodeIdAndValue(newStepNode, "Ok_accord_btn_Prince_step", stepBtnName, "OUTCOME");
 
     // Step Detail node
-    let stepName = getStepNodeId("step_Ok_accord_Prince1_step1");
-    changeNodeId(newStepNode, "step_Ok_accord_Prince1_step1", stepName);
+    let stepName = getStepNodeId("Ok_accord_Prince_step");
+    changeNodeId(newStepNode, "Ok_accord_Prince_step", stepName);
 
     // Change button target
     getElementById(newStepNode, stepBtnName).dataset.bsTarget = "#" + stepName;
 
     // Title Step node
-    let stepTitleName = getStepNodeId("step_Ok_accord_title_Prince1_step1");
-    changeNodeIdAndValue(newStepNode, "step_Ok_accord_title_Prince1_step1", stepTitleName, title);
+    let stepTitleName = getStepNodeId("Ok_accord_title_Prince_step");
+    changeNodeIdAndValue(newStepNode, "Ok_accord_title_Prince_step", stepTitleName, title);
 
     // Body Step node
-    let stepBodyName = "step_Ok_accord_body_Prince1_step1";
-    changeNodeIdAndValue(newStepNode, "step_Ok_accord_body_Prince1_step1", stepBodyName, message);
+    let stepBodyName = "Ok_accord_body_Prince_step";
+    changeNodeIdAndValue(newStepNode, "Ok_accord_body_Prince_step", stepBodyName, message);
 
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
@@ -1077,61 +1283,6 @@ function sup_1_br(answer) {
     Outcome(answer, "Fight", fightText(), Mind.SUP_8, false, Mind.SUP_2);
 }
 
-function tradeFor() {
-    let factionListFriend = getFactionAlignmentList(Alignments.Friend);
-    let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
-
-    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
-        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()<br><br>";
-
-    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
-        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-
-    switch (CurrentPrince.mindCurrent) {
-        case Mind.SUP_4:
-        case Mind.PF_2:
-            //Currency.FAVOR;
-            return favorFriendMessage;
-        //return "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
-        case Mind.DS_2:
-            //Currency.SECRETS;
-            return favorConspiratorMessage;
-        //return "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-        case Mind.DS_4:
-        case Mind.PF_4:
-        case Mind.RB_3:
-        case Mind.RB_5:
-            //Currency.BOTH;
-            return favorFriendMessage +
-                favorConspiratorMessage
-        //"Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-        //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
-    }
-}
-
-function fightText() {
-    return "Travel and fight";
-}
-
-function musterText() {
-    return "Place one favor on each empty card at your site, starting with the card closest to the site. Gain two warbands per favor placed. Do not place favor from your Ambition box.";
-}
-
-function moveText() {
-    return "Travel to the site that best meets the condition listed on your action space.";
-}
-
-function tradeText() {
-    // if(CurrentPrince.currentFaction.alignment == Alignments.Friend){
-    //     return "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";    
-    // }
-    return tradeFor() // "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";
-}
-
-function searchText() {
-    return "Resolve the Search and Play One Card phase again. (This does not increase the number of actions you can take this turn.)";
-}
-
 function sup_2(answer) {
     Outcome(answer, "Muster", musterText(), Mind.SUP_2_BR, false, Mind.SUP_3);
 }
@@ -1285,7 +1436,7 @@ function rb_1(answer) {
 }
 
 function rb_1_br(answer) {
-    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_1_MOVE);
+    Outcome(answer, "Fight", MoveToRelicsAndFightMessage(), Mind.RB_9, false, Mind.RB_1_MOVE);
 }
 
 function rb_1_move(answer) {
@@ -1337,7 +1488,7 @@ function rb_7(answer) {
 }
 
 function rb_7_br(answer) {
-    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_4);
+    Outcome(answer, "Fight", MoveToRelicsAndFightMessage(), Mind.RB_9, false, Mind.RB_4);
 }
 
 function rb_8(answer) {
@@ -1349,7 +1500,7 @@ function rb_8_most(answer) {
 }
 
 function rb_8_br(answer) {
-    Outcome(answer, "Fight", fightText(), Mind.RB_9, false, Mind.RB_5);
+    Outcome(answer, "Fight", MoveToRelicsAndFightMessage(), Mind.RB_9, false, Mind.RB_5);
 }
 
 function rb_9(answer) {
@@ -1370,6 +1521,65 @@ function payMessage(paymentType) {
     }
 }
 
+function fightText() {
+    return "Move to site of a rival site with the fewest warbands and Battle!";
+}
+
 function MoveToBannerAndFightMessage(bannerName) {
     return "Move to site of the holder of " + bannerName + " and Battle!";
+}
+
+function MoveToRelicsAndFightMessage() {
+    return "Move to site of the holder of the most RELICS and Battle!";
+}
+
+function tradeFor() {
+    let factionListFriend = getFactionAlignmentList(Alignments.Friend);
+    let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
+
+    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()<br><br>";
+
+    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
+        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.SUP_4:
+        case Mind.PF_2:
+            //Currency.FAVOR;
+            return favorFriendMessage;
+        //return "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
+        case Mind.DS_2:
+            //Currency.SECRETS;
+            return favorConspiratorMessage;
+        //return "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+        case Mind.DS_4:
+        case Mind.PF_4:
+        case Mind.RB_3:
+        case Mind.RB_5:
+            //Currency.BOTH;
+            return favorFriendMessage +
+                favorConspiratorMessage
+        //"Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+        //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
+    }
+}
+
+function musterText() {
+    return "Place one favor on each empty card at your site, starting with the card closest to the site. Gain two warbands per favor placed. Do not place favor from your Ambition box.";
+}
+
+function moveText() {
+    return "Travel to the site that best meets the condition listed on your action space.";
+}
+
+function tradeText() {
+    // if(CurrentPrince.currentFaction.alignment == Alignments.Friend){
+    //     return "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";    
+    // }
+    return tradeFor() // "If your action space shows favor, gain favor from each empty card at your site whose suit matches any Friend, gaining the amount of favor in the Relationships box for that card’s suit. If it shows secrets, gain secrets in the same way, but for Conspirators. (You do not place favor or secrets on cards to trade.)";
+}
+
+function searchText() {
+    return "Resolve the Search and Play One Card phase again. (This does not increase the number of actions you can take this turn.)";
 }

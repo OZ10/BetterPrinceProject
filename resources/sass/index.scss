@@ -20,6 +20,20 @@ $primary: black;
     border-radius: 10px;
 }
 
+.action {
+    max-width: 400px;
+    border-radius: 10px;
+    background-color: $gray-200;
+    padding: 10px;
+    margin: 5px;
+    color: black;
+}
+
+.turnLabel{
+    font-weight: bold;
+    margin-top: 15px;
+}
+
 .prince {
     max-width: 400px;
     border-radius: 10px;
@@ -36,47 +50,37 @@ $primary: black;
     color: whitesmoke;
 }
 
-.exile2 {
+.exile1 {
     @extend .prince;
     background-color: gold;
     color: black;
 }
 
-.exile3 {
+.exile2 {
     @extend .prince;
     background-color: crimson;
     color: whitesmoke;
 }
 
-.exile4 {
+.exile3 {
     @extend .prince;
     background-color: cornflowerblue;
     color: whitesmoke;
 }
 
-// .chancellor {
-//     @extend .prince;
-//     background-color: gray;
-//     color: whitesmoke;
-// }
+.exile4 {
+    @extend .prince;
+    background-color: gainsboro;
+    color: black;
+}
 
-// .exile2 {
-//     @extend .prince;
-//     background-color: grey;
-//     color: black;
-// }
+.friend{
+    background-color: goldenrod;
+}
 
-// .exile3 {
-//     @extend .prince;
-//     background-color: lightgray;
-//     color: whitesmoke;
-// }
-
-// .exile4 {
-//     @extend .prince;
-//     background-color: cornflowerblue;
-//     color: whitesmoke;
-// }
+.conspirator{
+    background-color: cornflowerblue;
+}
 
 .turnCounter {
     background-color: black;
@@ -124,4 +128,10 @@ $primary: black;
 
 .btnNoBackground:hover {
     background-color: $gray-400;
+}
+
+div.disabled{
+    pointer-events: none;
+    opacity: 0.3;
+    //background: #CCC;
 }

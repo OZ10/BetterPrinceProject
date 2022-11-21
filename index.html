@@ -52,7 +52,8 @@
                 <div class="col">
                     <div class="col p-3 m-1 addNewPrince" id="addNewPrinceColumn">
                         <div class="justify-content-center row" id="addNewPrinceRow">
-                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton" onclick="addNewPrince()">
+                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton"
+                                onclick="addNewPrinceClick()">
                                 <span class="material-icons md-48">
                                     add_circle_outline
                                 </span>
@@ -64,15 +65,15 @@
         </div>
     </main>
 
-    <div class="col p-3 m-1 d-none" id="PrinceColumn1">
-        <div class="d-flex justify-content-between row" id="PrinceRow1">
+    <div class="col p-3 m-1 d-none disabled" id="PrinceColumn">
+        <div class="d-flex justify-content-between row" id="PrinceRow">
 
             <h5 class="col-md-auto">
-                <div id="PrinceName1">John</div>
+                <div id="PrinceName">John</div>
             </h5>
 
             <div class="col-md-auto">
-                <div class="turnCounter" id="PrinceTotalTurns1">#0</div>
+                <div class="turnCounter" id="PrinceTotalTurns">#0</div>
             </div>
 
             <h6 class="row">
@@ -80,16 +81,29 @@
                     <div>Status: </div>
                 </div>
                 <div class="col-md-auto">
-                    <div id="PrinceStatus1"></div>
+                    <select class="form-select" id="PrinceStatus" onchange="changeStatus(value);">
+                        <option>chancellor</option>
+                        <option>citizen</option>
+                        <option>exile</option>
+                    </select>
                 </div>
             </h6>
+
+            <div class="row">
+                <div class="col-md-auto">
+                    <div>Tactic +- </div>
+                </div>
+                <div class="col-md-auto">
+                    <div id="PrinceTacticLevel">0</div>
+                </div>
+            </div>
 
             <div class="row d-none">
                 <div class="col-md-auto">
                     <div>Favor: </div>
                 </div>
                 <div class="col-md-auto">
-                    <div id="PrinceFavor1">0</div>
+                    <div id="PrinceFavor">0</div>
                 </div>
             </div>
 
@@ -98,17 +112,17 @@
                     <div>Secret: </div>
                 </div>
                 <div class="col-md-auto">
-                    <div id="PrinceSecret1">0</div>
+                    <div id="PrinceSecret">0</div>
                 </div>
             </div>
 
             <div class="row m-1 justify-content-center">
-                <button class="btnNoBackground btnSizeMed" id="PrinceStartTurn1" onclick="princeStartTurn()">
+                <button class="btnNoBackground btnSizeMed" id="PrinceStartTurn" onclick="princeStartTurn()">
                     <span class="material-icons md-48">expand_more</span>
                 </button>
             </div>
 
-            <div id="steps_Prince1">
+            <div id="steps_Prince">
 
             </div>
 
@@ -127,7 +141,7 @@
                                 <div>Mind Start:</div>
                             </div>
                             <div class="col-md-auto">
-                                <select class="form-select" id="PrinceMindOptions1">
+                                <select class="form-select" id="PrinceMindOptions" onchange="princeMindChange(value);">
                                     <option>sup_1</option>
                                     <option>sup_1_br</option>
                                     <option>sup_2</option>
@@ -136,7 +150,6 @@
                                     <option>sup_4</option>
                                     <option>sup_5</option>
                                     <option>sup_5_br</option>
-                                    <option>sup_6</option>
                                     <option>sup_7</option>
                                     <option>sup_8</option>
                                     <option>sup_8_br</option>
@@ -199,7 +212,8 @@
                                 <div>Arcane Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceArcaneLevel1" value="0"></input>
+                                <input type="number" id="PrinceArcaneLevel" value="0"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -207,7 +221,8 @@
                                 <div>Beast Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceBeastLevel1"></input>
+                                <input type="number" id="PrinceBeastLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -215,7 +230,8 @@
                                 <div>Discord Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceDiscordLevel1"></input>
+                                <input type="number" id="PrinceDiscordLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -223,7 +239,8 @@
                                 <div>Hearth Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceHearthLevel1"></input>
+                                <input type="number" id="PrinceHearthLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -231,7 +248,8 @@
                                 <div>Nomad Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceNomadLevel1"></input>
+                                <input type="number" id="PrinceNomadLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                         <div class="row">
@@ -239,7 +257,8 @@
                                 <div>Order Level: </div>
                             </div>
                             <div class="col-md-auto">
-                                <input type="number" id="PrinceOrderLevel1"></input>
+                                <input type="number" id="PrinceOrderLevel"
+                                    onchange="factionLevelChange(id,value);"></input>
                             </div>
                         </div>
                     </div>
@@ -252,18 +271,18 @@
     <div class="accordion d-none m-1" id="step_YesNo">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" id="step_YesNo_accord_btn_Prince1_step1" data-bs-toggle="collapse"
-                    data-bs-target="#accord_Prince1_step1">
+                <button class="accordion-button" id="YesNo_accord_btn_Prince_step" data-bs-toggle="collapse"
+                    data-bs-target="#accord_Prince_step">
                     Step 1
                 </button>
             </h2>
 
-            <div class="accordion-collapse collapse" id="step_YesNo_accord_Prince1_step1">
+            <div class="accordion-collapse collapse" id="YesNo_accord_Prince_step">
                 <div class="accordion-body">
-                    <b id="step_YesNo_accord_title_Prince1_step1">
+                    <b id="YesNo_accord_title_Prince_step">
                         Title
                     </b>
-                    <p id="step_YesNo_accord_body_Prince1_step1">
+                    <p id="YesNo_accord_body_Prince_step">
                         Body
                     </p>
                     <button class="btn btn-primary" onclick="yesNoClick('Yes');">
@@ -280,18 +299,18 @@
     <div class="accordion d-none mb-4" id="step_Ok">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" id="step_Ok_accord_btn_Prince1_step1" data-bs-toggle="collapse"
-                    data-bs-target="#accord_Prince1_step1">
+                <button class="accordion-button" id="Ok_accord_btn_Prince_step" data-bs-toggle="collapse"
+                    data-bs-target="#accord_Prince_step">
                     Step 1
                 </button>
             </h2>
 
-            <div class="accordion-collapse collapse" id="step_Ok_accord_Prince1_step1">
+            <div class="accordion-collapse collapse" id="Ok_accord_Prince_step">
                 <div class="accordion-body">
-                    <b id="step_Ok_accord_title_Prince1_step1">
+                    <b id="Ok_accord_title_Prince_step">
                         Title
                     </b>
-                    <p id="step_Ok_accord_body_Prince1_step1">
+                    <p id="Ok_accord_body_Prince_step">
                         Body
                     </p>
                     <button class="btn btn-primary" onclick="okClick('Yes');">
@@ -302,7 +321,14 @@
         </div>
     </div>
 
-    <div class="d-none" id="prince1_turnNumber1">Turn #1</div>
+    <div class="d-none action" id="prince_action">
+        <div id="prince_action_title" style="font-weight: bold;"></div>
+        <p id="prince_action_detail">
+            This is an action
+        </p>
+    </div>
+
+    <div class="d-none turnLabel" id="prince_turnNumber">Turn #1</div>
 
     <!-- Message Box -->
     <div class="modal fade" id="messageBox" tabindex="-1" aria-labelledby="MessageBox" aria-hidden="true">
@@ -332,7 +358,10 @@
                     <h5 class="modal-title">Cleanup</h5>
                 </div>
                 <div class="modal-body d-flex">
-                    <p>Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may take it to become a Citizen.</p>
+                    <p>Return any favor on cards to their matching favor banks.<br><br>If you’re the Chancellor, do not
+                        hold the Oathkeeper title, and have a Threat but no Successor, each Exile in turn order, except
+                        an Exile who meets the Successor goal, may peek at the bottom relic of the relic deck and may
+                        take it to become a Citizen.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-target="#roundChange" data-bs-toggle="modal">
@@ -380,10 +409,12 @@
                     <p>Have all players had a turn this round?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="roundChangeClick('Yes');" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-primary" onclick="roundChangeClick('Yes');"
+                        data-bs-dismiss="modal">
                         Yes
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="roundChangeClick('No');" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" onclick="roundChangeClick('No');"
+                        data-bs-dismiss="modal">
                         No
                     </button>
                 </div>
@@ -524,37 +555,50 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Search And Play</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
-                <div class="modal-body d-flex">
+                <div class="modal-body">
                     <p id="searchAndPlayDialogMessage">Which faction did you draw?</p>
+                    <p class="d-none" id="searchAndPlayFriendMessage">Play As <b>Friend</b>, otherwise play
+                        <i>Unaligned</i> as
+                        <b>Friend</b>, otherwise play as <b>Conspirator</b>
+                    </p>
+                    <p class="d-none" id="searchAndPlayConspiratorMessage">Play As <b>Conspirator</b>, otherwise play
+                        <i>Unaligned</i>
+                        as <b>Conspirator</b>, otherwise play as <b>Friend</b>
+                    </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('discord');"
-                        data-bs-dismiss="modal">
-                        Discord
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('arcane');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnarcane"
+                        onclick="searchAndPlayClick('arcane');" data-bs-dismiss="modal">
                         Arcane
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('order');"
-                        data-bs-dismiss="modal">
-                        Order
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('hearth');"
-                        data-bs-dismiss="modal">
-                        Hearth
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('beast');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnbeast"
+                        onclick="searchAndPlayClick('beast');" data-bs-dismiss="modal">
                         Beast
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="searchAndPlayClick('nomad');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtndiscord"
+                        onclick="searchAndPlayClick('discord');" data-bs-dismiss="modal">
+                        Discord
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnhearth"
+                        onclick="searchAndPlayClick('hearth');" data-bs-dismiss="modal">
+                        Hearth
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnnomad"
+                        onclick="searchAndPlayClick('nomad');" data-bs-dismiss="modal">
                         Nomad
                     </button>
-                    <!-- <input type="text" id="answer" value=""> -->
+                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnorder"
+                        onclick="searchAndPlayClick('order');" data-bs-dismiss="modal">
+                        Order
+                    </button>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="cannotPlayCheck">
+                        <label class="form-check-label" for="cannotPlayCheck">
+                            I Cannot Play a Card!
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -565,15 +609,15 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="messageBoxTitle"></h5>
+                    <h5 class="modal-title" id="numberInputTitle"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex">
-                    <p id="messageBoxBody">Please enter number of favor</p>
+                    <p id="numberInputBody"></p>
                 </div>
                 <div class="modal-footer">
                     <input id="currentNumber" type="number" />
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="numberBoxClick();">
                         Close
                     </button>
                 </div>
