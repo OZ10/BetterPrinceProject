@@ -74,6 +74,12 @@ $primary: black;
     color: black;
 }
 
+.citizen1{
+    @extend .prince;
+    background-image: linear-gradient(to right, gold, gold, gold, blueviolet);
+    color: black;
+}
+
 .friend{
     background-color: goldenrod;
 }

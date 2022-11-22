@@ -475,6 +475,10 @@ function changeStatus(status) {
     princeNode.classList.remove("exile2");
     princeNode.classList.remove("exile3");
     princeNode.classList.remove("exile4");
+    princeNode.classList.remove("citizen1");
+    princeNode.classList.remove("citizen2");
+    princeNode.classList.remove("citizen3");
+    princeNode.classList.remove("citizen4");
 
     if (status == Status.Chancellor) {
         princeNode.classList.add(Status.Chancellor);
@@ -1577,11 +1581,11 @@ function moveText() {
         case Mind.PF_3:
         case Mind.RB_4:
             const friends = getFactionAlignmentList(Alignments.Friend);
-            travelText = "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained (in brackets): " + friends;
+            travelText = "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
             break;
         case Mind.DS_3:
             const conspirators = getFactionAlignmentList(Alignments.Conspirator);
-            travelText = "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained (in brackets): " + conspirators;
+            travelText = "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
             break;
         case Mind.RB_2:
         case Mind.RB_6:

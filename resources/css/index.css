@@ -10957,7 +10957,7 @@ textarea.form-control-lg {
   margin-top: 15px;
 }
 
-.prince, .exile4, .exile3, .exile2, .exile1, .chancellor, .addNewPrince {
+.prince, .citizen1, .exile4, .exile3, .exile2, .exile1, .chancellor, .addNewPrince {
   max-width: 400px;
   border-radius: 10px;
 }
@@ -10988,6 +10988,11 @@ textarea.form-control-lg {
 
 .exile4 {
   background-color: gainsboro;
+  color: black;
+}
+
+.citizen1 {
+  background-image: linear-gradient(to right, gold, gold, gold, blueviolet);
   color: black;
 }
 
