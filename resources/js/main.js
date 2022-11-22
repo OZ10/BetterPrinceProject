@@ -356,7 +356,7 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 
     changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
     changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
-    changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, convertTacticLevelToDice(newPrince.tacticsLevel));
+    changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, newPrince.tacticsLevel);
     changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
@@ -390,23 +390,27 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 }
 
 function convertTacticLevelToDice(level) {
+    let newLevel = CurrentPrince.tacticsLevel;
+
     switch (level) {
         case 0:
-            return CurrentPrince.tacticsLevel;
-        // case 0:
-        //     return 0;
+            break;
         case 1:
         case 2:
-            return 1;
+            newLevel += 1;
+            break;
         case 3:
         case 4:
-            return 2;
+            newLevel += 2;
+            break;
         case 5:
-            return 3;
+            newLevel += 3;
+            break;
         default:
-            // Max level (3 dice)
-            return 3;
+            newLevel = 3;
     }
+
+    return (newLevel > 3) ? 3 : newLevel;
 }
 
 function getNextPrinceName(princeNumber) {
@@ -1522,7 +1526,7 @@ function payMessage(paymentType) {
 }
 
 function fightText() {
-    return "Move to site of a rival site with the fewest warbands and Battle!";
+    return "Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll" + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
 }
 
 function MoveToBannerAndFightMessage(bannerName) {
@@ -1538,21 +1542,19 @@ function tradeFor() {
     let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
 
     let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
-        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()<br><br>";
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets<br><br>";
 
     let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
-        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets";
 
     switch (CurrentPrince.mindCurrent) {
         case Mind.SUP_4:
         case Mind.PF_2:
             //Currency.FAVOR;
             return favorFriendMessage;
-        //return "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
         case Mind.DS_2:
             //Currency.SECRETS;
             return favorConspiratorMessage;
-        //return "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
         case Mind.DS_4:
         case Mind.PF_4:
         case Mind.RB_3:
@@ -1560,8 +1562,6 @@ function tradeFor() {
             //Currency.BOTH;
             return favorFriendMessage +
                 favorConspiratorMessage
-        //"Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-        //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
     }
 }
 
@@ -1570,7 +1570,28 @@ function musterText() {
 }
 
 function moveText() {
-    return "Travel to the site that best meets the condition listed on your action space.";
+    let travelText;
+
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.SUP_3:
+        case Mind.PF_3:
+        case Mind.RB_4:
+            const friends = getFactionAlignmentList(Alignments.Friend);
+            travelText = "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained (in brackets): " + friends;
+            break;
+        case Mind.DS_3:
+            const conspirators = getFactionAlignmentList(Alignments.Conspirator);
+            travelText = "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained (in brackets): " + conspirators;
+            break;
+        case Mind.RB_2:
+        case Mind.RB_6:
+            travelText = "Travel to a site with a RELIC<br><br>If there are no RELICS on the map, travel to a facedown site." +
+            "If there are no facedown sites, gain one FAVOR from the Favor bank closest to the world deck, and travel to a site to gain the most secrets in a later Trade.<br><br>" +
+            "If you travel to a facedown site without a RELIC, gain one FAVOR as decribed above";
+            break;
+    }
+
+    return travelText;
 }
 
 function tradeText() {
