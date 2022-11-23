@@ -573,6 +573,8 @@ function assessThreat() {
 // }
 
 function threatClick(answer) {
+    let wasVisionPlayed = false;
+
     if (CurrentPrince.currentThreat != answer) {
         CurrentPrince.currentThreat = answer;
 
@@ -586,6 +588,7 @@ function threatClick(answer) {
                 break;
             case "Ex_Vision":
                 showVisionDialog();
+                wasVisionPlayed = true;
                 break;
             case "Ex_Oath":
                 getThreat("Oath");
@@ -595,7 +598,7 @@ function threatClick(answer) {
         }
     }
 
-    searchAndPlay();
+    if(wasVisionPlayed == false) searchAndPlay();
 }
 
 function getThreat(threat) {
@@ -632,6 +635,7 @@ function showVisionDialog() {
 
 function visionDialogClick(vision) {
     CurrentPrince.mindCurrent = vision;
+    searchAndPlay();
 }
 
 function searchAndPlay() {
