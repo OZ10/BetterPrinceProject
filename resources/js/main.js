@@ -544,6 +544,20 @@ function assessThreat() {
     const messageBox = new bootstrap.Modal(
         document.getElementById("assessThreatDialog")
     );
+
+    switch (CurrentPrince.status) {
+        case Status.Chancellor:
+            document.getElementById("Chancellor_Cit_Successor").classList.remove("d-none");
+            document.getElementById("Chancellor_Ex_Usurper").classList.remove("d-none");
+            document.getElementById("Ex_Usurper").classList.add("d-none");
+            break;
+        case Status.Exile:
+        case Status.Citizen:
+            document.getElementById("Chancellor_Cit_Successor").classList.add("d-none");
+            document.getElementById("Chancellor_Ex_Usurper").classList.add("d-none");
+            document.getElementById("Ex_Usurper").classList.remove("d-none");
+            break;
+    }
     messageBox.show();
 }
 
