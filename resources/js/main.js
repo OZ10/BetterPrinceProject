@@ -16,7 +16,7 @@ const Status = {
 }
 
 const Threat = {
-    None: "none",
+    None: "None",
     Successor: "successor",
     OathKeeper: "oathkeeper",
     RivalCompletedVision: "rivalcompletedVision",
@@ -136,7 +136,6 @@ class Prince {
     constructor(name,
         numFavor,
         numSecrets,
-        mindStart,
         mindCurrent,
         status,
         numwarbands,
@@ -154,7 +153,6 @@ class Prince {
         this.name = name;
         this.numFavor = numFavor;
         this.numSecrets = numSecrets;
-        this.mindStart = mindStart;
         this.mindCurrent = mindCurrent;
         this.status = status;
         this.numwarbands = numwarbands;
@@ -264,8 +262,9 @@ function oathClick(selectedOath) {
             break;
     }
 
-    document.getElementById("selectedOath").innerHTML = startingMind;
+    CurrentPrince.mindCurrent = startingMind;
 
+    document.getElementById("selectedOath").innerHTML = startingMind;
     document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber).value = startingMind;
     CurrentGameSettings = new GameSettings(selectedOath, 1);
     localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
@@ -283,7 +282,6 @@ function createNewPrince(name, status, number) {
     return new Prince(name,
         2,
         1,
-        Mind.SUP_1,
         Mind.SUP_1,
         status,
         2,
@@ -549,28 +547,77 @@ function assessThreat() {
     messageBox.show();
 }
 
-function assessThreatYesNoClick(answer) {
-    if (answer == 'Yes') {
-        const messageBox = new bootstrap.Modal(
-            document.getElementById("threatDialog")
-        );
-        messageBox.show();
-    } else {
-        searchAndPlay();
-    }
-}
+// function assessThreatYesNoClick(answer) {
+//     if (answer == 'Yes') {
+//         const messageBox = new bootstrap.Modal(
+//             document.getElementById("threatDialog")
+//         );
+//         messageBox.show();
+//     } else {
+//         searchAndPlay();
+//     }
+// }
 
 function threatClick(answer) {
-    CurrentPrince.mindStart = answer;
-    CurrentPrince.mindCurrent = answer;
+    if (CurrentPrince.currentThreat != answer) {
+        CurrentPrince.currentThreat = answer;
 
-    switch (answer) {
-        case Mind.SUP_1:
-            CurrentPrince.currentThreat = Threat.None
-            break;
+        switch (answer) {
+            case "Chancellor_Cit_Successor":
+                getThreat("Successor");
+                break;
+            case "Chancellor_Ex_Usurper":
+            case "Ex_Usurper":
+                getThreat("Usurper");
+                break;
+            case "Ex_Vision":
+                showVisionDialog();
+                break;
+            case "Ex_Oath":
+                getThreat("Oath");
+                break;
+            case "None":
+                break;
+        }
     }
 
     searchAndPlay();
+}
+
+function getThreat(threat) {
+    switch (threat) {
+        case "Successor":
+            CurrentPrince.mindCurrent = getSuccessorOath();
+            break;
+        case "Oath":
+        case "Usurper":
+            CurrentPrince.mindCurrent = CurrentGameSettings.selectedOath.toLowerCase() + "_1"; //getOath();
+            break;
+    }
+}
+
+function getSuccessorOath() {
+    switch (CurrentGameSettings.selectedOath) {
+        case "SUP":
+            return Mind.RB_1;
+        case "DS":
+            return Mind.PF_1;
+        case "PF":
+            return Mind.DS_1;
+        case "RB":
+            return Mind.SUP_1;
+    }
+}
+
+function showVisionDialog() {
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("visionDialog")
+    );
+    messageBox.show();
+}
+
+function visionDialogClick(vision) {
+    CurrentPrince.mindCurrent = vision;
 }
 
 function searchAndPlay() {
@@ -775,7 +822,6 @@ function SetValuesFromDebug() {
     // Allows the user to enter different values in case they have been set incorrectly
     // because of a bug or the user picked the wrong options
     // let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
-    // CurrentPrince.mindStart = mindSelect.value;
     // CurrentPrince.mindCurrent = mindSelect.value;
 
     // CurrentPrince.factions.at(Factions.Arcane)[1].level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
@@ -1590,8 +1636,8 @@ function moveText() {
         case Mind.RB_2:
         case Mind.RB_6:
             travelText = "Travel to a site with a RELIC<br><br>If there are no RELICS on the map, travel to a facedown site." +
-            "If there are no facedown sites, gain one FAVOR from the Favor bank closest to the world deck, and travel to a site to gain the most secrets in a later Trade.<br><br>" +
-            "If you travel to a facedown site without a RELIC, gain one FAVOR as decribed above";
+                "If there are no facedown sites, gain one FAVOR from the Favor bank closest to the world deck, and travel to a site to gain the most secrets in a later Trade.<br><br>" +
+                "If you travel to a facedown site without a RELIC, gain one FAVOR as decribed above";
             break;
     }
 
