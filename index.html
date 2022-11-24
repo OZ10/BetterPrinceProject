@@ -283,8 +283,12 @@
                         Title
                     </b>
                     <p id="YesNo_accord_body_Prince_step">
-                        Body
+                        
                     </p>
+                    <p>
+                        <a id="YesNo_accord_helperLink_Prince_step" href="#" onclick="toolTipClick(this)"></a>
+                    </p>
+                    
                     <button class="btn btn-primary" onclick="yesNoClick('Yes');">
                         Yes
                     </button>
@@ -452,37 +456,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Assess Threat Box -->
-    <!-- <div class="modal fade" id="assessThreatDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
-        data-bs-backdrop="static">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Does a threat exist?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex">
-                    <p id="assessThreatDialogMessage">1. As Chancellor, does a Citizen meet the Successor goal?<br><br>
-                        2. As Exile, are you not the Usurper? As Chancellor, is an Exile
-                        the Usurper, or is an Exile the Oathkeeper on round eight?<br><br>
-                        3. Has an Exile revealed and completed a Vision?<br><br>
-                        4. Is an Exile the Oathkeeper?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="assessThreatYesNoClick('Yes');"
-                        data-bs-dismiss="modal">
-                        Yes
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="assessThreatYesNoClick('No');"
-                        data-bs-dismiss="modal">
-                        No
-                    </button>
-                    <!-- <input type="text" id="answer" value=""> -->
-                </div>
-            </div>
-        </div>
-    </div> -->
 
     <!-- Vision Box -->
     <div class="modal fade" id="visionDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"

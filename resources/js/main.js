@@ -530,6 +530,14 @@ function test() {
     document.getElementById("accord_Prince").appendChild(cloneNode);
 }
 
+function toolTipClick(link){
+    switch(link.innerHTML){
+        case "Battle Ready?":
+            showStandardMessageDialog("Battle Ready is...", "Able to roll more attack dice than the defense dice added by your targets plus the warbands in the defending force. (Do not add the defender’s battle plans or defense dice added from the Oathkeeper title.)")
+            break;
+    }
+}
+
 function princeStartTurn() {
     // Hide the add new prince button
     hideAddNewPrinceButton()
@@ -709,61 +717,6 @@ function searchAndPlayClick(selectedFaction) {
     alignFaction(CurrentPrince.factions[factionNumber]);
     CurrentPrince.currentFaction = CurrentPrince[factionNumber];
 
-    // todo refactor this
-    // switch (selectedFaction) {
-    //     case Factions.Arcane:
-    //         CurrentPrince.factions[0].level += 1;
-    //         CurrentPrince.numActions = CurrentPrince.factions[0].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[0].level;
-    //         document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[0].level;
-    //         alignFaction(CurrentPrince.factions[0]);
-    //         CurrentPrince.currentFaction = CurrentPrince[0];
-    //         break;
-    //     case Factions.Beast:
-    //         CurrentPrince.factions[1].level += 1;
-    //         CurrentPrince.numActions = CurrentPrince.factions[1].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[1].level;
-    //         document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[1].level;
-    //         alignFaction(CurrentPrince.factions[1]);
-    //         CurrentPrince.currentFaction = CurrentPrince[1];
-    //         break;
-    //     case Factions.Discord:
-    //         CurrentPrince.factions[2].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[2].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[2].level;
-    //         document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[2].level;
-    //         alignFaction(CurrentPrince.factions[2]);
-    //         CurrentPrince.currentFaction = CurrentPrince[2];
-    //         break;
-    //     case Factions.Hearth:
-    //         CurrentPrince.factions[3].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[3].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[3].level;
-    //         document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[3].level;
-    //         alignFaction(CurrentPrince.factions[3]);
-    //         CurrentPrince.currentFaction = CurrentPrince[3];
-    //         break;
-    //     case Factions.Nomad:
-    //         CurrentPrince.factions[4].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[4].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[4].level;
-    //         document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[4].level;
-    //         alignFaction(CurrentPrince.factions[4]);
-    //         CurrentPrince.currentFaction = CurrentPrince.factions[4];
-    //         break;
-    //     case Factions.Order:
-    //         CurrentPrince.factions[5].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[5].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[5].level;
-    //         document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[5].level;
-    //         alignFaction(CurrentPrince.factions[5]);
-    //         CurrentPrince.currentFaction = CurrentPrince.factions[5];
-    //         break;
-    // }
-
-    // PF_6 is Search and Play for a second time. This does not add additional actions
-    //if(CurrentPrince.mindCurrent != Mind.PF_6){
-
     if (document.getElementById("cannotPlayCheck").checked) {
         //displayCantPlayDialog();
         addAnActionLabel("CantPlay", "Can't Play Card", displayCantPlayDialog());
@@ -833,21 +786,6 @@ function updateTactics() {
 function numberBoxClick() {
     CurrentPrince.tacticsLevel = convertTacticLevelToDice(parseInt(document.getElementById("currentNumber").value));
     document.getElementById("PrinceTacticLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.tacticsLevel;
-}
-
-function SetValuesFromDebug() {
-    // Sets the faction levels and prince mind from the debug menu
-    // Allows the user to enter different values in case they have been set incorrectly
-    // because of a bug or the user picked the wrong options
-    // let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
-    // CurrentPrince.mindCurrent = mindSelect.value;
-
-    // CurrentPrince.factions.at(Factions.Arcane)[1].level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Beast)[1].level = parseInt(document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Discord)[1].level = parseInt(document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Hearth)[1].level = parseInt(document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Nomad)[1].level = parseInt(document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Order)[1].level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
 }
 
 function showStandardMessageDialog(title, message) {
@@ -969,7 +907,7 @@ function showYesNoDialog(title, message, actionName) {
     // Step button node
     let stepBtnName = getStepNodeId("YesNo_accord_btn_Prince_step"); //"accord_btn_Prince1_step1";
 
-    changeNodeIdAndValue(newStepNode, "YesNo_accord_btn_Prince_step", stepBtnName, actionName);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_btn_Prince_step", getStepNodeId("YesNo_accord_btn_Prince_step"), actionName);
 
     // Step Detail node
     let stepName = getStepNodeId("YesNo_accord_Prince_step");
@@ -985,9 +923,16 @@ function showYesNoDialog(title, message, actionName) {
     changeNodeIdAndValue(newStepNode, "YesNo_accord_title_Prince_step", stepTitleName, title);
 
     // Body Step node
-    let stepBodyName = getStepNodeId("YesNo_accord_body_Prince_step");
+    // let stepBodyName = getStepNodeId("YesNo_accord_body_Prince_step");
 
-    changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", stepBodyName, message);
+    // changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", stepBodyName, message);
+
+    if (message == "Battle ready?") {
+        changeNodeIdAndValue(newStepNode, "YesNo_accord_helperLink_Prince_step", getStepNodeId("YesNo_accord_helperLink_Prince_step"), "Battle Ready?");
+    } else {
+        // Body Step node
+        changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", getStepNodeId("YesNo_accord_body_Prince_step"), message);
+    }
 
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
@@ -1013,7 +958,7 @@ function getStepNodeId(oldId) {
     return oldId.replace("Prince", "Prince" + CurrentPrince.princeNumber).replace("step", "step" + CurrentPrince.stepCount);
 }
 
-function showMessageDialog(title, message) {
+function showInlineMessageDialog(title, message) {
 
     // Whole Step node
     let newStepNode = document.getElementById("step_Ok").cloneNode(true);
@@ -1329,7 +1274,7 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
             princeNextStep();
         } else {
 
-            showMessageDialog(yesMessageTitle, yesMessage);
+            showInlineMessageDialog(yesMessageTitle, yesMessage);
 
             CurrentPrince.currentActionNum += 1;
         }
@@ -1484,7 +1429,7 @@ function pf_4_pay(answer) {
 }
 
 function pf_5(answer) {
-    Outcome(answer, "Muster", musterText(), Mind.PF_5_BR, false, Mind.PF_3);
+    Outcome(answer, "Muster", musterText(), Mind.PF_5_BR, false, Mind.PF_5_BR);
 }
 
 function pf_5_br(answer) {
@@ -1594,7 +1539,9 @@ function payMessage(paymentType) {
 }
 
 function fightText() {
-    return "Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll" + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
+    let moveText = "Move to site of a rival site with the fewest warbands and Battle!";
+    if(CurrentPrince.tacticsLevel > 0) moveText += "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
+    return moveText; //"Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
 }
 
 function MoveToBannerAndFightMessage(bannerName) {
