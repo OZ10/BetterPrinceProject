@@ -626,11 +626,12 @@ function getSuccessorOath() {
         case "SUP":
             return Mind.RB_1;
         case "DS":
-            return Mind.PF_1;
+            // holds the Grand Scepter
+            return Mind.SUP_1_BR;
         case "PF":
             return Mind.DS_1;
         case "RB":
-            return Mind.SUP_1;
+            return Mind.PF_1;
     }
 }
 
@@ -743,7 +744,6 @@ function displayCantPlayDialog() {
         CurrentPrince.tacticsLevel += 1;
     }
     return message;
-    //showStandardMessageDialog("Can't Play Card?", message);
 }
 
 function increaseFactionLevel(factionNumber) {
@@ -1540,6 +1540,11 @@ function payMessage(paymentType) {
 
 function fightText() {
     let moveText = "Move to site of a rival site with the fewest warbands and Battle!";
+
+    if(CurrentPrince.currentThreat == "Chancellor_Cit_Successor" && CurrentGameSettings.selectedOath == "DS"){
+        moveText = "Move to site of the rival with the GRAND SCEPTER and Battle!";
+    }
+    
     if(CurrentPrince.tacticsLevel > 0) moveText += "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
     return moveText; //"Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
 }
