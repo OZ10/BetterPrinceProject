@@ -65,7 +65,7 @@
         </div>
     </main>
 
-    <div class="col p-3 m-1 d-none disabled" id="PrinceColumn">
+    <div class="col p-3 m-1 d-none disabled citizen" id="PrinceColumn">
         <div class="d-flex justify-content-between row" id="PrinceRow">
 
             <h5 class="col-md-auto">
@@ -91,7 +91,7 @@
 
             <div class="row">
                 <div class="col-md-auto">
-                    <div>Tactic +- </div>
+                    <div>Tactics +- </div>
                 </div>
                 <div class="col-md-auto">
                     <div id="PrinceTacticLevel">0</div>
@@ -283,8 +283,12 @@
                         Title
                     </b>
                     <p id="YesNo_accord_body_Prince_step">
-                        Body
+                        
                     </p>
+                    <p>
+                        <a id="YesNo_accord_helperLink_Prince_step" href="#" onclick="toolTipClick(this)"></a>
+                    </p>
+                    
                     <button class="btn btn-primary" onclick="yesNoClick('Yes');">
                         Yes
                     </button>
@@ -453,65 +457,76 @@
         </div>
     </div>
 
+    <!-- Vision Box -->
+    <div class="modal fade" id="visionDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Which Vision Has Been Played?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex">
+                    <p id="visionDialogMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('sup_1');"
+                        data-bs-dismiss="modal">
+                        Oath of Supremacy
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('ds_1');"
+                        data-bs-dismiss="modal">
+                        Oath of The Darkest Secret
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('pf_1');"
+                        data-bs-dismiss="modal">
+                        Oath of The People's Favor
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('rb_1');"
+                        data-bs-dismiss="modal">
+                        Oath of Relics and Banners
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Assess Threat Box -->
     <div class="modal fade" id="assessThreatDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
         data-bs-backdrop="static">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Does a threat exist?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex">
-                    <p id="assessThreatDialogMessage">1. As Chancellor, does a Citizen meet the Successor goal?<br><br>
-                        2. As Exile, are you not the Usurper? As Chancellor, is an Exile
-                        the Usurper, or is an Exile the Oathkeeper on round eight?<br><br>
-                        3. Has an Exile revealed and completed a Vision?<br><br>
-                        4. Is an Exile the Oathkeeper?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="assessThreatYesNoClick('Yes');"
-                        data-bs-dismiss="modal">
-                        Yes
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="assessThreatYesNoClick('No');"
-                        data-bs-dismiss="modal">
-                        No
-                    </button>
-                    <!-- <input type="text" id="answer" value=""> -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Threat Box -->
-    <div class="modal fade" id="threatDialog" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
-        data-bs-backdrop="static">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Which Threat Exist?</h5>
+                    <h5 class="modal-title">Does A Threat Exist?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex">
                     <p id="threatDialogMessage"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="threatClick('sup_1');"
-                        data-bs-dismiss="modal">
-                        Oath of Supremacy
+                    <button type="button" class="btn btn-secondary" id="Chancellor_Cit_Successor"
+                        onclick="threatClick('Chancellor_Cit_Successor');" data-bs-dismiss="modal">
+                        Does a Citizen meet the Successor goal
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="threatClick('ds_1');"
-                        data-bs-dismiss="modal">
-                        Oath of The Darkest Secret
+                    <button type="button" class="btn btn-secondary" id="Chancellor_Ex_Usurper"
+                        onclick="threatClick('Chancellor_Ex_Usurper');" data-bs-dismiss="modal">
+                        Is an Exile the Usurper, or is an Exile the Oathkeeper on round eight?
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="threatClick('pf_1');"
+                    <button type="button" class="btn btn-secondary" id="Ex_Usurper" onclick="threatClick('Ex_Usurper');"
                         data-bs-dismiss="modal">
-                        Oath of The People's Favor
+                        Are you not the Usurper?
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="threatClick('rb_1');"
+                    <button type="button" class="btn btn-secondary" id="Ex_Vision" onclick="threatClick('Ex_Vision');"
                         data-bs-dismiss="modal">
-                        Oath of Relics and Banners
+                        Has an Exile revealed and completed a Vision?
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="Ex_Oath" onclick="threatClick('Ex_Oath');"
+                        data-bs-dismiss="modal">
+                        Is an Exile the Oathkeeper?
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="threatClick('None');"
+                        data-bs-dismiss="modal">
+                        None
                     </button>
                 </div>
             </div>

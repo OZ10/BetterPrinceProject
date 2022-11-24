@@ -16,7 +16,7 @@ const Status = {
 }
 
 const Threat = {
-    None: "none",
+    None: "None",
     Successor: "successor",
     OathKeeper: "oathkeeper",
     RivalCompletedVision: "rivalcompletedVision",
@@ -136,7 +136,6 @@ class Prince {
     constructor(name,
         numFavor,
         numSecrets,
-        mindStart,
         mindCurrent,
         status,
         numwarbands,
@@ -154,7 +153,6 @@ class Prince {
         this.name = name;
         this.numFavor = numFavor;
         this.numSecrets = numSecrets;
-        this.mindStart = mindStart;
         this.mindCurrent = mindCurrent;
         this.status = status;
         this.numwarbands = numwarbands;
@@ -264,8 +262,9 @@ function oathClick(selectedOath) {
             break;
     }
 
-    document.getElementById("selectedOath").innerHTML = startingMind;
+    CurrentPrince.mindCurrent = startingMind;
 
+    document.getElementById("selectedOath").innerHTML = startingMind;
     document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber).value = startingMind;
     CurrentGameSettings = new GameSettings(selectedOath, 1);
     localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
@@ -283,7 +282,6 @@ function createNewPrince(name, status, number) {
     return new Prince(name,
         2,
         1,
-        Mind.SUP_1,
         Mind.SUP_1,
         status,
         2,
@@ -356,7 +354,7 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 
     changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
     changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
-    changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, convertTacticLevelToDice(newPrince.tacticsLevel));
+    changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, newPrince.tacticsLevel);
     changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
@@ -390,23 +388,27 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 }
 
 function convertTacticLevelToDice(level) {
+    let newLevel = CurrentPrince.tacticsLevel;
+
     switch (level) {
         case 0:
-            return CurrentPrince.tacticsLevel;
-        // case 0:
-        //     return 0;
+            break;
         case 1:
         case 2:
-            return 1;
+            newLevel += 1;
+            break;
         case 3:
         case 4:
-            return 2;
+            newLevel += 2;
+            break;
         case 5:
-            return 3;
+            newLevel += 3;
+            break;
         default:
-            // Max level (3 dice)
-            return 3;
+            newLevel = 3;
     }
+
+    return (newLevel > 3) ? 3 : newLevel;
 }
 
 function getNextPrinceName(princeNumber) {
@@ -471,6 +473,10 @@ function changeStatus(status) {
     princeNode.classList.remove("exile2");
     princeNode.classList.remove("exile3");
     princeNode.classList.remove("exile4");
+    princeNode.classList.remove("citizen1");
+    princeNode.classList.remove("citizen2");
+    princeNode.classList.remove("citizen3");
+    princeNode.classList.remove("citizen4");
 
     if (status == Status.Chancellor) {
         princeNode.classList.add(Status.Chancellor);
@@ -524,6 +530,14 @@ function test() {
     document.getElementById("accord_Prince").appendChild(cloneNode);
 }
 
+function toolTipClick(link){
+    switch(link.innerHTML){
+        case "Battle Ready?":
+            showStandardMessageDialog("Battle Ready is...", "Able to roll more attack dice than the defense dice added by your targets plus the warbands in the defending force. (Do not add the defender’s battle plans or defense dice added from the Oathkeeper title.)")
+            break;
+    }
+}
+
 function princeStartTurn() {
     // Hide the add new prince button
     hideAddNewPrinceButton()
@@ -538,30 +552,97 @@ function assessThreat() {
     const messageBox = new bootstrap.Modal(
         document.getElementById("assessThreatDialog")
     );
+
+    switch (CurrentPrince.status) {
+        case Status.Chancellor:
+            document.getElementById("Chancellor_Cit_Successor").classList.remove("d-none");
+            document.getElementById("Chancellor_Ex_Usurper").classList.remove("d-none");
+            document.getElementById("Ex_Usurper").classList.add("d-none");
+            break;
+        case Status.Exile:
+        case Status.Citizen:
+            document.getElementById("Chancellor_Cit_Successor").classList.add("d-none");
+            document.getElementById("Chancellor_Ex_Usurper").classList.add("d-none");
+            document.getElementById("Ex_Usurper").classList.remove("d-none");
+            break;
+    }
     messageBox.show();
 }
 
-function assessThreatYesNoClick(answer) {
-    if (answer == 'Yes') {
-        const messageBox = new bootstrap.Modal(
-            document.getElementById("threatDialog")
-        );
-        messageBox.show();
-    } else {
-        searchAndPlay();
+// function assessThreatYesNoClick(answer) {
+//     if (answer == 'Yes') {
+//         const messageBox = new bootstrap.Modal(
+//             document.getElementById("threatDialog")
+//         );
+//         messageBox.show();
+//     } else {
+//         searchAndPlay();
+//     }
+// }
+
+function threatClick(answer) {
+    let wasVisionPlayed = false;
+
+    if (CurrentPrince.currentThreat != answer) {
+        CurrentPrince.currentThreat = answer;
+
+        switch (answer) {
+            case "Chancellor_Cit_Successor":
+                getThreat("Successor");
+                break;
+            case "Chancellor_Ex_Usurper":
+            case "Ex_Usurper":
+                getThreat("Usurper");
+                break;
+            case "Ex_Vision":
+                showVisionDialog();
+                wasVisionPlayed = true;
+                break;
+            case "Ex_Oath":
+                getThreat("Oath");
+                break;
+            case "None":
+                break;
+        }
+    }
+
+    if(wasVisionPlayed == false) searchAndPlay();
+}
+
+function getThreat(threat) {
+    switch (threat) {
+        case "Successor":
+            CurrentPrince.mindCurrent = getSuccessorOath();
+            break;
+        case "Oath":
+        case "Usurper":
+            CurrentPrince.mindCurrent = CurrentGameSettings.selectedOath.toLowerCase() + "_1"; //getOath();
+            break;
     }
 }
 
-function threatClick(answer) {
-    CurrentPrince.mindStart = answer;
-    CurrentPrince.mindCurrent = answer;
-
-    switch (answer) {
-        case Mind.SUP_1:
-            CurrentPrince.currentThreat = Threat.None
-            break;
+function getSuccessorOath() {
+    switch (CurrentGameSettings.selectedOath) {
+        case "SUP":
+            return Mind.RB_1;
+        case "DS":
+            return Mind.PF_1;
+        case "PF":
+            return Mind.DS_1;
+        case "RB":
+            return Mind.SUP_1;
     }
+}
 
+function showVisionDialog() {
+    const messageBox = new bootstrap.Modal(
+        document.getElementById("visionDialog")
+    );
+    messageBox.show();
+}
+
+function visionDialogClick(vision) {
+    CurrentPrince.mindCurrent = vision;
     searchAndPlay();
 }
 
@@ -636,61 +717,6 @@ function searchAndPlayClick(selectedFaction) {
     alignFaction(CurrentPrince.factions[factionNumber]);
     CurrentPrince.currentFaction = CurrentPrince[factionNumber];
 
-    // todo refactor this
-    // switch (selectedFaction) {
-    //     case Factions.Arcane:
-    //         CurrentPrince.factions[0].level += 1;
-    //         CurrentPrince.numActions = CurrentPrince.factions[0].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[0].level;
-    //         document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[0].level;
-    //         alignFaction(CurrentPrince.factions[0]);
-    //         CurrentPrince.currentFaction = CurrentPrince[0];
-    //         break;
-    //     case Factions.Beast:
-    //         CurrentPrince.factions[1].level += 1;
-    //         CurrentPrince.numActions = CurrentPrince.factions[1].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[1].level;
-    //         document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[1].level;
-    //         alignFaction(CurrentPrince.factions[1]);
-    //         CurrentPrince.currentFaction = CurrentPrince[1];
-    //         break;
-    //     case Factions.Discord:
-    //         CurrentPrince.factions[2].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[2].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[2].level;
-    //         document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[2].level;
-    //         alignFaction(CurrentPrince.factions[2]);
-    //         CurrentPrince.currentFaction = CurrentPrince[2];
-    //         break;
-    //     case Factions.Hearth:
-    //         CurrentPrince.factions[3].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[3].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[3].level;
-    //         document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[3].level;
-    //         alignFaction(CurrentPrince.factions[3]);
-    //         CurrentPrince.currentFaction = CurrentPrince[3];
-    //         break;
-    //     case Factions.Nomad:
-    //         CurrentPrince.factions[4].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[4].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[4].level;
-    //         document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[4].level;
-    //         alignFaction(CurrentPrince.factions[4]);
-    //         CurrentPrince.currentFaction = CurrentPrince.factions[4];
-    //         break;
-    //     case Factions.Order:
-    //         CurrentPrince.factions[5].level += 1
-    //         CurrentPrince.numActions = CurrentPrince.factions[5].level
-    //         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[5].level;
-    //         document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[5].level;
-    //         alignFaction(CurrentPrince.factions[5]);
-    //         CurrentPrince.currentFaction = CurrentPrince.factions[5];
-    //         break;
-    // }
-
-    // PF_6 is Search and Play for a second time. This does not add additional actions
-    //if(CurrentPrince.mindCurrent != Mind.PF_6){
-
     if (document.getElementById("cannotPlayCheck").checked) {
         //displayCantPlayDialog();
         addAnActionLabel("CantPlay", "Can't Play Card", displayCantPlayDialog());
@@ -760,22 +786,6 @@ function updateTactics() {
 function numberBoxClick() {
     CurrentPrince.tacticsLevel = convertTacticLevelToDice(parseInt(document.getElementById("currentNumber").value));
     document.getElementById("PrinceTacticLevel" + CurrentPrince.princeNumber).innerHTML = CurrentPrince.tacticsLevel;
-}
-
-function SetValuesFromDebug() {
-    // Sets the faction levels and prince mind from the debug menu
-    // Allows the user to enter different values in case they have been set incorrectly
-    // because of a bug or the user picked the wrong options
-    // let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
-    // CurrentPrince.mindStart = mindSelect.value;
-    // CurrentPrince.mindCurrent = mindSelect.value;
-
-    // CurrentPrince.factions.at(Factions.Arcane)[1].level = parseInt(document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Beast)[1].level = parseInt(document.getElementById("PrinceBeastLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Discord)[1].level = parseInt(document.getElementById("PrinceDiscordLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Hearth)[1].level = parseInt(document.getElementById("PrinceHearthLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Nomad)[1].level = parseInt(document.getElementById("PrinceNomadLevel" + CurrentPrince.princeNumber).value);
-    // CurrentPrince.factions.at(Factions.Order)[1].level = parseInt(document.getElementById("PrinceOrderLevel" + CurrentPrince.princeNumber).value);
 }
 
 function showStandardMessageDialog(title, message) {
@@ -897,7 +907,7 @@ function showYesNoDialog(title, message, actionName) {
     // Step button node
     let stepBtnName = getStepNodeId("YesNo_accord_btn_Prince_step"); //"accord_btn_Prince1_step1";
 
-    changeNodeIdAndValue(newStepNode, "YesNo_accord_btn_Prince_step", stepBtnName, actionName);
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_btn_Prince_step", getStepNodeId("YesNo_accord_btn_Prince_step"), actionName);
 
     // Step Detail node
     let stepName = getStepNodeId("YesNo_accord_Prince_step");
@@ -913,9 +923,16 @@ function showYesNoDialog(title, message, actionName) {
     changeNodeIdAndValue(newStepNode, "YesNo_accord_title_Prince_step", stepTitleName, title);
 
     // Body Step node
-    let stepBodyName = getStepNodeId("YesNo_accord_body_Prince_step");
+    // let stepBodyName = getStepNodeId("YesNo_accord_body_Prince_step");
 
-    changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", stepBodyName, message);
+    // changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", stepBodyName, message);
+
+    if (message == "Battle ready?") {
+        changeNodeIdAndValue(newStepNode, "YesNo_accord_helperLink_Prince_step", getStepNodeId("YesNo_accord_helperLink_Prince_step"), "Battle Ready?");
+    } else {
+        // Body Step node
+        changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", getStepNodeId("YesNo_accord_body_Prince_step"), message);
+    }
 
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
@@ -941,7 +958,7 @@ function getStepNodeId(oldId) {
     return oldId.replace("Prince", "Prince" + CurrentPrince.princeNumber).replace("step", "step" + CurrentPrince.stepCount);
 }
 
-function showMessageDialog(title, message) {
+function showInlineMessageDialog(title, message) {
 
     // Whole Step node
     let newStepNode = document.getElementById("step_Ok").cloneNode(true);
@@ -1257,7 +1274,7 @@ function Outcome(answer, yesMessageTitle, yesMessage, yesMind, yesSkipToNext, no
             princeNextStep();
         } else {
 
-            showMessageDialog(yesMessageTitle, yesMessage);
+            showInlineMessageDialog(yesMessageTitle, yesMessage);
 
             CurrentPrince.currentActionNum += 1;
         }
@@ -1412,7 +1429,7 @@ function pf_4_pay(answer) {
 }
 
 function pf_5(answer) {
-    Outcome(answer, "Muster", musterText(), Mind.PF_5_BR, false, Mind.PF_3);
+    Outcome(answer, "Muster", musterText(), Mind.PF_5_BR, false, Mind.PF_5_BR);
 }
 
 function pf_5_br(answer) {
@@ -1522,7 +1539,9 @@ function payMessage(paymentType) {
 }
 
 function fightText() {
-    return "Move to site of a rival site with the fewest warbands and Battle!";
+    let moveText = "Move to site of a rival site with the fewest warbands and Battle!";
+    if(CurrentPrince.tacticsLevel > 0) moveText += "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
+    return moveText; //"Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
 }
 
 function MoveToBannerAndFightMessage(bannerName) {
@@ -1538,21 +1557,19 @@ function tradeFor() {
     let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
 
     let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
-        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()<br><br>";
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets<br><br>";
 
     let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
-        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
+        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets";
 
     switch (CurrentPrince.mindCurrent) {
         case Mind.SUP_4:
         case Mind.PF_2:
             //Currency.FAVOR;
             return favorFriendMessage;
-        //return "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets ()";
         case Mind.DS_2:
             //Currency.SECRETS;
             return favorConspiratorMessage;
-        //return "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
         case Mind.DS_4:
         case Mind.PF_4:
         case Mind.RB_3:
@@ -1560,8 +1577,6 @@ function tradeFor() {
             //Currency.BOTH;
             return favorFriendMessage +
                 favorConspiratorMessage
-        //"Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets ()";
-        //return "Gain FAVOR & SECRETS from each empty card at your site whose suit matches any Friend or Conspirators, gaining the amount of FAVOR or SECRETS in the Relationships box for that card’s suit";
     }
 }
 
@@ -1570,7 +1585,28 @@ function musterText() {
 }
 
 function moveText() {
-    return "Travel to the site that best meets the condition listed on your action space.";
+    let travelText;
+
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.SUP_3:
+        case Mind.PF_3:
+        case Mind.RB_4:
+            const friends = getFactionAlignmentList(Alignments.Friend);
+            travelText = "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
+            break;
+        case Mind.DS_3:
+            const conspirators = getFactionAlignmentList(Alignments.Conspirator);
+            travelText = "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
+            break;
+        case Mind.RB_2:
+        case Mind.RB_6:
+            travelText = "Travel to a site with a RELIC<br><br>If there are no RELICS on the map, travel to a facedown site." +
+                "If there are no facedown sites, gain one FAVOR from the Favor bank closest to the world deck, and travel to a site to gain the most secrets in a later Trade.<br><br>" +
+                "If you travel to a facedown site without a RELIC, gain one FAVOR as decribed above";
+            break;
+    }
+
+    return travelText;
 }
 
 function tradeText() {
