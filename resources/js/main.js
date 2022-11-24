@@ -530,8 +530,8 @@ function test() {
     document.getElementById("accord_Prince").appendChild(cloneNode);
 }
 
-function toolTipClick(link){
-    switch(link.innerHTML){
+function toolTipClick(link) {
+    switch (link.innerHTML) {
         case "Battle Ready?":
             showStandardMessageDialog("Battle Ready is...", "Able to roll more attack dice than the defense dice added by your targets plus the warbands in the defending force. (Do not add the defender’s battle plans or defense dice added from the Oathkeeper title.)")
             break;
@@ -606,7 +606,7 @@ function threatClick(answer) {
         }
     }
 
-    if(wasVisionPlayed == false) searchAndPlay();
+    if (wasVisionPlayed == false) searchAndPlay();
 }
 
 function getThreat(threat) {
@@ -810,7 +810,7 @@ function cleanUp() {
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
     princeSteps.innerHTML = "";
 
-    CurrentPrince.currentActionNum = 0;
+    CurrentPrince.currentActionNum = 1;
 
     let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
     mindSelect.value = CurrentPrince.mindCurrent;
@@ -1541,11 +1541,11 @@ function payMessage(paymentType) {
 function fightText() {
     let moveText = "Move to site of a rival site with the fewest warbands and Battle!";
 
-    if(CurrentPrince.currentThreat == "Chancellor_Cit_Successor" && CurrentGameSettings.selectedOath == "DS"){
+    if (CurrentPrince.currentThreat == "Chancellor_Cit_Successor" && CurrentGameSettings.selectedOath == "DS") {
         moveText = "Move to site of the rival with the GRAND SCEPTER and Battle!";
     }
-    
-    if(CurrentPrince.tacticsLevel > 0) moveText += "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
+
+    if (CurrentPrince.tacticsLevel > 0) moveText += "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
     return moveText; //"Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
 }
 
@@ -1596,6 +1596,7 @@ function moveText() {
         case Mind.SUP_3:
         case Mind.PF_3:
         case Mind.RB_4:
+        case Mind.PF_7:
             const friends = getFactionAlignmentList(Alignments.Friend);
             travelText = "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
             break;
