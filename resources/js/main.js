@@ -457,6 +457,8 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
 
     if (newNode.nodeName == "INPUT" || newNode.nodeName == "SELECT") {
         newNode.value = newValue;
+    } else if (newNode.nodeName == "IMG") {
+        newNode.src = newValue;
     } else {
         newNode.innerHTML = newValue;
     }
@@ -569,17 +571,6 @@ function assessThreat() {
     messageBox.show();
 }
 
-// function assessThreatYesNoClick(answer) {
-//     if (answer == 'Yes') {
-//         const messageBox = new bootstrap.Modal(
-//             document.getElementById("threatDialog")
-//         );
-//         messageBox.show();
-//     } else {
-//         searchAndPlay();
-//     }
-// }
-
 function threatClick(answer) {
     let wasVisionPlayed = false;
 
@@ -680,7 +671,7 @@ function changeFactionAlignmentButtons() {
         document.getElementById("searchAndPlayBtn" + faction.name).classList.remove("conspirator")
 
         // set button text
-        document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + faction.level + ")"
+        document.getElementById("searchAndPlayBtn" + faction.name + "_text").innerHTML = faction.name.toUpperCase() + " (" + faction.level + ")"
         //document.getElementById("searchAndPlayBtn" + faction.name).innerHTML = faction.name + "(" + (faction.level == 1) ? 0 : faction.level + ")";
         // add button colour
         switch (faction.alignment) {
@@ -934,6 +925,8 @@ function showYesNoDialog(title, message, actionName) {
         changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", getStepNodeId("YesNo_accord_body_Prince_step"), message);
     }
 
+    changeNodeIdAndValue(newStepNode, "YesNo_accord_image_Prince_step", getStepNodeId("YesNo_accord_image_Prince_step"), convertActionToIcon(actionName));
+
     // Add new step
     let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
     princeSteps.appendChild(newStepNode);
@@ -941,6 +934,45 @@ function showYesNoDialog(title, message, actionName) {
     ShowHideSteps(princeSteps, stepName)
 
     CurrentPrince.stepCount += 1;
+}
+
+function convertActionToIcon(actionName) {
+    switch (actionName) {
+        case ActionNames.BattleReady:
+            return "./resources/images/action_battleready.png";
+        case ActionNames.Hold + BannerNames.DARKESTSECRET:
+            return "./resources/images/action_hold_ds.png";
+        case ActionNames.Hold + BannerNames.PEOPLESFAVOR:
+            return "./resources/images/action_hold_pf.png";
+        case ActionNames.Move + Currency.FAVOR:
+            return "./resources/images/action_move_favor.png";
+        case ActionNames.Move + Currency.SECRETS:
+            return "./resources/images/action_move_secret.png";
+        case ActionNames.Move + Currency.BOTH:
+            return "./resources/images/action_move_favor_secret.png";
+        case ActionNames.MoveFight:
+            return "./resources/images/action_move_fight.png";
+        case ActionNames.Muster:
+            return "./resources/images/action_muster.png";
+        case ActionNames.PayFor + BannerNames.DARKESTSECRET:
+            return "./resources/images/action_pay_ds.png";
+        case ActionNames.PayFor + BannerNames.PEOPLESFAVOR:
+            return "./resources/images/action_pay_pf.png";
+        case ActionNames.PayForRelsBanners:
+            return "./resources/images/action_pay_rb.png";
+        case ActionNames.Rule:
+            return "./resources/images/action_rule.png";
+        case ActionNames.Search:
+            return "./resources/images/action_search.png";
+        case ActionNames.Trade + Currency.FAVOR:
+            return "./resources/images/action_trade_favor.png";
+        case ActionNames.Trade + Currency.SECRETS:
+            return "./resources/images/action_trade_secret.png";
+        case ActionNames.Trade + Currency.BOTH:
+            return "./resources/images/action_trade_favor_secret.png";
+        default:
+            return "";
+    }
 }
 
 function ShowHideSteps(princeSteps, stepName) {
@@ -1224,7 +1256,7 @@ function questionCanMuster() {
 }
 
 function questionMoveToSiteWithMost(currency) {
-    showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?", ActionNames.Move);
+    showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?", ActionNames.Move + currency);
 }
 
 function questionAlreadyAtSiteWithMost(item) {
@@ -1232,7 +1264,7 @@ function questionAlreadyAtSiteWithMost(item) {
 }
 
 function questionTradeWithSite(currency) {
-    showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?", ActionNames.Trade);
+    showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?", ActionNames.Trade + currency);
 }
 
 function questionHolderOfBanner(bannerName) {

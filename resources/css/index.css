@@ -11011,6 +11011,16 @@ textarea.form-control-lg {
   padding-inline: 20px;
 }
 
+.oath_selection_btn {
+  display: flex;
+  align-items: center;
+}
+
+.oath_icon {
+  height: 60px;
+  width: 60px;
+}
+
 .icon-medium {
   display: inline-block;
   height: 50px;

@@ -95,6 +95,16 @@ $primary: black;
     padding-inline: 20px;
 }
 
+.oath_selection_btn{
+    display: flex;
+    align-items: center;
+}
+
+.oath_icon{
+    height: 60px;
+    width: 60px;
+}
+
 // .icon-small {
 //     @include font-size-pxem(22px);
 // }
