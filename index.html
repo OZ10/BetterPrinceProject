@@ -279,16 +279,21 @@
 
             <div class="accordion-collapse collapse" id="YesNo_accord_Prince_step">
                 <div class="accordion-body">
-                    <b id="YesNo_accord_title_Prince_step">
-                        Title
-                    </b>
-                    <p id="YesNo_accord_body_Prince_step">
-                        
-                    </p>
-                    <p>
-                        <a id="YesNo_accord_helperLink_Prince_step" href="#" onclick="toolTipClick(this)"></a>
-                    </p>
-                    
+                    <div class="row">
+                        <div class="col">
+                            <b id="YesNo_accord_title_Prince_step">
+                                Title
+                            </b>
+                            <p id="YesNo_accord_body_Prince_step"></p>
+                            <p>
+                                <a id="YesNo_accord_helperLink_Prince_step" href="#" onclick="toolTipClick(this)"></a>
+                            </p>
+                        </div>
+                        <div class="col-auto">
+                            <img class="oath_icon" id="YesNo_accord_image_Prince_step" src="">
+                        </div>
+                    </div>
+
                     <button class="btn btn-primary" onclick="yesNoClick('Yes');">
                         Yes
                     </button>
@@ -439,19 +444,18 @@
                     <p id="bannersDialogMessage"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('DS');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="bannersDialogClick('DS');"
                         data-bs-dismiss="modal">
                         Darkest Secret?
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('PF');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="bannersDialogClick('PF');"
                         data-bs-dismiss="modal">
                         Peoples Favor?
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="bannersDialogClick('Both');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="bannersDialogClick('Both');"
                         data-bs-dismiss="modal">
                         Both or Neither?
                     </button>
-                    <!-- <input type="text" id="answer" value=""> -->
                 </div>
             </div>
         </div>
@@ -470,19 +474,19 @@
                     <p id="visionDialogMessage"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('sup_1');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="visionDialogClick('sup_1');"
                         data-bs-dismiss="modal">
                         Vision of Conquest
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('ds_1');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="visionDialogClick('ds_1');"
                         data-bs-dismiss="modal">
                         Vision of Faith
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('pf_1');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="visionDialogClick('pf_1');"
                         data-bs-dismiss="modal">
                         Vision of Rebellion
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="visionDialogClick('rb_1');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="visionDialogClick('rb_1');"
                         data-bs-dismiss="modal">
                         Vision of Sanctuary
                     </button>
@@ -498,33 +502,29 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Does A Threat Exist?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex">
-                    <p id="threatDialogMessage"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="Chancellor_Cit_Successor"
+                    <button type="button" class="btn btn-secondary w-100" id="Chancellor_Cit_Successor"
                         onclick="threatClick('Chancellor_Cit_Successor');" data-bs-dismiss="modal">
                         Does a Citizen meet the Successor goal
                     </button>
-                    <button type="button" class="btn btn-secondary" id="Chancellor_Ex_Usurper"
+                    <button type="button" class="btn btn-secondary w-100" id="Chancellor_Ex_Usurper"
                         onclick="threatClick('Chancellor_Ex_Usurper');" data-bs-dismiss="modal">
                         Is an Exile the Usurper, or is an Exile the Oathkeeper on round eight?
                     </button>
-                    <button type="button" class="btn btn-secondary" id="Ex_Usurper" onclick="threatClick('Ex_Usurper');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" id="Ex_Usurper"
+                        onclick="threatClick('Ex_Usurper');" data-bs-dismiss="modal">
                         Are you not the Usurper?
                     </button>
-                    <button type="button" class="btn btn-secondary" id="Ex_Vision" onclick="threatClick('Ex_Vision');"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" id="Ex_Vision"
+                        onclick="threatClick('Ex_Vision');" data-bs-dismiss="modal">
                         Has an Exile revealed and completed a Vision?
                     </button>
-                    <button type="button" class="btn btn-secondary" id="Ex_Oath" onclick="threatClick('Ex_Oath');"
+                    <button type="button" class="btn btn-secondary w-100" id="Ex_Oath" onclick="threatClick('Ex_Oath');"
                         data-bs-dismiss="modal">
                         Is an Exile the Oathkeeper?
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="threatClick('None');"
+                    <button type="button" class="btn btn-secondary w-100" onclick="threatClick('None');"
                         data-bs-dismiss="modal">
                         None
                     </button>
@@ -540,23 +540,54 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Which Oath Was Selected?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex">
                     <p id="oathDialogMessage"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="oathClick('SUP');" data-bs-dismiss="modal">
-                        Oath of Supremacy
+                    <button type="button" class="btn btn-secondary w-100" onclick="oathClick('SUP');"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn">
+                                Oath of Supremacy
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/sup.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="oathClick('DS');" data-bs-dismiss="modal">
-                        Oath of The Darkest Secret
+                    <button type="button" class="btn btn-secondary w-100" onclick="oathClick('DS');"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn">
+                                Oath of The Darkest Secret
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/ds.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="oathClick('PF');" data-bs-dismiss="modal">
-                        Oath of The People's Favor
+                    <button type="button" class="btn btn-secondary w-100" onclick="oathClick('PF');"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn">
+                                Oath of The People's Favor
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/pf.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="oathClick('RB');" data-bs-dismiss="modal">
-                        Oath of Relics and Banners
+                    <button type="button" class="btn btn-secondary w-100" onclick="oathClick('RB');"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn">
+                                Oath of Relics and Banners
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/rb.png" alt="">
+                            </div>
+                        </div>
                     </button>
                 </div>
             </div>
@@ -570,7 +601,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Search And Play</h5>
-                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
                 <div class="modal-body">
                     <p id="searchAndPlayDialogMessage">Which faction did you draw?</p>
@@ -584,29 +614,71 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnarcane"
-                        onclick="searchAndPlayClick('arcane');" data-bs-dismiss="modal">
-                        Arcane
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('arcane');" id="searchAndPlayBtnarcane"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn" id="searchAndPlayBtnarcane_text">
+                                Arcane
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/arcane.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnbeast"
-                        onclick="searchAndPlayClick('beast');" data-bs-dismiss="modal">
-                        Beast
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('beast');" id="searchAndPlayBtnbeast"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn" id="searchAndPlayBtnbeast_text">
+                                Beast
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/beast.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtndiscord"
-                        onclick="searchAndPlayClick('discord');" data-bs-dismiss="modal">
-                        Discord
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('discord');" id="searchAndPlayBtndiscord"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn" id="searchAndPlayBtndiscord_text">
+                                Discord
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/discord.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnhearth"
-                        onclick="searchAndPlayClick('hearth');" data-bs-dismiss="modal">
-                        Hearth
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('hearth');" id="searchAndPlayBtnhearth"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn" id="searchAndPlayBtnhearth_text">
+                                Hearth
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/hearth.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnnomad"
-                        onclick="searchAndPlayClick('nomad');" data-bs-dismiss="modal">
-                        Nomad
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('nomad');" id="searchAndPlayBtnnomad"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn" id="searchAndPlayBtnnomad_text">
+                                Nomad
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/nomad.png" alt="">
+                            </div>
+                        </div>
                     </button>
-                    <button type="button" class="btn btn-secondary" id="searchAndPlayBtnorder"
-                        onclick="searchAndPlayClick('order');" data-bs-dismiss="modal">
-                        Order
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('order');" id="searchAndPlayBtnorder"
+                        data-bs-dismiss="modal">
+                        <div class="row">
+                            <div class="col oath_selection_btn" id="searchAndPlayBtnorder_text">
+                                Order
+                            </div>
+                            <div class="col-auto">
+                                <img class="oath_icon" src="./resources/images/order.png" alt="">
+                            </div>
+                        </div>
                     </button>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="cannotPlayCheck">
@@ -625,7 +697,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="numberInputTitle"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex">
                     <p id="numberInputBody"></p>
