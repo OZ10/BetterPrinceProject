@@ -182,7 +182,7 @@ function getFactionAlignmentList(alignment) {
             list += faction.name + "(" + convertFactionLevelToFavor(faction.level, alignment) + ") ";
         }
     })
-    return list.toUpperCase();
+    return (list == '') ? "No " + alignment + "s!" : list.toUpperCase();
 }
 
 function convertFactionLevelToFavor(level, alignment) {
@@ -1285,7 +1285,27 @@ function questionCanMuster() {
 }
 
 function questionMoveToSiteWithMost(currency) {
-    showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?", ActionNames.Move + currency);
+    let moveText = "";
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.SUP_3:
+        case Mind.PF_3:
+        case Mind.RB_4:
+        case Mind.PF_7:
+            const friends = getFactionAlignmentList(Alignments.Friend);
+            moveText = (friends == "No friends!") ? "Travel to the site to gain the most FAVOR<br><br>You currently have no Friends. Click Yes to this action to see the outcome"
+            : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of " + currency + " gained in brackets: " + friends;
+            break;
+        case Mind.DS_3:
+            const conspirators = getFactionAlignmentList(Alignments.Conspirator);
+            moveText = (conspirators == "No conspirators!") ? "Travel to the site to gain the most SECRETS<br><br></br>You currently have no Conspirators. Click Yes to this action to see the outcome"
+            : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of " + currency + " gained in brackets: " + conspirators;
+            break;
+        default:
+            moveText = "Travel to the site to gain a RELIC";
+            break;
+    }
+
+    showYesNoDialog("Can I...", moveText, ActionNames.Move + currency);
 }
 
 function questionAlreadyAtSiteWithMost(item) {
@@ -1297,18 +1317,15 @@ function questionTradeWithSite(currency) {
     let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
     let tradeText = "Trade for " + currency + " on at least one card at my site?";
 
-    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!" : factionListFriend;
-    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!" : factionListConspirator;
-
     switch (currency) {
         case Currency.FAVOR:
-            tradeText += "<br><br>For FAVOR: " + favorFriendMessage;
+            tradeText += "<br><br>For FAVOR: " + factionListFriend;
             break;
         case Currency.SECRETS:
-            tradeText += "<br><br>For SECRETS: " + favorConspiratorMessage;
+            tradeText += "<br><br>For SECRETS: " + factionListConspirator;
             break;
         case Currency.BOTH:
-            tradeText += "<br><br>For FAVOR: " + favorFriendMessage + "<br><br>For SECRETS: " + favorConspiratorMessage;
+            tradeText += "<br><br>For FAVOR: " + factionListFriend + "<br><br>For SECRETS: " + factionListConspirator;
             break;
     }
 
@@ -1645,10 +1662,10 @@ function tradeFor() {
     let factionListFriend = getFactionAlignmentList(Alignments.Friend);
     let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
 
-    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
+    let favorFriendMessage = (factionListFriend == 'No friends!') ? "No Friends to Trade with!<br><br>"
         : "Gain FAVOR from each empty card at your site whose suit matches: " + factionListFriend + ", gaining the amount of FAVOR listed in the brackets<br><br>";
 
-    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
+    let favorConspiratorMessage = (factionListConspirator == 'No conspirators!') ? "No Conspirators to Trade with!"
         : "Gain SECRETS from each empty card at your site whose suit matches: " + factionListConspirator + ", gaining the amount of SECRETS listed in the brackets";
 
     switch (CurrentPrince.mindCurrent) {
@@ -1682,11 +1699,13 @@ function moveText() {
         case Mind.RB_4:
         case Mind.PF_7:
             const friends = getFactionAlignmentList(Alignments.Friend);
-            travelText = "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
+            travelText = (friends == "No friends!") ? "No Friends to move to! Instead gain one FAVOR from the bank closest to the World Desk that has FAVOR" 
+            : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
             break;
         case Mind.DS_3:
             const conspirators = getFactionAlignmentList(Alignments.Conspirator);
-            travelText = "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
+            travelText = (conspirators == "No conspirators!") ? "No Conspirators to move to! Instead gain one SECRET" 
+            : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
             break;
         case Mind.RB_2:
         case Mind.RB_6:
