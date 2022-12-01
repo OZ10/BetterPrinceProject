@@ -1266,7 +1266,26 @@ function questionAlreadyAtSiteWithMost(item) {
 }
 
 function questionTradeWithSite(currency) {
-    showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?", ActionNames.Trade + currency);
+    let factionListFriend = getFactionAlignmentList(Alignments.Friend);
+    let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
+    let tradeText = "Trade for " + currency + " on at least one card at my site?";
+
+    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!" : factionListFriend;
+    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!" : factionListConspirator;
+
+    switch (currency) {
+        case Currency.FAVOR:
+            tradeText += "<br><br>For FAVOR: " + favorFriendMessage;
+            break;
+        case Currency.SECRETS:
+            tradeText += "<br><br>For SECRETS: " + favorConspiratorMessage;
+            break;
+        case Currency.BOTH:
+            tradeText += "<br><br>For FAVOR: " + favorFriendMessage + "<br><br>For SECRETS: " + favorConspiratorMessage;
+            break;
+    }
+
+    showYesNoDialog("Can I...", tradeText, ActionNames.Trade + currency);
 }
 
 function questionHolderOfBanner(bannerName) {
@@ -1591,8 +1610,8 @@ function MoveToRelicsAndFightMessage() {
     return "Move to site of the holder of the most RELICS and Battle!" + getTacticsLevelText();
 }
 
-function getTacticsLevelText(){
-    return (CurrentPrince.tacticsLevel > 0) ? "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!" : "";
+function getTacticsLevelText() {
+    return (CurrentPrince.tacticsLevel > 0) ? "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dice based on your tactics level!" : "";
 }
 
 function tradeFor() {
@@ -1600,10 +1619,10 @@ function tradeFor() {
     let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
 
     let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
-        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets<br><br>";
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + factionListFriend + ", gaining the amount of FAVOR listed in the brackets<br><br>";
 
     let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
-        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets";
+        : "Gain SECRETS from each empty card at your site whose suit matches: " + factionListConspirator + ", gaining the amount of SECRETS listed in the brackets";
 
     switch (CurrentPrince.mindCurrent) {
         case Mind.SUP_4:
