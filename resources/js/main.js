@@ -167,12 +167,14 @@ class Prince {
             faction_Nomad, faction_Order);
         this.stepCount = 1;
         this.tacticsLevel = 0;
+        this.roundNumber = 0;
     }
 
     stepCount;
     factions;
     isCurrent;
     tacticsLevel;
+    roundNumber;
 }
 
 function getFactionAlignmentList(alignment) {
@@ -806,6 +808,7 @@ function cleanUp() {
     princeSteps.innerHTML = "";
 
     CurrentPrince.currentActionNum = 1;
+    CurrentPrince.roundNumber = CurrentGameSettings.roundNumber;
 
     let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
     mindSelect.value = CurrentPrince.mindCurrent;
@@ -815,6 +818,8 @@ function cleanUp() {
     savePrinceSettings()
 
     enableDisablePrinces();
+
+    checkForEndOfRound();
 }
 
 function savePrinceSettings() {
@@ -837,6 +842,19 @@ function showRoundChangeDialog() {
         document.getElementById("roundChange")
     );
     messageBox.show();
+}
+
+function checkForEndOfRound() {
+    let isEndRound = true;
+    Princes.forEach((p) => {
+        if (p.roundNumber < CurrentGameSettings.roundNumber) {
+            isEndRound = false;
+        }
+    })
+
+    if(isEndRound){
+        showRoundChangeDialog();
+    }
 }
 
 function roundChangeClick(answer) {
@@ -1293,12 +1311,12 @@ function questionMoveToSiteWithMost(currency) {
         case Mind.PF_7:
             const friends = getFactionAlignmentList(Alignments.Friend);
             moveText = (friends == "No friends!") ? "Travel to the site to gain the most FAVOR<br><br>You currently have no Friends. Click Yes to this action to see the outcome"
-            : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of " + currency + " gained in brackets: " + friends;
+                : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of " + currency + " gained in brackets: " + friends;
             break;
         case Mind.DS_3:
             const conspirators = getFactionAlignmentList(Alignments.Conspirator);
             moveText = (conspirators == "No conspirators!") ? "Travel to the site to gain the most SECRETS<br><br></br>You currently have no Conspirators. Click Yes to this action to see the outcome"
-            : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of " + currency + " gained in brackets: " + conspirators;
+                : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of " + currency + " gained in brackets: " + conspirators;
             break;
         default:
             moveText = "Travel to the site to gain a RELIC";
@@ -1699,13 +1717,13 @@ function moveText() {
         case Mind.RB_4:
         case Mind.PF_7:
             const friends = getFactionAlignmentList(Alignments.Friend);
-            travelText = (friends == "No friends!") ? "No Friends to move to! Instead gain one FAVOR from the bank closest to the World Desk that has FAVOR" 
-            : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
+            travelText = (friends == "No friends!") ? "No Friends to move to! Instead gain one FAVOR from the bank closest to the World Desk that has FAVOR"
+                : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
             break;
         case Mind.DS_3:
             const conspirators = getFactionAlignmentList(Alignments.Conspirator);
-            travelText = (conspirators == "No conspirators!") ? "No Conspirators to move to! Instead gain one SECRET" 
-            : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
+            travelText = (conspirators == "No conspirators!") ? "No Conspirators to move to! Instead gain one SECRET"
+                : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
             break;
         case Mind.RB_2:
         case Mind.RB_6:
