@@ -167,30 +167,34 @@ class Prince {
             faction_Nomad, faction_Order);
         this.stepCount = 1;
         this.tacticsLevel = 0;
+        this.roundNumber = 0;
     }
 
     stepCount;
     factions;
     isCurrent;
     tacticsLevel;
+    roundNumber;
 }
 
 function getFactionAlignmentList(alignment) {
     let list = "";
     CurrentPrince.factions.forEach(faction => {
         if (faction.alignment == alignment) {
-            list += faction.name + "(" + convertFactionLevelToFavor(faction.level) + ") ";
+            list += faction.name + "(" + convertFactionLevelToFavor(faction.level, alignment) + ") ";
         }
     })
-    return list.toUpperCase();
+    return (list == '') ? "No " + alignment + "s!" : list.toUpperCase();
 }
 
-function convertFactionLevelToFavor(level) {
+function convertFactionLevelToFavor(level, alignment) {
     // Faction level dictates how much favor is traded for
     switch (level) {
         case 2:
             return "1";
         case 3:
+            // Level 3 alignment gives 2 FAVOR but only 1 SECRET
+            return (alignment == Alignments.Friend) ? "2" : "1";
         case 4:
         case 5:
             return "2";
@@ -274,7 +278,8 @@ function oathClick(selectedOath) {
 function resetGame() {
     localStorage.clear();
     document.getElementById("Princes").innerHTML = "";
-    document.getElementById("addNewPrinceColumn").classList.remove("d-none");
+    document.getElementById("addNewPrinceRow").classList.remove("d-none");
+    document.getElementById("roundnumber").innerHTML = "1";
     Princes = new Array(1);
 }
 
@@ -354,10 +359,11 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 
     changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
     changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
+    changeNodeId(cloneNode, "PrinceCurrentFaction", "PrinceCurrentFaction" + nextPrinceNumber);
     changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, newPrince.tacticsLevel);
     changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
-    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
+    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, (newPrince.currentActionNum == 0) ? "" : newPrince.currentActionNum);
 
     // Debug options
     //changeNodeId(cloneNode, "Prince1DebugMenu", "Prince" + nextPrinceNumber + "DebugMenu");
@@ -547,7 +553,7 @@ function princeStartTurn() {
 }
 
 function hideAddNewPrinceButton() {
-    document.getElementById("addNewPrinceColumn").classList.add("d-none")
+    document.getElementById("addNewPrinceRow").classList.add("d-none")
 }
 
 function assessThreat() {
@@ -693,31 +699,34 @@ function secondSearchAndPlay() {
 
 function searchAndPlayClick(selectedFaction) {
 
-    //showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
     addAnActionLabel("Gain", "Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
 
-    if (secondSearchAndPlay() == false) {
+    let wasSecondSearchAndPlayed = secondSearchAndPlay();
+
+    if (wasSecondSearchAndPlayed == false) {
         CurrentPrince.currentActionNum = 1;
     }
 
     let factionNumber = getFactionNumber(selectedFaction);
-
     increaseFactionLevel(factionNumber);
-    CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
-    document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
-    document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[factionNumber].level;
+
+    if (wasSecondSearchAndPlayed == false) {
+        // Only increase the number of actions if this is NOT a second Search and Play
+        CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
+        document.getElementById("PrinceCurrentFaction" + CurrentPrince.princeNumber).src = convertFactionToIcon(selectedFaction);
+        document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#Turns = " + CurrentPrince.factions[factionNumber].level;
+    }
+
     alignFaction(CurrentPrince.factions[factionNumber]);
     CurrentPrince.currentFaction = CurrentPrince[factionNumber];
 
     if (document.getElementById("cannotPlayCheck").checked) {
-        //displayCantPlayDialog();
         addAnActionLabel("CantPlay", "Can't Play Card", displayCantPlayDialog());
     }
 
     updateTactics();
     addTurnNumberLabel();
     princeNextStep();
-    //}
 }
 
 function displayCantPlayDialog() {
@@ -802,6 +811,7 @@ function cleanUp() {
     princeSteps.innerHTML = "";
 
     CurrentPrince.currentActionNum = 1;
+    CurrentPrince.roundNumber = CurrentGameSettings.roundNumber;
 
     let mindSelect = document.getElementById("PrinceMindOptions" + CurrentPrince.princeNumber);
     mindSelect.value = CurrentPrince.mindCurrent;
@@ -811,6 +821,8 @@ function cleanUp() {
     savePrinceSettings()
 
     enableDisablePrinces();
+
+    checkForEndOfRound();
 }
 
 function savePrinceSettings() {
@@ -835,11 +847,23 @@ function showRoundChangeDialog() {
     messageBox.show();
 }
 
-function roundChangeClick(answer) {
-    if (answer == "Yes") {
-        //localStorage.settItem("settings");
-        changeRound();
+function checkForEndOfRound() {
+    let isEndRound = true;
+    Princes.forEach((p) => {
+        if (p.roundNumber < CurrentGameSettings.roundNumber) {
+            isEndRound = false;
+        }
+    })
+
+    if (isEndRound) {
+        //showRoundChangeDialog();
+        document.getElementById("changeRoundButton").disabled = false;
     }
+}
+
+function roundChangeClick() {
+    changeRound();
+    document.getElementById("changeRoundButton").disabled = true;
 }
 
 function enableDisablePrinces() {
@@ -920,6 +944,7 @@ function showYesNoDialog(title, message, actionName) {
 
     if (message == "Battle ready?") {
         changeNodeIdAndValue(newStepNode, "YesNo_accord_helperLink_Prince_step", getStepNodeId("YesNo_accord_helperLink_Prince_step"), "Battle Ready?");
+        changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", getStepNodeId("YesNo_accord_body_Prince_step"), getBattleReadyTarget());
     } else {
         // Body Step node
         changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", getStepNodeId("YesNo_accord_body_Prince_step"), message);
@@ -934,6 +959,47 @@ function showYesNoDialog(title, message, actionName) {
     ShowHideSteps(princeSteps, stepName)
 
     CurrentPrince.stepCount += 1;
+}
+
+function getBattleReadyTarget() {
+    let returnText = ""; //"<b>AND</b><br><br>";
+
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.DS_1_BR:
+        case Mind.DS_5_BR:
+            returnText += "<b>Target</b>: the holder of the " + BannerNames.DARKESTSECRET;
+            break;
+        case Mind.PF_1_BR:
+        case Mind.PF_5_BR:
+            returnText += "<b>Target</b>: the holder of the " + BannerNames.PEOPLESFAVOR;
+            break;
+        case Mind.RB_1_BR:
+        case Mind.RB_7_BR:
+        case Mind.RB_8_BR:
+            returnText += "<b>Target</b>: the holder of the most RELICS and BANNERS";
+            break;
+        default:
+            return "";
+    }
+
+    return returnText;
+}
+
+function convertFactionToIcon(factionName){
+    switch(factionName){
+        case Factions.Arcane:
+            return "./resources/images/arcane.png";
+        case Factions.Beast:
+            return "./resources/images/beast.png";
+        case Factions.Discord:
+            return "./resources/images/discord.png";
+        case Factions.Hearth:
+            return "./resources/images/hearth.png";
+        case Factions.Nomad:
+            return "./resources/images/nomad.png";
+        case Factions.Order:
+            return "./resources/images/order.png";
+    }
 }
 
 function convertActionToIcon(actionName) {
@@ -1256,7 +1322,27 @@ function questionCanMuster() {
 }
 
 function questionMoveToSiteWithMost(currency) {
-    showYesNoDialog("Can I...", "Move to a site to trade for the most " + currency + "?", ActionNames.Move + currency);
+    let moveText = "";
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.SUP_3:
+        case Mind.PF_3:
+        case Mind.RB_4:
+        case Mind.PF_7:
+            const friends = getFactionAlignmentList(Alignments.Friend);
+            moveText = (friends == "No friends!") ? "Travel to the site to gain the most FAVOR<br><br>You currently have no Friends. Click Yes to this action to see the outcome"
+                : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of " + currency + " gained in brackets: " + friends;
+            break;
+        case Mind.DS_3:
+            const conspirators = getFactionAlignmentList(Alignments.Conspirator);
+            moveText = (conspirators == "No conspirators!") ? "Travel to the site to gain the most SECRETS<br><br></br>You currently have no Conspirators. Click Yes to this action to see the outcome"
+                : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of " + currency + " gained in brackets: " + conspirators;
+            break;
+        default:
+            moveText = "Travel to the site to gain a RELIC";
+            break;
+    }
+
+    showYesNoDialog("Can I...", moveText, ActionNames.Move + currency);
 }
 
 function questionAlreadyAtSiteWithMost(item) {
@@ -1264,7 +1350,23 @@ function questionAlreadyAtSiteWithMost(item) {
 }
 
 function questionTradeWithSite(currency) {
-    showYesNoDialog("Can I...", "Trade for " + currency + " on at least one card at my site?", ActionNames.Trade + currency);
+    let factionListFriend = getFactionAlignmentList(Alignments.Friend);
+    let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
+    let tradeText = "Trade for " + currency + " on at least one card at my site?";
+
+    switch (currency) {
+        case Currency.FAVOR:
+            tradeText += "<br><br>For FAVOR: " + factionListFriend;
+            break;
+        case Currency.SECRETS:
+            tradeText += "<br><br>For SECRETS: " + factionListConspirator;
+            break;
+        case Currency.BOTH:
+            tradeText += "<br><br>For FAVOR: " + factionListFriend + "<br><br>For SECRETS: " + factionListConspirator;
+            break;
+    }
+
+    showYesNoDialog("Can I...", tradeText, ActionNames.Trade + currency);
 }
 
 function questionHolderOfBanner(bannerName) {
@@ -1578,26 +1680,30 @@ function fightText() {
     }
 
     if (CurrentPrince.tacticsLevel > 0) moveText += "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
-    return moveText; //"Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
+    return moveText;
 }
 
 function MoveToBannerAndFightMessage(bannerName) {
-    return "Move to site of the holder of " + bannerName + " and Battle!";
+    return "Move to site of the holder of " + bannerName + " and Battle!" + getTacticsLevelText();
 }
 
 function MoveToRelicsAndFightMessage() {
-    return "Move to site of the holder of the most RELICS and Battle!";
+    return "Move to site of the holder of the most RELICS and Battle!" + getTacticsLevelText();
+}
+
+function getTacticsLevelText() {
+    return (CurrentPrince.tacticsLevel > 0) ? "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dice based on your tactics level!" : "";
 }
 
 function tradeFor() {
     let factionListFriend = getFactionAlignmentList(Alignments.Friend);
     let factionListConspirator = getFactionAlignmentList(Alignments.Conspirator);
 
-    let favorFriendMessage = (factionListFriend == '') ? "No Friends to Trade with!<br><br>"
-        : "Gain FAVOR from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Friend) + ", gaining the amount of FAVOR listed in the brackets<br><br>";
+    let favorFriendMessage = (factionListFriend == 'No friends!') ? "No Friends to Trade with!<br><br>"
+        : "Gain FAVOR from each empty card at your site whose suit matches: " + factionListFriend + ", gaining the amount of FAVOR listed in the brackets<br><br>";
 
-    let favorConspiratorMessage = (factionListConspirator == '') ? "No Conspirators to Trade with!"
-        : "Gain SECRETS from each empty card at your site whose suit matches: " + getFactionAlignmentList(Alignments.Conspirator) + ", gaining the amount of SECRETS listed in the brackets";
+    let favorConspiratorMessage = (factionListConspirator == 'No conspirators!') ? "No Conspirators to Trade with!"
+        : "Gain SECRETS from each empty card at your site whose suit matches: " + factionListConspirator + ", gaining the amount of SECRETS listed in the brackets";
 
     switch (CurrentPrince.mindCurrent) {
         case Mind.SUP_4:
@@ -1630,11 +1736,13 @@ function moveText() {
         case Mind.RB_4:
         case Mind.PF_7:
             const friends = getFactionAlignmentList(Alignments.Friend);
-            travelText = "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
+            travelText = (friends == "No friends!") ? "No Friends to move to! Instead gain one FAVOR from the bank closest to the World Desk that has FAVOR"
+                : "Travel to the site to gain the most FAVOR.<br><br>Current Friends and number of FAVOR gained in brackets: " + friends;
             break;
         case Mind.DS_3:
             const conspirators = getFactionAlignmentList(Alignments.Conspirator);
-            travelText = "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
+            travelText = (conspirators == "No conspirators!") ? "No Conspirators to move to! Instead gain one SECRET"
+                : "Travel to the site to gain the most SECRETS.<br><br>Current Conspirators and number of SECRETS gained in brackets: " + conspirators;
             break;
         case Mind.RB_2:
         case Mind.RB_6:

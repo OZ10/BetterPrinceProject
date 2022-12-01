@@ -5,7 +5,10 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">KC -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+        rel="stylesheet">
     <link href="resources/css/index.css" rel="stylesheet">
 
     <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,18 +51,23 @@
             <div class="row">
                 <div class="col" id="Princes"></div>
             </div>
+            <div class="row" id="addNewPrinceRow">
+                <div class="justify-content-left row m-1">
+                    <button class="btn btn-light mainButton" id="addPrinceButton" onclick="addNewPrinceClick()">
+                        <span class="material-icons md-48">
+                            add_circle_outline
+                        </span>
+                    </button>
+                </div>
+            </div>
             <div class="row">
-                <div class="col">
-                    <div class="col p-3 m-1 addNewPrince" id="addNewPrinceColumn">
-                        <div class="justify-content-center row" id="addNewPrinceRow">
-                            <button class="btnNoBackground btnSizeMed" id="addPrinceButton"
-                                onclick="addNewPrinceClick()">
-                                <span class="material-icons md-48">
-                                    add_circle_outline
-                                </span>
-                            </button>
-                        </div>
-                    </div>
+                <div class="justify-content-left row m-1">
+                    <button class="btn btn-light mainButton" id="changeRoundButton" onclick="roundChangeClick()"
+                        title="Change Round" disabled>
+                        <span class="material-icons md-48">
+                            restart_alt
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -68,203 +76,211 @@
     <div class="col p-3 m-1 d-none disabled citizen" id="PrinceColumn">
         <div class="d-flex justify-content-between row" id="PrinceRow">
 
-            <h5 class="col-md-auto">
+            <h5 class="col">
                 <div id="PrinceName">John</div>
             </h5>
 
+            <div class="col-1">
+                <img src="/resources/images/tactics.png" style="height: 30px;">
+            </div>
+            <div class="col-1">
+                <div>+-</div>
+            </div>
+            <div class="col-1">
+                <div id="PrinceTacticLevel">0</div>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-2">
+                <div>Status: </div>
+            </div>
+            <div class="col-auto">
+                <select class="form-select" id="PrinceStatus" onchange="changeStatus(value);">
+                    <option>chancellor</option>
+                    <option>citizen</option>
+                    <option>exile</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-2">
+            <div class="col-2">
+                <div>Current Faction: </div>
+            </div>
+            <div class="col-1">
+                <img id="PrinceCurrentFaction" src="" style="height: 30px;">
+            </div>
+            <div class="col">
+                <div id="PrinceTotalTurns">NA</div>
+            </div>
+        </div>
+
+        <div class="row d-none">
             <div class="col-md-auto">
-                <div class="turnCounter" id="PrinceTotalTurns">#0</div>
+                <div>Favor: </div>
             </div>
-
-            <h6 class="row">
-                <div class="col-md-auto">
-                    <div>Status: </div>
-                </div>
-                <div class="col-md-auto">
-                    <select class="form-select" id="PrinceStatus" onchange="changeStatus(value);">
-                        <option>chancellor</option>
-                        <option>citizen</option>
-                        <option>exile</option>
-                    </select>
-                </div>
-            </h6>
-
-            <div class="row">
-                <div class="col-md-auto">
-                    <div>Tactics +- </div>
-                </div>
-                <div class="col-md-auto">
-                    <div id="PrinceTacticLevel">0</div>
-                </div>
+            <div class="col-md-auto">
+                <div id="PrinceFavor">0</div>
             </div>
+        </div>
 
-            <div class="row d-none">
-                <div class="col-md-auto">
-                    <div>Favor: </div>
-                </div>
-                <div class="col-md-auto">
-                    <div id="PrinceFavor">0</div>
-                </div>
+        <div class="row d-none">
+            <div class="col-md-auto">
+                <div>Secret: </div>
             </div>
-
-            <div class="row d-none">
-                <div class="col-md-auto">
-                    <div>Secret: </div>
-                </div>
-                <div class="col-md-auto">
-                    <div id="PrinceSecret">0</div>
-                </div>
+            <div class="col-md-auto">
+                <div id="PrinceSecret">0</div>
             </div>
+        </div>
 
-            <div class="row m-1 justify-content-center">
-                <button class="btnNoBackground btnSizeMed" id="PrinceStartTurn" onclick="princeStartTurn()">
-                    <span class="material-icons md-48">expand_more</span>
-                </button>
+        <div class="row m-1 justify-content-center">
+            <button class="btnNoBackground btnSizeMed" id="PrinceStartTurn" title="Start Turn"
+                onclick="princeStartTurn()">
+                <span class="material-icons material-icons-outlined md-48">play_arrow</span>
+            </button>
+        </div>
+
+        <div id="steps_Prince">
+
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingDebug">
+                    <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#debugMenu">
+                        Debug Menu
+                    </button>
+                </h2>
             </div>
-
-            <div id="steps_Prince">
-
-            </div>
-
-            <div class="accordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingDebug">
-                        <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#debugMenu">
-                            Debug Menu
-                        </button>
-                    </h2>
-                </div>
-                <div id="debugMenu" class="accordion-collapse collapse">
-                    <div class="accordion-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <div>Mind Start:</div>
-                            </div>
-                            <div class="col-md-auto">
-                                <select class="form-select" id="PrinceMindOptions" onchange="princeMindChange(value);">
-                                    <option>sup_1</option>
-                                    <option>sup_1_br</option>
-                                    <option>sup_2</option>
-                                    <option>sup_2_br</option>
-                                    <option>sup_3</option>
-                                    <option>sup_4</option>
-                                    <option>sup_5</option>
-                                    <option>sup_5_br</option>
-                                    <option>sup_7</option>
-                                    <option>sup_8</option>
-                                    <option>sup_8_br</option>
-
-                                    <option>ds_1</option>
-                                    <option>ds_1_hold</option>
-                                    <option>ds_1_br</option>
-                                    <option>ds_1_pay</option>
-                                    <option>ds_2</option>
-                                    <option>ds_2_pay</option>
-                                    <option>ds_3</option>
-                                    <option>ds_4</option>
-                                    <option>ds_4_pay</option>
-                                    <option>ds_5</option>
-                                    <option>ds_5_br</option>
-                                    <option>ds_6</option>
-                                    <option>ds_7</option>
-                                    <option>ds_7_ds</option>
-                                    <option>ds_8</option>
-
-                                    <option>pf_1</option>
-                                    <option>pf_1_hold</option>
-                                    <option>pf_1_br</option>
-                                    <option>pf_1_pay</option>
-                                    <option>pf_2</option>
-                                    <option>pf_2_pay</option>
-                                    <option>pf_3</option>
-                                    <option>pf_4</option>
-                                    <option>pf_4_pay</option>
-                                    <option>pf_5</option>
-                                    <option>pf_5_br</option>
-                                    <option>pf_6</option>
-                                    <option>pf_7</option>
-                                    <option>pf_8</option>
-
-                                    <option>rb_1</option>
-                                    <option>rb_1_move</option>
-                                    <option>rb_2</option>
-                                    <option>rb_2_pay</option>
-                                    <option>rb_3</option>
-                                    <option>rb_3_pay</option>
-                                    <option>rb_4</option>
-                                    <option>rb_5</option>
-                                    <option>rb_5_move</option>
-                                    <option>rb_6</option>
-                                    <option>rb_6_move</option>
-                                    <option>rb_6_pay</option>
-                                    <option>rb_7</option>
-                                    <option>rb_7_br</option>
-                                    <option>rb_8</option>
-                                    <option>rb_8_most</option>
-                                    <option>rb_8_br</option>
-                                    <option>rb_9</option>
-                                    <option>rb_9_move</option>
-                                </select>
-                            </div>
+            <div id="debugMenu" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div>Mind Start:</div>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div>Arcane Level: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <input type="number" id="PrinceArcaneLevel" value="0"
-                                    onchange="factionLevelChange(id,value);"></input>
-                            </div>
+                        <div class="col-md-auto">
+                            <select class="form-select" id="PrinceMindOptions" onchange="princeMindChange(value);">
+                                <option>sup_1</option>
+                                <option>sup_1_br</option>
+                                <option>sup_2</option>
+                                <option>sup_2_br</option>
+                                <option>sup_3</option>
+                                <option>sup_4</option>
+                                <option>sup_5</option>
+                                <option>sup_5_br</option>
+                                <option>sup_7</option>
+                                <option>sup_8</option>
+                                <option>sup_8_br</option>
+
+                                <option>ds_1</option>
+                                <option>ds_1_hold</option>
+                                <option>ds_1_br</option>
+                                <option>ds_1_pay</option>
+                                <option>ds_2</option>
+                                <option>ds_2_pay</option>
+                                <option>ds_3</option>
+                                <option>ds_4</option>
+                                <option>ds_4_pay</option>
+                                <option>ds_5</option>
+                                <option>ds_5_br</option>
+                                <option>ds_6</option>
+                                <option>ds_7</option>
+                                <option>ds_7_ds</option>
+                                <option>ds_8</option>
+
+                                <option>pf_1</option>
+                                <option>pf_1_hold</option>
+                                <option>pf_1_br</option>
+                                <option>pf_1_pay</option>
+                                <option>pf_2</option>
+                                <option>pf_2_pay</option>
+                                <option>pf_3</option>
+                                <option>pf_4</option>
+                                <option>pf_4_pay</option>
+                                <option>pf_5</option>
+                                <option>pf_5_br</option>
+                                <option>pf_6</option>
+                                <option>pf_7</option>
+                                <option>pf_8</option>
+
+                                <option>rb_1</option>
+                                <option>rb_1_move</option>
+                                <option>rb_2</option>
+                                <option>rb_2_pay</option>
+                                <option>rb_3</option>
+                                <option>rb_3_pay</option>
+                                <option>rb_4</option>
+                                <option>rb_5</option>
+                                <option>rb_5_move</option>
+                                <option>rb_6</option>
+                                <option>rb_6_move</option>
+                                <option>rb_6_pay</option>
+                                <option>rb_7</option>
+                                <option>rb_7_br</option>
+                                <option>rb_8</option>
+                                <option>rb_8_most</option>
+                                <option>rb_8_br</option>
+                                <option>rb_9</option>
+                                <option>rb_9_move</option>
+                            </select>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div>Beast Level: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <input type="number" id="PrinceBeastLevel"
-                                    onchange="factionLevelChange(id,value);"></input>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div>Arcane Level: </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div>Discord Level: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <input type="number" id="PrinceDiscordLevel"
-                                    onchange="factionLevelChange(id,value);"></input>
-                            </div>
+                        <div class="col-md-auto">
+                            <input type="number" id="PrinceArcaneLevel" value="0"
+                                onchange="factionLevelChange(id,value);"></input>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div>Hearth Level: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <input type="number" id="PrinceHearthLevel"
-                                    onchange="factionLevelChange(id,value);"></input>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div>Beast Level: </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div>Nomad Level: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <input type="number" id="PrinceNomadLevel"
-                                    onchange="factionLevelChange(id,value);"></input>
-                            </div>
+                        <div class="col-md-auto">
+                            <input type="number" id="PrinceBeastLevel" onchange="factionLevelChange(id,value);"></input>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div>Order Level: </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <input type="number" id="PrinceOrderLevel"
-                                    onchange="factionLevelChange(id,value);"></input>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div>Discord Level: </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <input type="number" id="PrinceDiscordLevel"
+                                onchange="factionLevelChange(id,value);"></input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div>Hearth Level: </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <input type="number" id="PrinceHearthLevel"
+                                onchange="factionLevelChange(id,value);"></input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div>Nomad Level: </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <input type="number" id="PrinceNomadLevel" onchange="factionLevelChange(id,value);"></input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div>Order Level: </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <input type="number" id="PrinceOrderLevel" onchange="factionLevelChange(id,value);"></input>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- </div> -->
 
     </div>
 
@@ -284,10 +300,10 @@
                             <b id="YesNo_accord_title_Prince_step">
                                 Title
                             </b>
-                            <p id="YesNo_accord_body_Prince_step"></p>
                             <p>
                                 <a id="YesNo_accord_helperLink_Prince_step" href="#" onclick="toolTipClick(this)"></a>
                             </p>
+                            <p id="YesNo_accord_body_Prince_step"></p>
                         </div>
                         <div class="col-auto">
                             <img class="oath_icon" id="YesNo_accord_image_Prince_step" src="">
@@ -373,7 +389,7 @@
                         take it to become a Citizen.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-target="#roundChange" data-bs-toggle="modal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal">
                         Close
                     </button>
                 </div>
@@ -614,8 +630,8 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('arcane');" id="searchAndPlayBtnarcane"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('arcane');"
+                        id="searchAndPlayBtnarcane" data-bs-dismiss="modal">
                         <div class="row">
                             <div class="col oath_selection_btn" id="searchAndPlayBtnarcane_text">
                                 Arcane
@@ -625,8 +641,8 @@
                             </div>
                         </div>
                     </button>
-                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('beast');" id="searchAndPlayBtnbeast"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('beast');"
+                        id="searchAndPlayBtnbeast" data-bs-dismiss="modal">
                         <div class="row">
                             <div class="col oath_selection_btn" id="searchAndPlayBtnbeast_text">
                                 Beast
@@ -636,8 +652,8 @@
                             </div>
                         </div>
                     </button>
-                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('discord');" id="searchAndPlayBtndiscord"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('discord');"
+                        id="searchAndPlayBtndiscord" data-bs-dismiss="modal">
                         <div class="row">
                             <div class="col oath_selection_btn" id="searchAndPlayBtndiscord_text">
                                 Discord
@@ -647,8 +663,8 @@
                             </div>
                         </div>
                     </button>
-                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('hearth');" id="searchAndPlayBtnhearth"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('hearth');"
+                        id="searchAndPlayBtnhearth" data-bs-dismiss="modal">
                         <div class="row">
                             <div class="col oath_selection_btn" id="searchAndPlayBtnhearth_text">
                                 Hearth
@@ -658,8 +674,8 @@
                             </div>
                         </div>
                     </button>
-                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('nomad');" id="searchAndPlayBtnnomad"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('nomad');"
+                        id="searchAndPlayBtnnomad" data-bs-dismiss="modal">
                         <div class="row">
                             <div class="col oath_selection_btn" id="searchAndPlayBtnnomad_text">
                                 Nomad
@@ -669,8 +685,8 @@
                             </div>
                         </div>
                     </button>
-                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('order');" id="searchAndPlayBtnorder"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary w-100" onclick="searchAndPlayClick('order');"
+                        id="searchAndPlayBtnorder" data-bs-dismiss="modal">
                         <div class="row">
                             <div class="col oath_selection_btn" id="searchAndPlayBtnorder_text">
                                 Order
