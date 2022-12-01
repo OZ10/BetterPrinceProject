@@ -698,16 +698,22 @@ function searchAndPlayClick(selectedFaction) {
     //showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
     addAnActionLabel("Gain", "Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
 
-    if (secondSearchAndPlay() == false) {
+    let wasSecondSearchAndPlayed = secondSearchAndPlay();
+
+    if (wasSecondSearchAndPlayed == false) {
         CurrentPrince.currentActionNum = 1;
     }
 
     let factionNumber = getFactionNumber(selectedFaction);
-
     increaseFactionLevel(factionNumber);
-    CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
-    document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
-    document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[factionNumber].level;
+
+    if (wasSecondSearchAndPlayed == false) {
+        // Only increase the number of actions if this is NOT a second Search and Play
+        CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
+        document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
+        //document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[factionNumber].level;
+    }
+
     alignFaction(CurrentPrince.factions[factionNumber]);
     CurrentPrince.currentFaction = CurrentPrince[factionNumber];
 
