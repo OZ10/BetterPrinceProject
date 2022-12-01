@@ -695,7 +695,6 @@ function secondSearchAndPlay() {
 
 function searchAndPlayClick(selectedFaction) {
 
-    //showStandardMessageDialog("Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
     addAnActionLabel("Gain", "Gain Favor", "Gain one FAVOR from " + selectedFaction.toUpperCase() + "'s bank");
 
     let wasSecondSearchAndPlayed = secondSearchAndPlay();
@@ -711,21 +710,18 @@ function searchAndPlayClick(selectedFaction) {
         // Only increase the number of actions if this is NOT a second Search and Play
         CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
         document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
-        //document.getElementById("PrinceArcaneLevel" + CurrentPrince.princeNumber).value = CurrentPrince.factions[factionNumber].level;
     }
 
     alignFaction(CurrentPrince.factions[factionNumber]);
     CurrentPrince.currentFaction = CurrentPrince[factionNumber];
 
     if (document.getElementById("cannotPlayCheck").checked) {
-        //displayCantPlayDialog();
         addAnActionLabel("CantPlay", "Can't Play Card", displayCantPlayDialog());
     }
 
     updateTactics();
     addTurnNumberLabel();
     princeNextStep();
-    //}
 }
 
 function displayCantPlayDialog() {
@@ -928,6 +924,7 @@ function showYesNoDialog(title, message, actionName) {
 
     if (message == "Battle ready?") {
         changeNodeIdAndValue(newStepNode, "YesNo_accord_helperLink_Prince_step", getStepNodeId("YesNo_accord_helperLink_Prince_step"), "Battle Ready?");
+        changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", getStepNodeId("YesNo_accord_body_Prince_step"), getBattleReadyTarget());
     } else {
         // Body Step node
         changeNodeIdAndValue(newStepNode, "YesNo_accord_body_Prince_step", getStepNodeId("YesNo_accord_body_Prince_step"), message);
@@ -942,6 +939,30 @@ function showYesNoDialog(title, message, actionName) {
     ShowHideSteps(princeSteps, stepName)
 
     CurrentPrince.stepCount += 1;
+}
+
+function getBattleReadyTarget() {
+    let returnText = ""; //"<b>AND</b><br><br>";
+
+    switch (CurrentPrince.mindCurrent) {
+        case Mind.DS_1_BR:
+        case Mind.DS_5_BR:
+            returnText += "<b>Target</b>: the holder of the " + BannerNames.DARKESTSECRET;
+            break;
+        case Mind.PF_1_BR:
+        case Mind.PF_5_BR:
+            returnText += "<b>Target</b>: the holder of the " + BannerNames.PEOPLESFAVOR;
+            break;
+        case Mind.RB_1_BR:
+        case Mind.RB_7_BR:
+        case Mind.RB_8_BR:
+            returnText += "<b>Target</b>: the holder of the most RELICS and BANNERS";
+            break;
+        default:
+            return "";
+    }
+
+    return returnText;
 }
 
 function convertActionToIcon(actionName) {
