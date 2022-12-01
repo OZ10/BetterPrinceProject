@@ -278,7 +278,7 @@ function oathClick(selectedOath) {
 function resetGame() {
     localStorage.clear();
     document.getElementById("Princes").innerHTML = "";
-    document.getElementById("addNewPrinceColumn").classList.remove("d-none");
+    document.getElementById("addNewPrinceRow").classList.remove("d-none");
     Princes = new Array(1);
 }
 
@@ -358,10 +358,11 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
 
     changeNodeIdAndValue(cloneNode, "PrinceName", "PrinceName" + nextPrinceNumber, newPrince.name);
     changeNodeIdAndValue(cloneNode, "PrinceStatus", "PrinceStatus" + nextPrinceNumber, newPrince.status);
+    changeNodeId(cloneNode, "PrinceCurrentFaction", "PrinceCurrentFaction" + nextPrinceNumber);
     changeNodeIdAndValue(cloneNode, "PrinceTacticLevel", "PrinceTacticLevel" + nextPrinceNumber, newPrince.tacticsLevel);
     changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
-    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, newPrince.currentActionNum);
+    changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, (newPrince.currentActionNum == 0) ? "" : newPrince.currentActionNum);
 
     // Debug options
     //changeNodeId(cloneNode, "Prince1DebugMenu", "Prince" + nextPrinceNumber + "DebugMenu");
@@ -551,7 +552,7 @@ function princeStartTurn() {
 }
 
 function hideAddNewPrinceButton() {
-    document.getElementById("addNewPrinceColumn").classList.add("d-none")
+    document.getElementById("addNewPrinceRow").classList.add("d-none")
 }
 
 function assessThreat() {
@@ -711,7 +712,8 @@ function searchAndPlayClick(selectedFaction) {
     if (wasSecondSearchAndPlayed == false) {
         // Only increase the number of actions if this is NOT a second Search and Play
         CurrentPrince.numActions = CurrentPrince.factions[factionNumber].level
-        document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#" + CurrentPrince.factions[factionNumber].level;
+        document.getElementById("PrinceCurrentFaction" + CurrentPrince.princeNumber).src = convertFactionToIcon(selectedFaction);
+        document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "#Turns = " + CurrentPrince.factions[factionNumber].level;
     }
 
     alignFaction(CurrentPrince.factions[factionNumber]);
@@ -852,16 +854,15 @@ function checkForEndOfRound() {
         }
     })
 
-    if(isEndRound){
-        showRoundChangeDialog();
+    if (isEndRound) {
+        //showRoundChangeDialog();
+        document.getElementById("changeRoundButton").disabled = false;
     }
 }
 
-function roundChangeClick(answer) {
-    if (answer == "Yes") {
-        //localStorage.settItem("settings");
-        changeRound();
-    }
+function roundChangeClick() {
+    changeRound();
+    document.getElementById("changeRoundButton").disabled = true;
 }
 
 function enableDisablePrinces() {
@@ -981,6 +982,23 @@ function getBattleReadyTarget() {
     }
 
     return returnText;
+}
+
+function convertFactionToIcon(factionName){
+    switch(factionName){
+        case Factions.Arcane:
+            return "./resources/images/arcane.png";
+        case Factions.Beast:
+            return "./resources/images/beast.png";
+        case Factions.Discord:
+            return "./resources/images/discord.png";
+        case Factions.Hearth:
+            return "./resources/images/hearth.png";
+        case Factions.Nomad:
+            return "./resources/images/nomad.png";
+        case Factions.Order:
+            return "./resources/images/order.png";
+    }
 }
 
 function convertActionToIcon(actionName) {
