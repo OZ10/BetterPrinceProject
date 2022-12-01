@@ -1580,15 +1580,19 @@ function fightText() {
     }
 
     if (CurrentPrince.tacticsLevel > 0) moveText += "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
-    return moveText; //"Move to site of a rival site with the fewest warbands and Battle!<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!";
+    return moveText;
 }
 
 function MoveToBannerAndFightMessage(bannerName) {
-    return "Move to site of the holder of " + bannerName + " and Battle!";
+    return "Move to site of the holder of " + bannerName + " and Battle!" + getTacticsLevelText();
 }
 
 function MoveToRelicsAndFightMessage() {
-    return "Move to site of the holder of the most RELICS and Battle!";
+    return "Move to site of the holder of the most RELICS and Battle!" + getTacticsLevelText();
+}
+
+function getTacticsLevelText(){
+    return (CurrentPrince.tacticsLevel > 0) ? "<br><br> Remember to roll " + CurrentPrince.tacticsLevel + " additional dices based on your tactics level!" : "";
 }
 
 function tradeFor() {
