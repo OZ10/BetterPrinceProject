@@ -179,18 +179,20 @@ function getFactionAlignmentList(alignment) {
     let list = "";
     CurrentPrince.factions.forEach(faction => {
         if (faction.alignment == alignment) {
-            list += faction.name + "(" + convertFactionLevelToFavor(faction.level) + ") ";
+            list += faction.name + "(" + convertFactionLevelToFavor(faction.level, alignment) + ") ";
         }
     })
     return list.toUpperCase();
 }
 
-function convertFactionLevelToFavor(level) {
+function convertFactionLevelToFavor(level, alignment) {
     // Faction level dictates how much favor is traded for
     switch (level) {
         case 2:
             return "1";
         case 3:
+            // Level 3 alignment gives 2 FAVOR but only 1 SECRET
+            return (alignment == Alignments.Friend) ? "2" : "1";
         case 4:
         case 5:
             return "2";
