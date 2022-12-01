@@ -279,6 +279,7 @@ function resetGame() {
     localStorage.clear();
     document.getElementById("Princes").innerHTML = "";
     document.getElementById("addNewPrinceRow").classList.remove("d-none");
+    document.getElementById("roundnumber").innerHTML = "1";
     Princes = new Array(1);
 }
 
