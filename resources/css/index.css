@@ -10957,7 +10957,7 @@ textarea.form-control-lg {
   margin-top: 15px;
 }
 
-.prince, .citizen1, .exile4, .exile3, .exile2, .exile1, .chancellor, .addNewPrince {
+.prince, .citizen4, .citizen3, .citizen2, .citizen1, .exile4, .exile3, .exile2, .exile1, .chancellor, .addNewPrince {
   max-width: 400px;
   border-radius: 10px;
 }
@@ -10992,7 +10992,22 @@ textarea.form-control-lg {
 }
 
 .citizen1 {
-  background-image: linear-gradient(to right, gold, gold, gold, blueviolet);
+  background-image: linear-gradient(to right, gold, gold, gold, gold, gold, blueviolet);
+  color: black;
+}
+
+.citizen2 {
+  background-image: linear-gradient(to right, crimson, crimson, crimson, crimson, crimson, blueviolet);
+  color: black;
+}
+
+.citizen3 {
+  background-image: linear-gradient(to right, cornflowerblue, cornflowerblue, cornflowerblue, cornflowerblue, cornflowerblue, blueviolet);
+  color: black;
+}
+
+.citizen4 {
+  background-image: linear-gradient(to right, gainsboro, gainsboro, gainsboro, gainsboro, gainsboro, blueviolet);
   color: black;
 }
 

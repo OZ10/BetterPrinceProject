@@ -76,9 +76,33 @@ $primary: black;
 
 .citizen1{
     @extend .prince;
-    background-image: linear-gradient(to right, gold, gold, gold, blueviolet);
+    background-image: linear-gradient(to right, gold, gold, gold, gold, gold, blueviolet);
     color: black;
 }
+
+.citizen2{
+    @extend .prince;
+    background-image: linear-gradient(to right, crimson, crimson, crimson, crimson, crimson, blueviolet);
+    color: black;
+}
+
+.citizen3{
+    @extend .prince;
+    background-image: linear-gradient(to right, cornflowerblue, cornflowerblue, cornflowerblue, cornflowerblue, cornflowerblue, blueviolet);
+    color: black;
+}
+
+.citizen4{
+    @extend .prince;
+    background-image: linear-gradient(to right, gainsboro, gainsboro, gainsboro, gainsboro, gainsboro, blueviolet);
+    color: black;
+}
+
+// .citizen{
+//     @extend .prince;
+//     background-image: linear-gradient(to right, gold, gold, gold, gold, gold, blueviolet);
+//     color: black;
+// }
 
 .friend{
     background-color: goldenrod;

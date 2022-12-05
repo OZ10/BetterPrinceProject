@@ -278,9 +278,14 @@ function oathClick(selectedOath) {
 function resetGame() {
     localStorage.clear();
     document.getElementById("Princes").innerHTML = "";
-    document.getElementById("addNewPrinceRow").classList.remove("d-none");
+    //document.getElementById("addNewPrinceRow").classList.remove("d-none");
+    showHideElement("addNewPrinceRow", true);
     document.getElementById("roundnumber").innerHTML = "1";
     Princes = new Array(1);
+}
+
+function showHideDebug(){
+
 }
 
 function createNewPrince(name, status, number) {
@@ -338,12 +343,21 @@ function addNewPrinceClick() {
     if (Princes.length == 2) {
         newPrince.isCurrent = true;
         CurrentPrince = newPrince;
-        showOathSelectionDialog();
+        //showOathSelectionDialog();
     }
 
     createNewPrinceNode(nextPrinceNumber, newPrince)
-
     savePrinceSettings();
+
+    showHideElement("startGame", true);
+}
+
+function showHideElement(id, show){
+    if(show == true){
+        document.getElementById(id).classList.remove("d-none");
+    }else{
+        document.getElementById(id).classList.add("d-none");
+    }
 }
 
 function createNewPrinceNode(nextPrinceNumber, newPrince) {
@@ -380,12 +394,12 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     // buttons
     changeNodeId(cloneNode, "PrinceStartTurn", "PrinceStartTurn" + nextPrinceNumber);
 
-    // enable or disable prince
-    if (newPrince.isCurrent) {
-        cloneNode.classList.remove("disabled");
-    } else {
-        cloneNode.classList.add("disabled")
-    }
+    // // enable or disable prince
+    // if (newPrince.isCurrent) {
+    //     cloneNode.classList.remove("disabled");
+    // } else {
+    //     cloneNode.classList.add("disabled")
+    // }
 
     // steps
     changeNodeIdAndValue(cloneNode, "steps_Prince", "steps_Prince" + nextPrinceNumber, "");
@@ -448,6 +462,13 @@ function getNextAvailablePrince() {
     }
 }
 
+function startGame(){
+    showOathSelectionDialog();
+    enableDisablePrinces();
+    showHideElement("changeRound", true);
+    showHideElement("startGame", false);
+}
+
 function getElementById(node, id) {
     return node.querySelector("#" + id);
 }
@@ -471,11 +492,11 @@ function changeNodeIdAndValue(rootNode, rootNodeId, newNodeId, newValue) {
 
 }
 
-function changeStatus(status) {
-    CurrentPrince.status = status;
-    Princes[CurrentPrince.princeNumber].status = status;
+function changeStatus(status, id) {
+    const princeNumber = id.slice(-1);
+    Princes[princeNumber].status = status;
 
-    let princeNode = document.getElementById("PrinceColumn" + CurrentPrince.princeNumber);
+    let princeNode = document.getElementById("PrinceColumn" + princeNumber);
     princeNode.classList.remove("chancellor");
     princeNode.classList.remove("exile1");
     princeNode.classList.remove("exile2");
@@ -489,11 +510,10 @@ function changeStatus(status) {
     if (status == Status.Chancellor) {
         princeNode.classList.add(Status.Chancellor);
     } else {
-        princeNode.classList.add(status + CurrentPrince.princeNumber);
+        princeNode.classList.add(status + princeNumber);
     }
 
     savePrinceSettings();
-
 }
 
 function princeMindChange(value) {
@@ -553,7 +573,7 @@ function princeStartTurn() {
 }
 
 function hideAddNewPrinceButton() {
-    document.getElementById("addNewPrinceRow").classList.add("d-none")
+    showHideElement("addNewPrinceRow", false);
 }
 
 function assessThreat() {
@@ -870,10 +890,13 @@ function enableDisablePrinces() {
     let princeNodes = document.querySelectorAll("[id^='PrinceColumn']");
     princeNodes.forEach(
         function (node) {
-            if (node.id.slice(-1) == CurrentPrince.princeNumber) {
+            let princeNumber = node.id.slice(-1);
+            if (princeNumber == CurrentPrince.princeNumber) {
                 node.classList.remove("disabled");
+                showHideElement("PrinceStartTurn" + CurrentPrince.princeNumber, true);
             } else {
                 node.classList.add("disabled");
+                showHideElement("PrinceStartTurn" + princeNumber, false);
             }
         }
     )
