@@ -284,7 +284,7 @@ function resetGame() {
     Princes = new Array(1);
 }
 
-function showHideDebug(){
+function showHideDebug() {
 
 }
 
@@ -352,10 +352,10 @@ function addNewPrinceClick() {
     showHideElement("startGame", true);
 }
 
-function showHideElement(id, show){
-    if(show == true){
+function showHideElement(id, show) {
+    if (show == true) {
         document.getElementById(id).classList.remove("d-none");
-    }else{
+    } else {
         document.getElementById(id).classList.add("d-none");
     }
 }
@@ -446,27 +446,40 @@ function getNextPrinceNumber() {
 
 function getNextAvailablePrince() {
     // Length == 2 means there is only one prince
-    if (Princes.length == 2) { return CurrentPrince };
+    //if (Princes.length == 2) { return CurrentPrince };
+
+    let hasResetLoop = false;
 
     // If the prince is the last prince in the array set the start number to 0
     let startNum = (CurrentPrince.princeNumber == Princes.length) ? 0 : CurrentPrince.princeNumber;
 
     for (let count = startNum; count < Princes.length; count++) {
         const prince = Princes[count];
-        if (prince.princeNumber != startNum) {
+        //if (prince.princeNumber != startNum) {
+        if (prince.princeNumber != startNum & prince.roundNumber < CurrentGameSettings.roundNumber) {
             return prince;
         } else {
-            // rest the loop to start at the beginning
-            if (count == Princes.length - 1) { count = 0 }
+            // reset the loop to start at the beginning
+            if (count == Princes.length - 1) {
+                count = 0;
+                if (hasResetLoop == false) {
+                    hasResetLoop = true;
+                } else {
+                    return null
+                }
+            }
         }
     }
+
+    return null;
 }
 
-function startGame(){
+function startGame() {
     showOathSelectionDialog();
     enableDisablePrinces();
     showHideElement("changeRound", true);
     showHideElement("startGame", false);
+    showHideElement("addNewPrinceRow", false);
 }
 
 function getElementById(node, id) {
@@ -827,8 +840,13 @@ function cleanUp() {
     messageBox.show();
 
     // Remove steps
-    let princeSteps = document.getElementById("steps_Prince" + CurrentPrince.princeNumber);
-    princeSteps.innerHTML = "";
+    document.getElementById("steps_Prince" + CurrentPrince.princeNumber).innerHTML = "";
+
+    // Remove current faction details
+    document.getElementById("PrinceCurrentFaction" + CurrentPrince.princeNumber).src = "";
+    document.getElementById("PrinceTotalTurns" + CurrentPrince.princeNumber).innerHTML = "";
+
+    document.getElementById("PrinceColumn" + CurrentPrince.princeNumber).classList.add("disabled");
 
     CurrentPrince.currentActionNum = 1;
     CurrentPrince.roundNumber = CurrentGameSettings.roundNumber;
@@ -840,14 +858,18 @@ function cleanUp() {
 
     savePrinceSettings()
 
-    enableDisablePrinces();
+    if (CurrentPrince != null) {
+        enableDisablePrinces();
+    } else {
+        document.getElementById("changeRoundButton").disabled = false;
+    }
 
-    checkForEndOfRound();
+    //checkForEndOfRound();
 }
 
 function savePrinceSettings() {
     Princes.forEach(prince => {
-        prince.isCurrent = (prince.name == CurrentPrince.name) ? true : false
+        prince.isCurrent = (CurrentPrince == null) ? false : (prince.name == CurrentPrince.name) ? true : false
         localStorage.setItem(prince.princeNumber, JSON.stringify(prince))
     })
 }
@@ -867,19 +889,19 @@ function showRoundChangeDialog() {
     messageBox.show();
 }
 
-function checkForEndOfRound() {
-    let isEndRound = true;
-    Princes.forEach((p) => {
-        if (p.roundNumber < CurrentGameSettings.roundNumber) {
-            isEndRound = false;
-        }
-    })
+// function checkForEndOfRound() {
+//     let isEndRound = true;
+//     Princes.forEach((p) => {
+//         if (p.roundNumber < CurrentGameSettings.roundNumber) {
+//             isEndRound = false;
+//         }
+//     })
 
-    if (isEndRound) {
-        //showRoundChangeDialog();
-        document.getElementById("changeRoundButton").disabled = false;
-    }
-}
+//     if (isEndRound) {
+//         //showRoundChangeDialog();
+//         document.getElementById("changeRoundButton").disabled = false;
+//     }
+// }
 
 function roundChangeClick() {
     changeRound();
@@ -890,13 +912,16 @@ function enableDisablePrinces() {
     let princeNodes = document.querySelectorAll("[id^='PrinceColumn']");
     princeNodes.forEach(
         function (node) {
-            let princeNumber = node.id.slice(-1);
-            if (princeNumber == CurrentPrince.princeNumber) {
-                node.classList.remove("disabled");
-                showHideElement("PrinceStartTurn" + CurrentPrince.princeNumber, true);
-            } else {
-                node.classList.add("disabled");
-                showHideElement("PrinceStartTurn" + princeNumber, false);
+            // Skip default, hidden 'PrinceColumn'
+            if (node.id != "PrinceColumn") {
+                let princeNumber = node.id.slice(-1);
+                if (princeNumber == CurrentPrince.princeNumber) {
+                    node.classList.remove("disabled");
+                    showHideElement("PrinceStartTurn" + CurrentPrince.princeNumber, true);
+                } else {
+                    node.classList.add("disabled");
+                    showHideElement("PrinceStartTurn" + princeNumber, false);
+                }
             }
         }
     )
@@ -1008,8 +1033,8 @@ function getBattleReadyTarget() {
     return returnText;
 }
 
-function convertFactionToIcon(factionName){
-    switch(factionName){
+function convertFactionToIcon(factionName) {
+    switch (factionName) {
         case Factions.Arcane:
             return "./resources/images/arcane.png";
         case Factions.Beast:
