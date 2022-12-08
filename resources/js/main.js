@@ -285,7 +285,14 @@ function resetGame() {
 }
 
 function showHideDebug() {
-
+    let debugOptionsAll = document.querySelectorAll("[id=debugOptions]");
+    debugOptionsAll.forEach((d) => {
+        if(d.classList.contains("d-none")){
+            d.classList.remove("d-none");
+        }else{
+            d.classList.add("d-none");
+        }
+    });
 }
 
 function createNewPrince(name, status, number) {
