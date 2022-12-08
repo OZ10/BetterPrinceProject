@@ -312,6 +312,10 @@ function changeRound() {
     round++;
     document.getElementById("roundnumber").innerHTML = round;
 
+    CurrentPrince = Princes[1];
+    CurrentPrince.isCurrent = true;
+    enableDisablePrinces();
+
     CurrentGameSettings.roundNumber = round;
     localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
 
