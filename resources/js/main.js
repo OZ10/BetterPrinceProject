@@ -762,7 +762,7 @@ function searchAndPlayClick(selectedFaction) {
     }
 
     updateTactics();
-    addTurnNumberLabel();
+    addActionNumberLabel();
     princeNextStep();
 }
 
@@ -943,14 +943,14 @@ function addAnActionLabel(actionName, title, message) {
     ele.appendChild(actionLabel);
 }
 
-function addTurnNumberLabel() {
-    let turnNumberLabel = document.getElementById("prince_turnNumber").cloneNode();
-    turnNumberLabel.classList.remove("d-none");
-    turnNumberLabel.id = "prince_turnNumber".replace("prince", "prince" + CurrentPrince.princeNumber).replace("turnNumber", "turnNumber" + CurrentPrince.currentActionNum);
-    turnNumberLabel.innerHTML = "Turn #" + CurrentPrince.currentActionNum;
+function addActionNumberLabel() {
+    let actionNumberLabel = document.getElementById("prince_turnNumber").cloneNode();
+    actionNumberLabel.classList.remove("d-none");
+    actionNumberLabel.id = "prince_turnNumber".replace("prince", "prince" + CurrentPrince.princeNumber).replace("turnNumber", "turnNumber" + CurrentPrince.currentActionNum);
+    actionNumberLabel.innerHTML = "Action #" + CurrentPrince.currentActionNum;
 
     let ele = getElementById(document, "steps_Prince" + CurrentPrince.princeNumber);
-    ele.appendChild(turnNumberLabel);
+    ele.appendChild(actionNumberLabel);
 }
 
 function alignFaction(faction) {
@@ -1154,7 +1154,7 @@ function okClick() {
     if (secondSearchAndPlay()) {
         searchAndPlay();
     } else {
-        addTurnNumberLabel();
+        addActionNumberLabel();
         princeNextStep();
     }
 }
