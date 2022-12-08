@@ -225,11 +225,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (prince != null) {
                 Princes[princeNumber] = JSON.parse(localStorage.getItem(princeNumber));
 
+                createNewPrinceNode(princeNumber, Princes[princeNumber]);
+
                 if (Princes[princeNumber].isCurrent) {
                     CurrentPrince = Princes[princeNumber];
+                    document.getElementById("PrinceColumn" + princeNumber).classList.remove("disabled");
+                }else{
+                    document.getElementById("PrinceColumn" + princeNumber).classList.add("disabled");
                 }
-
-                createNewPrinceNode(princeNumber, Princes[princeNumber]);
             }
         }
 
@@ -322,6 +325,7 @@ function changeRound() {
     CurrentPrince = Princes[1];
     CurrentPrince.isCurrent = true;
     enableDisablePrinces();
+    savePrinceSettings();
 
     CurrentGameSettings.roundNumber = round;
     localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
@@ -876,7 +880,7 @@ function cleanUp() {
     if (CurrentPrince != null) {
         enableDisablePrinces();
     } else {
-        document.getElementById("changeRoundButton").disabled = false;
+        showHideElement("changeRound", true);
     }
 
     //checkForEndOfRound();
@@ -920,7 +924,7 @@ function showRoundChangeDialog() {
 
 function roundChangeClick() {
     changeRound();
-    document.getElementById("changeRoundButton").disabled = true;
+    showHideElement("changeRound", false);
 }
 
 function enableDisablePrinces() {
