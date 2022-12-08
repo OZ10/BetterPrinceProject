@@ -384,7 +384,11 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, (newPrince.currentActionNum == 0) ? "" : newPrince.currentActionNum);
 
     // Debug options
-    //changeNodeId(cloneNode, "Prince1DebugMenu", "Prince" + nextPrinceNumber + "DebugMenu");
+    changeNodeId(cloneNode, "debugHeadingButton", "debugHeadingButton" + nextPrinceNumber);
+    changeNodeId(cloneNode, "debugMenuPrince", "debugMenuPrince" + nextPrinceNumber);
+    let debugButton = getElementById(cloneNode, "debugHeadingButton" + nextPrinceNumber);
+    debugButton.dataset.bsTarget = "#" + "debugMenuPrince" + nextPrinceNumber;
+
     changeNodeId(cloneNode, "PrinceMindOptions", "PrinceMindOptions" + nextPrinceNumber);
     let mindSelect = getElementById(cloneNode, "PrinceMindOptions" + nextPrinceNumber);
     mindSelect.value = newPrince.mindCurrent;
