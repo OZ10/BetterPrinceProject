@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (Princes[princeNumber].isCurrent) {
                     CurrentPrince = Princes[princeNumber];
                     document.getElementById("PrinceColumn" + princeNumber).classList.remove("disabled");
-                }else{
+                } else {
                     document.getElementById("PrinceColumn" + princeNumber).classList.add("disabled");
                 }
             }
@@ -241,7 +241,13 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("roundnumber").innerHTML = CurrentGameSettings.roundNumber;
 
         hideAddNewPrinceButton();
-        enableDisablePrinces();
+
+        if (CurrentPrince != null) {
+            enableDisablePrinces();
+        } else {
+            // if there is no CurrentPrince then all Princes have had a turn and a new round needs to be started
+            showHideElement("changeRound", true);
+        }
     }
 });
 
@@ -283,6 +289,7 @@ function resetGame() {
     document.getElementById("Princes").innerHTML = "";
     //document.getElementById("addNewPrinceRow").classList.remove("d-none");
     showHideElement("addNewPrinceRow", true);
+    showHideElement("changeRound", false);
     document.getElementById("roundnumber").innerHTML = "1";
     Princes = new Array(1);
 }
@@ -290,9 +297,9 @@ function resetGame() {
 function showHideDebug() {
     let debugOptionsAll = document.querySelectorAll("[id=debugOptions]");
     debugOptionsAll.forEach((d) => {
-        if(d.classList.contains("d-none")){
+        if (d.classList.contains("d-none")) {
             d.classList.remove("d-none");
-        }else{
+        } else {
             d.classList.add("d-none");
         }
     });
@@ -496,7 +503,6 @@ function getNextAvailablePrince() {
 function startGame() {
     showOathSelectionDialog();
     enableDisablePrinces();
-    showHideElement("changeRound", true);
     showHideElement("startGame", false);
     showHideElement("addNewPrinceRow", false);
 }
