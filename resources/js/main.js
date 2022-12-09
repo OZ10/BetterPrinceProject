@@ -168,6 +168,7 @@ class Prince {
         this.stepCount = 1;
         this.tacticsLevel = 0;
         this.roundNumber = 0;
+        this.isOathKeeper = false;
     }
 
     stepCount;
@@ -175,6 +176,7 @@ class Prince {
     isCurrent;
     tacticsLevel;
     roundNumber;
+    isOathKeeper;
 }
 
 function getFactionAlignmentList(alignment) {
@@ -337,17 +339,52 @@ function changeRound() {
     CurrentGameSettings.roundNumber = round;
     localStorage.setItem("settings", JSON.stringify(CurrentGameSettings));
 
-    if (round == 10) {
-        const messageBox = new bootstrap.Modal(
-            document.getElementById("messageBox")
-        );
+    checkForEndOfGame(round)
+}
 
-        document.getElementById("messageBoxTitle").innerHTML =
-            "Who Wins?";
-        document.getElementById("messageBoxBody").innerHTML =
-            "Game over. Check winner";
-        messageBox.show();
+function checkForEndOfGame(round) {
+    const isChancellorOathKeeper = getChancellor().isOathKeeper;
+
+    if (round == 8) {
+        // Game over. Determine winner by:
+        // 1
+        // 2
+        // ...
+
+        return;
     }
+
+    if (isChancellorOathKeeper == true) {
+        let rollMessage = "Roll a D6 and on if it's a ";
+
+        switch (round) {
+            case 5:
+                rollMessage = "6";
+                break;
+            case 6:
+                rollMessage = "5 or a 6";
+                break;
+            case 7:
+                rollMessage = "4, 5 or a 6";
+                break;
+            default:
+                rollMessage = "";
+                break;
+        }
+
+        if (rollMessage != "") {
+            rollMessage += " the Chancellor wins!";
+
+            const messageBox = new bootstrap.Modal(
+                document.getElementById("endOfGameBox")
+            )
+            document.getElementById("endOfGameMessage").innerHTML =
+                rollMessage;
+            messageBox.show();
+        }
+    }
+
+
 }
 
 function getRoundNumber() {
@@ -400,6 +437,7 @@ function createNewPrinceNode(nextPrinceNumber, newPrince) {
     changeNodeIdAndValue(cloneNode, "PrinceFavor", "PrinceFavor" + nextPrinceNumber, newPrince.numFavor);
     changeNodeIdAndValue(cloneNode, "PrinceSecret", "PrinceSecret" + nextPrinceNumber, newPrince.numSecrets);
     changeNodeIdAndValue(cloneNode, "PrinceTotalTurns", "PrinceTotalTurns" + nextPrinceNumber, (newPrince.currentActionNum == 0) ? "" : newPrince.currentActionNum);
+    changeNodeIdAndValue(cloneNode, "PrinceOathBanner", "PrinceOathBanner" + nextPrinceNumber, (newPrince.isOathKeeper == true) ? "./resources/images/oathBanner.png" : "");
 
     // Debug options
     changeNodeId(cloneNode, "debugHeadingButton", "debugHeadingButton" + nextPrinceNumber);
@@ -547,6 +585,8 @@ function changeStatus(status, id) {
 
     if (status == Status.Chancellor) {
         princeNode.classList.add(Status.Chancellor);
+        Princes[princeNumber].isOathKeeper = true;
+        document.getElementById("PrinceOathBanner" + princeNumber).src = "./resources/images/oathBanner.png";
     } else {
         princeNode.classList.add(status + princeNumber);
     }
@@ -907,6 +947,14 @@ function getPrince() {
     }
 }
 
+function getChancellor() {
+    Princes.forEach(p => {
+        if (p.status == Status.Chancellor) {
+            return p;
+        }
+    })
+}
+
 function showRoundChangeDialog() {
     const messageBox = new bootstrap.Modal(
         document.getElementById("roundChange")
@@ -1193,6 +1241,19 @@ function bannersDialogClick(answer) {
     }
 
     princeNextStep();
+}
+
+function endOfGameClick(answer){
+    if(answer == "Yes"){
+        const messageBox = new bootstrap.Modal(
+            document.getElementById("messageBox")
+        )
+        document.getElementById("messageBoxTitle").innerHTML =
+            "Chancellor Wins!";
+        document.getElementById("messageBoxBody").innerHTML =
+            "The Chancellor has win the game!";
+        messageBox.show()
+    }
 }
 
 // Below are the questions that the user is asked to help resolve the bot's turn

@@ -56,7 +56,8 @@
             </div>
             <div class="row" id="addNewPrinceRow">
                 <div class="justify-content-left row m-1">
-                    <button class="btn btn-light mainButton" id="addPrinceButton" title="Add Prince" onclick="addNewPrinceClick()">
+                    <button class="btn btn-light mainButton" id="addPrinceButton" title="Add Prince"
+                        onclick="addNewPrinceClick()">
                         <span class="material-icons md-48">
                             add_circle_outline
                         </span>
@@ -66,7 +67,8 @@
 
             <div class="row d-none" id="startGame">
                 <div class="justify-content-left row m-1">
-                    <button class="btn btn-light mainButton" id="startGameButton" title="Start Turn" onclick="startGame()">
+                    <button class="btn btn-light mainButton" id="startGameButton" title="Start Turn"
+                        onclick="startGame()">
                         <span class="material-icons md-48">
                             play_arrow
                         </span>
@@ -76,8 +78,8 @@
 
             <div class="row d-none" id="changeRound">
                 <div class="justify-content-left row m-1">
-                    <button class="btn btn-light mainButton" id="changeRoundButton" title="Change Round" onclick="roundChangeClick()"
-                        title="Change Round">
+                    <button class="btn btn-light mainButton" id="changeRoundButton" title="Change Round"
+                        onclick="roundChangeClick()" title="Change Round">
                         <span class="material-icons md-48">
                             restart_alt
                         </span>
@@ -89,7 +91,7 @@
 
     <div class="col p-3 m-1 d-none citizen" id="PrinceColumn">
         <div class="d-flex justify-content-between row" id="PrinceRow">
-
+            <img id="PrinceOathBanner" src="">
             <h5 class="col">
                 <div id="PrinceName">John</div>
             </h5>
@@ -162,7 +164,8 @@
         <div class="accordion d-none" id="debugOptions">
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button" id="debugHeadingButton" data-bs-toggle="collapse" data-bs-target="#debugMenuPrince">
+                    <button class="accordion-button" id="debugHeadingButton" data-bs-toggle="collapse"
+                        data-bs-target="#debugMenuPrince">
                         Debug Menu
                     </button>
                 </h2>
@@ -428,6 +431,30 @@
                         Yes
                     </button>
                     <button type="button" class="btn btn-secondary" onclick="yesNoClick('No');" data-bs-dismiss="modal">
+                        No
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- End of Game Box -->
+    <div class="modal fade" id="endOfGameBox" tabindex="-1" aria-labelledby="YesNo" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">End of the Game?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex">
+                    <p id="endOfGameMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="endOfGameClick('Yes');" data-bs-dismiss="modal">
+                        Yes
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="endOfGameClick('No');" data-bs-dismiss="modal">
                         No
                     </button>
                 </div>
